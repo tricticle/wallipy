@@ -9,7 +9,7 @@ function App() {
     event.preventDefault();
 
     const subreddit = event.target.subredditInput.value;
-    const apiUrl = `https://www.reddit.com/r/${subreddit}/hot.json?include_over_18=true`;
+    const apiUrl = `https://www.reddit.com/r/${subreddit}/hot.json?include_over_18=false`;
 
     // Fetch data from Reddit API
     fetch(apiUrl)
