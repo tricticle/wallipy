@@ -9,7 +9,7 @@ function App() {
     event.preventDefault();
 
     const subreddit = event.target.subredditInput.value;
-    const apiUrl = `https://www.reddit.com/r/${subreddit}/hot.json?include_over_18=false`;
+    const apiUrl = `https://www.reddit.com/r/${subreddit}/hot.json?include_over_18=true`;
 
     // Fetch data from Reddit API
     fetch(apiUrl)
@@ -17,7 +17,7 @@ function App() {
       .then((data) => {
         // Filter URLs of images
         const urls = data.data.children
-          .filter((post) => post.data.post_hint === "image" && post.data.over_18)
+          .filter((post) => post.data.post_hint === "image" || post.data.over_18)
           .map((post) => post.data.url);
           if (data.data.children.some(post => post.data.over_18)) {
             alert("NSFW content");
