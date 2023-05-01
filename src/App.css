@@ -218,6 +218,21 @@ input[type="text"]:hover{
   letter-spacing: 1px;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
 }
+.toggle{
+  font-size: 15px;
+  font-weight: 900;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 5px;
+  padding: 5px;
+  border-radius: 5px;
+}
+.toggle:hover{
+  animation: color 15s infinite;
+}
 .about-page{
   right: 0;
   bottom: 0;

@@ -4,12 +4,13 @@ import "./App.css";
 function App() {
   const [imageUrls, setImageUrls] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showNsfw, setShowNsfw] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const subreddit = event.target.subredditInput.value;
-    const apiUrl = `https://www.reddit.com/r/${subreddit}/hot.json?include_over_18=true`;
+    const apiUrl = `https://www.reddit.com/r/${subreddit}/hot.json`;
 
     // Fetch data from Reddit API
     fetch(apiUrl)
@@ -17,11 +18,8 @@ function App() {
       .then((data) => {
         // Filter URLs of images
         const urls = data.data.children
-          .filter((post) => post.data.post_hint === "image" || post.data.over_18)
+          .filter((post) => post.data.post_hint === "image" && (showNsfw || !post.data.over_18))
           .map((post) => post.data.url);
-          if (data.data.children.some(post => post.data.over_18)) {
-            alert("NSFW content");
-          }
         // Set the image URLs state
         setImageUrls(urls);
 
@@ -53,9 +51,13 @@ function App() {
     a.click();
   };
 
+  const handleToggle = () => {
+    setShowNsfw(!showNsfw);
+  };
+
   return (
     <>
-        <nav className="nav-tab">
+    <nav className="nav-tab">
         <div className="image-text">
           <span className="image">
             <img src="assets/icon.png" alt="recreit" />
@@ -90,20 +92,24 @@ function App() {
           </div>
         </div>
       </nav>
-    <div className="container">
-      <div className="art" onClick={handleClick} style={{ backgroundImage: `url(${imageUrls[currentImageIndex]})` }} />
-      <form onSubmit={handleSubmit} id="subredditForm">
-        <input type="text" id="subredditInput" placeholder="subreddit name" />
-        <input type="submit" value="Generate Art" />
-        <input type="button" id="saveArtButton" value="Save Art" onClick={handleSaveClick} />
-      </form>
-      <footer className="about-page">
-        <h6>2023 copyright to tricticle</h6>
-        <p>
-          all Generated images[arts] credits goes to <a href="https://www.reddit.com/">creators</a>
-        </p>
-      </footer>
-    </div>
+      <div className="container">
+        <div className="art" onClick={handleClick} style={{ backgroundImage: `url(${imageUrls[currentImageIndex]})` }} />
+        <form onSubmit={handleSubmit} id="subredditForm">
+          <input type="text" id="subredditInput" placeholder="subreddit name" />
+          <input type="submit" value="Generate Art" />
+          <input type="button" id="saveArtButton" value="Save Art" onClick={handleSaveClick} />
+          <div className="toggle">
+            <input type="checkbox" id="nsfwToggle" checked={showNsfw} onChange={handleToggle} />
+            <label htmlFor="nsfwToggle">Show NSFW Content</label>
+          </div>
+        </form>
+        <footer className="about-page">
+          <h6>2023 copyright to tricticle</h6>
+          <p>
+            all Generated images[arts] credits goes to <a href="https://www.reddit.com/">creators</a>
+          </p>
+        </footer>
+      </div>
     </>
   );
 }
