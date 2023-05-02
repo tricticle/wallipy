@@ -10,7 +10,7 @@ function App() {
     event.preventDefault();
 
     const subreddit = event.target.subredditInput.value;
-    const apiUrl = `https://www.reddit.com/r/${subreddit}/hot.json`;
+    const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=999`;
 
     // Fetch data from Reddit API
     fetch(apiUrl)

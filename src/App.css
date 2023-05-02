@@ -128,16 +128,18 @@ body::-webkit-scrollbar {
 }
     .container {
       padding: 3px;
+      margin: 5px;
       display: flex;
       flex-direction: column;
       align-items: center;
       transition: var(--tran);
+      border-radius: 10px;
     }
   
     .art{
+      margin-top: 5px;
       position: relative;
       z-index: 1;
-      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -220,7 +222,6 @@ input[type="text"]:hover{
 }
 .toggle{
   font-size: 15px;
-  font-weight: 900;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
   display: flex;
   flex-direction: row;
@@ -231,6 +232,7 @@ input[type="text"]:hover{
   border-radius: 5px;
 }
 .toggle:hover{
+  font-weight: 900;
   animation: color 15s infinite;
 }
 .about-page{
