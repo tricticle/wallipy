@@ -44,61 +44,22 @@ font-family: 'Unica One', cursive;
 body::-webkit-scrollbar {
   display: none;
 }
-.nav-tab{
+.header{
+  color: rgb(0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  border-radius: 7px;
   margin: 7px;
-  box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px;
-}
-
-.nav-tab .image-text{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  height: 35px;
-  width: 35px;
-  border-radius: 90%;
-}
-.nav-tab > .image-text img{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid black;
-  height: 30px;
-  width: 30px;
-  object-fit: cover;
-  border-radius: 90%;
-}
-
-.nav-tab .menu-bar{
-  display: none;
-}
-.nav-tab .menu{
-  font-size: clamp(10px,0.1vw,1rem);
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-.nav-tab > .menu-bar a{
-  text-decoration: none;
-  animation: color 10s infinite;
-  transition: var(--tran);
   border-radius: 5px;
-  margin: 1px 0px 1px 0px;
-}
-.nav-tab > .menu-bar a:hover{
-  letter-spacing: 1px;
-  font-size: 11px;
   transition: var(--tran);
-  animation: color 30s infinite;
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(0, 0, 0, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px;
+}
+.header:hover{
+  background-color: #000000;
+  color: rgb(255, 255, 255);
+  transition: var(--tran);
+  font-weight:700;
 }
 
 @keyframes bgcolor{
@@ -219,21 +180,6 @@ input[type="text"]:hover{
   animation: color 20s infinite;
   letter-spacing: 1px;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
-}
-.toggle{
-  font-size: 15px;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
-  gap: 5px;
-  padding: 5px;
-  border-radius: 5px;
-}
-.toggle:hover{
-  font-weight: 900;
-  animation: color 15s infinite;
 }
 .about-page{
   right: 0;
