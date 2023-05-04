@@ -5,7 +5,6 @@ function App() {
   const [imageUrls, setImageUrls] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showNsfw, setShowNsfw] = useState(false);
-  const [showMessage, setShowMessage] = useState(true);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -33,7 +32,6 @@ function App() {
   const handleClick = (event) => {
     const clickX = event.clientX;
     const artWidth = event.target.offsetWidth;
-    setShowMessage(false);
 
     if (clickX < artWidth / 2) {
       // Clicked on the left side of the art element, go to previous image
@@ -61,9 +59,7 @@ function App() {
     <><section className="header"><h1>wallipy.</h1></section>
         
       <div className="container">
-      <div className="art" onClick={handleClick} style={{ backgroundImage: `url(${imageUrls[currentImageIndex]})` }}>
-          {showMessage && <div className="message">Click on the left or right side to change the image</div>}
-        </div>
+        <div className="art" onClick={handleClick} style={{ backgroundImage: `url(${imageUrls[currentImageIndex]})` }} />
         <form onSubmit={handleSubmit} id="subredditForm">
           <input type="text" id="subredditInput" placeholder="subreddit name" />
           <input type="submit" value="Generate Art" />
@@ -73,13 +69,13 @@ function App() {
             <label htmlFor="nsfwToggle">Show NSFW Content</label>
           </div>
         </form>
-      </div>
-      <footer className="about-page">
+        <footer className="about-page">
           <h6>2023 copyright to tricticle</h6>
           <p>
             all Generated images[arts] credits goes to <a href="https://www.reddit.com/">creators</a>
           </p>
         </footer>
+      </div>
     </>
   );
 }
