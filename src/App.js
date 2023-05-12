@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 
 function App() {
@@ -6,12 +6,13 @@ function App() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showNsfw, setShowNsfw] = useState(false);
   const [showMessage, setShowMessage] = useState(true);
+  const [selectedSubreddit, setSelectedSubreddit] = useState("wallpaper");
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const subreddits = ["wallpaper","wallpaperengine","aesthetic","amoledbackgrounds","midjourneyfantasy","patchuu","imaginarysliceoflife","animeart","moescape","fantasymoe","fantasyanimeart","animewallpaper","awwnime","hentai"];
 
-    const subreddit = event.target.subredditInput.value;
-    const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=999`;
+  useEffect(() => {
+    const subreddit = selectedSubreddit;
+    const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
 
     // Fetch data from Reddit API
     fetch(apiUrl)
@@ -28,7 +29,7 @@ function App() {
         setCurrentImageIndex(0);
       })
       .catch((error) => console.error(error));
-  };
+  }, [selectedSubreddit, showNsfw]);
 
   const handleClick = (event) => {
     const clickX = event.clientX;
@@ -57,16 +58,26 @@ function App() {
     setShowNsfw(!showNsfw);
   };
 
+  const handleSelectChange = (event) => {
+    setSelectedSubreddit(event.target.value);
+  };
+
+
   return (
-    <><section className="header"><h1>wallipy.</h1></section>
-        
+    <>
+    <section className="header"><h1>wallipy.</h1></section>
       <div className="container">
-      <div className="art" onClick={handleClick} style={{ backgroundImage: `url(${imageUrls[currentImageIndex]})` }}>
+        <div className="art" onClick={handleClick} style={{ backgroundImage: `url(${imageUrls[currentImageIndex]})` }}>
           {showMessage && <div className="message">Click on the left or right side to change the image</div>}
         </div>
-        <form onSubmit={handleSubmit} id="subredditForm">
-          <input type="text" id="subredditInput" placeholder="subreddit name" />
-          <input type="submit" value="Generate Art" />
+        <form id="subredditForm">
+          <select value={selectedSubreddit} onChange={handleSelectChange}>
+            {subreddits.map((subreddit) => (
+              <option key={subreddit} value={subreddit}>
+                {subreddit}
+              </option>
+            ))}
+          </select>
           <input type="button" id="saveArtButton" value="Save Art" onClick={handleSaveClick} />
           <div className="toggle">
             <input type="checkbox" id="nsfwToggle" checked={showNsfw} onChange={handleToggle} />
