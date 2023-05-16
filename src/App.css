@@ -63,12 +63,11 @@ body::-webkit-scrollbar {
   font-weight:700;
 }
 .message {
+  position: absolute;
   background: hsla(0, 0%, 100%, 0.1);
   border-radius: 10px;
   height: 100%;
   width: 100%;
-  padding:10px;
-  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -116,7 +115,7 @@ body::-webkit-scrollbar {
       position: relative;
       z-index: 1;
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
       width: 100%;
       height: 75dvh;
@@ -124,8 +123,20 @@ body::-webkit-scrollbar {
       background-repeat: no-repeat;
       background-position: center;
       border-radius: 10px;
-      padding: 3px;
     }
+     .data{
+      margin-bottom: 7px;
+      background: hsla(0, 0%, 100%, 0.002);
+      border-radius: 10px;
+      padding:10px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(10px);
+      color: #ffffff;
+      font-size: 12px;
+  }
     form {
       display: flex;
       height: fit-content;

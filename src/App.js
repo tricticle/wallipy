@@ -7,6 +7,8 @@ function App() {
   const [showNsfw, setShowNsfw] = useState(false);
   const [showMessage, setShowMessage] = useState(true);
   const [selectedSubreddit, setSelectedSubreddit] = useState("wallpaper");
+  const [artInfo, setArtInfo] = useState({});
+
 
   const subreddits = ["wallpaper","amoledbackgrounds","midjourneyfantasy","patchuu","imaginarysliceoflife","animeart","moescape","fantasymoe","animewallpaper","awwnime"];
 
@@ -14,60 +16,72 @@ function App() {
     const subreddit = selectedSubreddit;
     const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
 
-    // Fetch data from Reddit API
-    fetch(apiUrl)
-      .then((response) => response.json())
-      .then((data) => {
-        // Filter URLs of images
-        const urls = data.data.children
-          .filter((post) => post.data.post_hint === "image" && (showNsfw || !post.data.over_18))
-          .map((post) => post.data.url);
-        // Set the image URLs state
-        setImageUrls(urls);
+     // Fetch data from Reddit API
+     fetch(apiUrl)
+     .then((response) => response.json())
+     .then((data) => {
+       // Filter URLs of images and their corresponding info
+       const posts = data.data.children.filter(
+         (post) =>
+           post.data.post_hint === "image" && (showNsfw || !post.data.over_18)
+       );
+       const urls = posts.map((post) => post.data.url);
+       const info = posts.map((post) => ({
+         id: post.data.author,
+         title: post.data.title
+       }));
 
-        // Set the first image as the current index
-        setCurrentImageIndex(0);
-      })
-      .catch((error) => console.error(error));
-  }, [selectedSubreddit, showNsfw]);
+       // Set the image URLs and info states
+       setImageUrls(urls);
+       setArtInfo(info);
 
-  const handleClick = (event) => {
-    const clickX = event.clientX;
-    const artWidth = event.target.offsetWidth;
-    setShowMessage(false);
+       // Set the first image as the current index
+       setCurrentImageIndex(0);
+     })
+     .catch((error) => console.error(error));
+ }, [selectedSubreddit, showNsfw]);
 
-    if (clickX < artWidth / 2) {
-      // Clicked on the left side of the art element, go to previous image
-      setCurrentImageIndex((currentImageIndex - 1 + imageUrls.length) % imageUrls.length);
-    } else {
-      // Clicked on the right side of the art element, go to next image
-      setCurrentImageIndex((currentImageIndex + 1) % imageUrls.length);
-    }
-  };
+ const handleClick = (event) => {
+   const clickY = event.clientY;
+   const artHeight = event.target.offsetHeight;
+   setShowMessage(false);
 
-  const handleSaveClick = () => {
-    // Download the current image
-    const imageUrl = imageUrls[currentImageIndex];
-    const a = document.createElement("a");
-    a.href = imageUrl;
-    a.download = "art.jpg";
-    a.click();
-  };
+   if (clickY < artHeight / 2) {
+     // Clicked on the top half of the art element, go to previous image
+     setCurrentImageIndex((currentImageIndex - 1 + imageUrls.length) % imageUrls.length);
+   } else {
+     // Clicked on the bottom half of the art element, go to next image
+     setCurrentImageIndex((currentImageIndex + 1) % imageUrls.length);
+   }
+ };
 
-  const handleToggle = () => {
-    setShowNsfw(!showNsfw);
-  };
+ const handleSaveClick = () => {
+   // Download the current image
+   const imageUrl = imageUrls[currentImageIndex];
+   const a = document.createElement("a");
+   a.href = imageUrl;
+   a.download = "art.jpg";
+   a.click();
+ };
 
-  const handleSelectChange = (event) => {
-    setSelectedSubreddit(event.target.value);
-  };
+ const handleToggle = () => {
+   setShowNsfw(!showNsfw);
+ };
 
+ const handleSelectChange = (event) => {
+   setSelectedSubreddit(event.target.value);
+ };
 
-  return (
+ const currentArtInfo = artInfo[currentImageIndex] || {};
+
+ return (
     <>
     <section className="header"><h1>wallipy.</h1></section>
       <div className="container">
         <div className="art" onClick={handleClick} style={{ backgroundImage: `url(${imageUrls[currentImageIndex]})` }}>
+          <section className="data">
+          {currentArtInfo.title} by {currentArtInfo.id}
+          </section>
           {showMessage && <div className="message">Click on the left or right side to change the image</div>}
         </div>
         <form id="subredditForm">
