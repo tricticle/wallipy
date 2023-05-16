@@ -80,7 +80,7 @@ function App() {
       <div className="container">
         <div className="art" onClick={handleClick} style={{ backgroundImage: `url(${imageUrls[currentImageIndex]})` }}>
           <section className="data">
-          {currentArtInfo.title} by {currentArtInfo.id}
+          {currentArtInfo.title} by <a href="https://www.reddit.com/u/{currentArtInfo.id}">{currentArtInfo.id}</a>
           </section>
           {showMessage && <div className="message">Click on the left or right side to change the image</div>}
         </div>
