@@ -137,6 +137,10 @@ body::-webkit-scrollbar {
       color: #ffffff;
       font-size: 12px;
   }
+.data a{
+  text-decoration: none;
+  animation: color 15s infinite;
+}
     form {
       display: flex;
       height: fit-content;
