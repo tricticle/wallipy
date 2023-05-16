@@ -8,7 +8,7 @@ function App() {
   const [showMessage, setShowMessage] = useState(true);
   const [selectedSubreddit, setSelectedSubreddit] = useState("wallpaper");
 
-  const subreddits = ["wallpaper","amoledbackgrounds","midjourneyfantasy","patchuu","imaginarysliceoflife","animeart","moescape","fantasymoe","fantasyanimeart","animewallpaper","awwnime","hentai"];
+  const subreddits = ["wallpaper","amoledbackgrounds","midjourneyfantasy","patchuu","imaginarysliceoflife","animeart","moescape","fantasymoe","fantasyanimeart","animewallpaper","awwnime"];
 
   useEffect(() => {
     const subreddit = selectedSubreddit;
