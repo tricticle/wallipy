@@ -113,7 +113,7 @@ function App() {
           <div className="data">
             {currentArtInfo.title} by{" "}
             <a href={`https://www.reddit.com/u/${currentArtInfo.id}`}>
-              {currentArtInfo.id}
+              &nbsp;{currentArtInfo.id}
             </a>
           </div>
           {showMessage && (
