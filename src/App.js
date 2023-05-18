@@ -41,12 +41,24 @@ function App() {
       .catch((error) => console.error(error));
   }, [selectedSubreddit, showNsfw, customSubreddit]);
 
-  const handleSaveClick = (imageUrl) => {
-    // Download the specified image
-    const a = document.createElement("a");
-    a.href = imageUrl;
-    a.download = "art.jpg";
-    a.click();
+  const handleSaveClick = async (imageUrl) => {
+    try {
+      // Fetch the image data
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+
+      // Create a temporary anchor element to trigger the download
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "art.jpg";
+      a.click();
+
+      // Clean up the temporary URL
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleToggle = () => {
