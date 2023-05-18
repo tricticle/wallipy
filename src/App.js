@@ -3,11 +3,8 @@ import "./App.css";
 
 function App() {
   const [imageUrls, setImageUrls] = useState([]);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showNsfw, setShowNsfw] = useState(false);
-  const [showMessage, setShowMessage] = useState(true);
   const [selectedSubreddit, setSelectedSubreddit] = useState("wallpaper");
-  const [artInfo, setArtInfo] = useState({});
   const [customSubreddit, setCustomSubreddit] = useState("");
 
   const subreddits = [
@@ -31,47 +28,21 @@ function App() {
     fetch(apiUrl)
       .then((response) => response.json())
       .then((data) => {
-        // Filter URLs of images and their corresponding info
+        // Filter URLs of images
         const posts = data.data.children.filter(
           (post) =>
             post.data.post_hint === "image" && (showNsfw || !post.data.over_18)
         );
         const urls = posts.map((post) => post.data.url);
-        const info = posts.map((post) => ({
-          id: post.data.author,
-          title: post.data.title,
-        }));
 
-        // Set the image URLs and info states
+        // Set the image URLs
         setImageUrls(urls);
-        setArtInfo(info);
-
-        // Set the first image as the current index
-        setCurrentImageIndex(0);
       })
       .catch((error) => console.error(error));
   }, [selectedSubreddit, showNsfw, customSubreddit]);
 
-  const handleClick = (event) => {
-    const clickX = event.clientX;
-    const artWidth = event.target.offsetWidth;
-    setShowMessage(false);
-  
-    if (clickX < artWidth / 2) {
-      // Clicked on the left half of the art element, go to the previous image
-      setCurrentImageIndex(
-        (currentImageIndex - 1 + imageUrls.length) % imageUrls.length
-      );
-    } else {
-      // Clicked on the right half of the art element, go to the next image
-      setCurrentImageIndex((currentImageIndex + 1) % imageUrls.length);
-    }
-  };
-  
-
-  const handleSaveClick = () => {
-    // Download the current image
-    const imageUrl = imageUrls[currentImageIndex];
+  const handleSaveClick = (imageUrl) => {
+    // Download the specified image
     const a = document.createElement("a");
     a.href = imageUrl;
     a.download = "art.jpg";
@@ -85,19 +56,11 @@ function App() {
   const handleSelectChange = (event) => {
     const value = event.target.value;
     setSelectedSubreddit(value);
-
-    if (value === "custom") {
-      setShowMessage(false);
-    } else {
-      setShowMessage(true);
-    }
   };
 
   const handleCustomSubredditChange = (event) => {
     setCustomSubreddit(event.target.value);
   };
-
-  const currentArtInfo = artInfo[currentImageIndex] || {};
 
   return (
     <>
@@ -105,22 +68,13 @@ function App() {
         <h1>wallipy.</h1>
       </section>
       <div className="container">
-        <div
-          className="art"
-          onClick={handleClick}
-          style={{ backgroundImage: `url(${imageUrls[currentImageIndex]})` }}
-        >
-          <div className="data">
-            {currentArtInfo.title} by{" "}
-            <a href={`https://www.reddit.com/u/${currentArtInfo.id}`}>
-              &nbsp;{currentArtInfo.id}
-            </a>
-          </div>
-          {showMessage && (
-            <div className="message">
-              Click on the left or right side to change the image
+        <div className="art-grid">
+          {imageUrls.map((imageUrl, index) => (
+            <div className="art" key={index}>
+              <img src={imageUrl} alt="Artwork" />
+              <button onClick={() => handleSaveClick(imageUrl)}>Save</button>
             </div>
-          )}
+          ))}
         </div>
         <form id="subredditForm">
           <select value={selectedSubreddit} onChange={handleSelectChange}>
@@ -139,12 +93,6 @@ function App() {
               placeholder="Enter subreddit name"
             />
           )}
-          <input
-            type="button"
-            id="saveArtButton"
-            value="Save Art"
-            onClick={handleSaveClick}
-          />
           <div className="toggle">
             <input
               type="checkbox"
@@ -159,7 +107,8 @@ function App() {
       <footer className="about-page">
         <h6>2023 copyright to tricticle</h6>
         <p>
-          all Generated images[arts] credits go to <a href="https://www.reddit.com/">creators</a>
+          All generated images (arts) credits go to{" "}
+          <a href="https://www.reddit.com/">creators</a>
         </p>
       </footer>
     </>
