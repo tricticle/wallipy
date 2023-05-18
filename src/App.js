@@ -68,14 +68,14 @@ function App() {
         <h1>wallipy.</h1>
       </section>
       <div className="container">
-        <div className="art-grid">
-          {imageUrls.map((imageUrl, index) => (
-            <div className="art" key={index}>
-              <img src={imageUrl} alt="Artwork" />
-              <button onClick={() => handleSaveClick(imageUrl)}>Save</button>
-            </div>
-          ))}
-        </div>
+      <div className="art-grid">
+        {imageUrls.map((imageUrl, index) => (
+          <div className="art" key={`${imageUrl}-${index}`}>
+            <img src={imageUrl} alt="Artwork" key={`${imageUrl}-${index}`} />
+            <button onClick={() => handleSaveClick(imageUrl)}>Save</button>
+          </div>
+        ))}
+      </div>
         <form id="subredditForm">
           <select value={selectedSubreddit} onChange={handleSelectChange}>
             {subreddits.map((subreddit) => (
