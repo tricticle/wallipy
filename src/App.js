@@ -20,7 +20,8 @@ function App() {
     "awwnime",
   ];
 
-  const fetchImageUrls = (subreddit) => {
+  useEffect(() => {
+    const subreddit = selectedSubreddit === "custom" ? customSubreddit : selectedSubreddit;
     const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
 
     // Fetch data from Reddit API
@@ -38,11 +39,6 @@ function App() {
         setImageUrls(urls);
       })
       .catch((error) => console.error(error));
-  };
-
-  useEffect(() => {
-    const subreddit = selectedSubreddit === "custom" ? customSubreddit : selectedSubreddit;
-    fetchImageUrls(subreddit);
   }, [selectedSubreddit, showNsfw, customSubreddit]);
 
   const handleSaveClick = (imageUrl) => {
@@ -60,7 +56,6 @@ function App() {
   const handleSelectChange = (event) => {
     const value = event.target.value;
     setSelectedSubreddit(value);
-    fetchImageUrls(value); // Fetch and update the image URLs
   };
 
   const handleCustomSubredditChange = (event) => {
