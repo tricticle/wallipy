@@ -6,6 +6,7 @@ function App() {
   const [showNsfw, setShowNsfw] = useState(false);
   const [selectedSubreddit, setSelectedSubreddit] = useState("wallpaper");
   const [customSubreddit, setCustomSubreddit] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const subreddits = [
     "wallpaper",
@@ -24,40 +25,41 @@ function App() {
     const subreddit = selectedSubreddit === "custom" ? customSubreddit : selectedSubreddit;
     const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
 
-    // Fetch data from Reddit API
+    setIsLoading(true);
+
     fetch(apiUrl)
       .then((response) => response.json())
       .then((data) => {
-        // Filter URLs of images
         const posts = data.data.children.filter(
           (post) =>
             post.data.post_hint === "image" && (showNsfw || !post.data.over_18)
         );
         const urls = posts.map((post) => post.data.url);
 
-        // Set the image URLs
         setImageUrls(urls);
+        setIsLoading(false);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error("Error occurred while fetching images:", error);
+        setIsLoading(false);
+      });
   }, [selectedSubreddit, showNsfw, customSubreddit]);
 
   const handleSaveClick = async (imageUrl) => {
     try {
-      // Fetch the image data
       const response = await fetch(imageUrl);
       const blob = await response.blob();
 
-      // Create a temporary anchor element to trigger the download
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "art.jpg";
-      a.click();
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "art.jpg";
 
-      // Clean up the temporary URL
-      URL.revokeObjectURL(url);
+      link.click();
+
+      URL.revokeObjectURL(link.href);
     } catch (error) {
-      console.error(error);
+      console.error("Error occurred while downloading the image:", error);
+      window.open(imageUrl);
     }
   };
 
@@ -80,14 +82,18 @@ function App() {
         <h1>wallipy.</h1>
       </section>
       <div className="container">
-      <div className="art-grid">
-        {imageUrls.map((imageUrl, index) => (
-          <div className="art" key={`${imageUrl}-${index}`}>
-            <img src={imageUrl} alt="Artwork" key={`${imageUrl}-${index}`} />
-            <button onClick={() => handleSaveClick(imageUrl)}>Save</button>
+        {isLoading ? (
+          <div className="loading">Loading...</div>
+        ) : (
+          <div className="art-grid">
+            {imageUrls.map((imageUrl, index) => (
+              <div className="art" key={index}>
+                <img src={imageUrl} alt="Artwork" loading="lazy" />
+                <button onClick={() => handleSaveClick(imageUrl)}>Save</button>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        )}
         <form id="subredditForm">
           <select value={selectedSubreddit} onChange={handleSelectChange}>
             {subreddits.map((subreddit) => (

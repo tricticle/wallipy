@@ -1,51 +1,85 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
-:root{
-  --tran:0.7s ease;
-  background-color: dark light;
+
+:root {
+  --tran: 0.7s ease;
+  --primary-color: #ffbdbd;
+  --secondary-color: #b882ff;
+  --background-color: #f1f1f1;
+  --text-color: #000000;
 }
-@keyframes color{
+
+@keyframes color {
   0% {
-      color: #ffbdbd;
+    color: #ffbdbd;
   }
 
   20% {
-      color: #b882ff;
+    color: #b882ff;
   }
 
   40% {
-      color: #ff4f4f;
+    color: #ff4f4f;
   }
 
   60% {
-      color: #ff4f4f;
+    color: #ff4f4f;
   }
 
   80% {
-      color: #b882ff;
+    color: #b882ff;
   }
 
   100% {
     color: #ffbebe;
+  }
 }
+
+@keyframes bgcolor {
+  0% {
+    background-color: #ffbdbd;
+  }
+
+  20% {
+    background-color: #b882ff;
+  }
+
+  40% {
+    background-color: #50b9ff;
+  }
+
+  60% {
+    background-color: #50b9ff;
+  }
+
+  80% {
+    background-color: #d08dff;
+  }
+
+  100% {
+    background-color: #ffbebe;
+  }
 }
-*{
+
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Unica One', cursive;
-  text-transform:capitalize;
-  --tran:all 0.5s ease;
+  text-transform: capitalize;
+  --tran: all 0.5s ease;
 }
 
-body{
-font-family: 'Unica One', cursive;
+body {
+  font-family: 'Unica One', cursive;
   scroll-behavior: smooth;
 }
+
 body::-webkit-scrollbar {
   display: none;
   color: transparent;
 }
-.header{
+
+.header {
   color: rgb(0, 0, 0);
   display: flex;
   align-items: center;
@@ -55,39 +89,16 @@ body::-webkit-scrollbar {
   border-radius: 5px;
   transition: var(--tran);
   box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.1);
+  background-repeat: none;
+  object-fit: cover;
 }
-.header:hover{
-  background-color: #000000;
-  color: rgb(255, 255, 255);
+
+.header:hover {
+  background-color: var(--primary-color);
+  color: #ffffff;
   transition: var(--tran);
-  font-weight:700;
 }
 
-@keyframes bgcolor{
-  0% {
-      background-color: #ffbdbd;
-  }
-
-  20% {
-      background-color: #b882ff;
-  }
-
-  40% {
-      background-color: #50b9ff;
-  }
-
-  60% {
-      background-color: #50b9ff;
-  }
-
-  80% {
-      background-color: #d08dff;
-  }
-
-  100% {
-    background-color: #ffbebe;
-}
-}
 .container {
   padding: 7px;
   margin: 5px;
@@ -95,6 +106,7 @@ body::-webkit-scrollbar {
   flex-direction: column-reverse;
   align-items: center;
 }
+
 .art-grid {
   display: grid;
   width: 100%;
@@ -111,6 +123,7 @@ body::-webkit-scrollbar {
   padding-bottom: 100%;
   overflow: hidden;
   border-radius: 7px;
+  box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.1);
 }
 
 .art img {
@@ -122,12 +135,21 @@ body::-webkit-scrollbar {
   object-fit: cover;
   border-radius: 7px;
   transition: var(--tran);
+  filter: blur(30px);
+  transition: filter 0.3s ease;
 }
 
-.art img:hover{
+
+.art img:not([src=""]) {
+  filter: none;
+}
+
+.art img:hover {
   padding: 5px;
   transition: var(--tran);
   border-radius: 10px;
+  box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.1);
+  animation: bgcolor 20s infinite;
 }
 
 .art button {
@@ -143,17 +165,19 @@ body::-webkit-scrollbar {
   color: #ffffff;
   font-size: 12px;
 }
-    form {
-      display: flex;
-      height: fit-content;
-      flex-direction: row;
-      align-items: center;
-      flex-wrap: nowrap;
-      align-content: space-around;
-      justify-content: space-around;
-      width: 100%;
-    }
-#subredditForm{
+
+form {
+  display: flex;
+  height: fit-content;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+  align-content: space-around;
+  justify-content: space-around;
+  width: 100%;
+}
+
+#subredditForm {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -167,6 +191,7 @@ body::-webkit-scrollbar {
   padding: 7px;
   transition: var(--tran);
 }
+
 select {
   font-size: 15px;
   padding: 3px;
@@ -175,18 +200,20 @@ select {
   outline: transparent;
   text-align: center;
   animation: color 30s infinite;
-  box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px;
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px,
+    rgba(17, 17, 26, 0.1) 0px 16px 48px;
 }
-option{
+
+option {
   transition: var(--tran);
   box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.1);
-  background-color:rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(300px);
   border: 1px solid #ffffff;
   outline-color: transparent;
 }
 
- input[type="text"]{
+input[type="text"] {
   padding: 5px;
   outline: transparent;
   border: transparent;
@@ -194,33 +221,37 @@ option{
   font-size: 12px;
   text-align: center;
   box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.1);
- }
- input[type="button"] {
-      animation: bgcolor 10s infinite;
-      color: rgb(0, 0, 0);
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      font-family: 'Unica One', cursive;
-      font-size: 12px;
-      padding: 3px 10px 3px 10px;
-    }
-.toggle{
-font-size: 15px;
-box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
-display: flex;
-flex-direction: row;
-flex-wrap: nowrap; 
-align-items: center;
-gap: 5px;
-padding: 5px;
-border-radius: 5px;
 }
-.toggle:hover{
-font-weight: 900;
-animation: color 15s infinite;
+
+input[type="button"] {
+  animation: bgcolor 10s infinite;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-family: 'Unica One', cursive;
+  font-size: 12px;
+  padding: 3px 10px 3px 10px;
 }
-.about-page{
+
+.toggle {
+  font-size: 15px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 5px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.toggle:hover {
+  font-weight: 900;
+  animation: color 15s infinite;
+}
+
+.about-page {
   right: 0;
   bottom: 0;
   text-align: center;
@@ -229,16 +260,19 @@ animation: color 15s infinite;
   color: var(--text-color);
   padding: 1px;
 }
-.about-page p{
+
+.about-page p {
   font-size: 10px;
   text-decoration: none;
   padding: 3px;
 }
-.about-page p a{
+
+.about-page p a {
   text-decoration: none;
   animation: color 15s infinite;
 }
-.about-page p a:hover{
+
+.about-page p a:hover {
   text-decoration: underline;
   transition: var(--tran);
 }
