@@ -1,19 +1,31 @@
 {
-  "name": "WALLIPY",
-  "short_name": "WALLIPY",
-  "start_url":"/?home=true",
-  "icons": [{
-      "src":"assets/logo-144x144.png",
-      "sizes":"144x144",
-      "type":"image/png"
-  },
-  {
-      "src":"assets/logo-512x512.png",
-      "sizes":"512x512",
-      "type":"image/png"
-  }],
-  "theme_color": "#000000",
-  "background_color": "#FFFFFF",
-  "display": "fullscreen",
-  "orientation": "portrait"
+    "name": "WALLIPY",
+    "short_name": "WALLIPY",
+    "start_url": "/?home=true",
+    "scope": "/",
+    "icons": [
+      {
+        "src": "assets/logo-144x144.png",
+        "sizes": "144x144",
+        "type": "image/png"
+      },
+      {
+        "src": "assets/logo-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ],
+    "theme_color": "#000000",
+    "background_color": "#FFFFFF",
+    "display": "fullscreen",
+    "orientation": "portrait",
+    "cache": [
+      "/",
+      "index.html",
+      "assets/logo-144x144.png",
+      "assets/logo-512x512.png",
+      "App.css",
+      "App.js"
+    ]
   }
+  
