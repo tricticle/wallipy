@@ -33,7 +33,7 @@ function App() {
 
   useEffect(() => {
     const subreddit = selectedSubreddit === "custom" ? customSubreddit : selectedSubreddit;
-    const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=9`;
+    const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
 
     setIsLoading(true);
 
