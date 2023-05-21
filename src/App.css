@@ -83,16 +83,37 @@ body::-webkit-scrollbar {
   color: rgb(0, 0, 0);
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 5px;
+  justify-content: space-between;
+  padding: 10px;
   margin: 7px;
   border-radius: 5px;
   transition: var(--tran);
   box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.1);
   background-repeat: none;
   object-fit: cover;
+  flex-direction: row;
 }
-
+.header button{
+  padding: 3px;
+  outline: transparent;
+  border: none;
+  background-color: #ddc3ff;
+  border-radius: 2px;
+}
+.profile{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  align-content: stretch;
+}
+.profile img{
+  height: 30px;
+  width: 30px;
+  border: 1px solid rgb(255, 255, 255);
+  border-radius: 90%;
+}
 .header:hover {
   background-color: var(--primary-color);
   color: #ffffff;

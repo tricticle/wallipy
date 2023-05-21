@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
+import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
 
 function App() {
   const [imageUrls, setImageUrls] = useState([]);
@@ -7,6 +8,15 @@ function App() {
   const [selectedSubreddit, setSelectedSubreddit] = useState("wallpaper");
   const [customSubreddit, setCustomSubreddit] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [showProfile, setShowProfile] = useState(false);
+
+  const {
+    isLoading: authIsLoading,
+    isAuthenticated,
+    loginWithRedirect,
+    logout,
+    user
+  } = useAuth0();
 
   const subreddits = [
     "wallpaper",
@@ -23,7 +33,7 @@ function App() {
 
   useEffect(() => {
     const subreddit = selectedSubreddit === "custom" ? customSubreddit : selectedSubreddit;
-    const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
+    const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=9`;
 
     setIsLoading(true);
 
@@ -76,13 +86,27 @@ function App() {
     setCustomSubreddit(event.target.value);
   };
 
+  const handleProfileClick = () => {
+    setShowProfile(!showProfile);
+  };
+
   return (
     <>
       <section className="header">
         <h1>wallipy.</h1>
+        {!isAuthenticated && (
+          <button onClick={loginWithRedirect}>Log In</button>
+        )}
+        {isAuthenticated && (
+          <div className="profile" onClick={handleProfileClick}>
+            <img src={user.picture} alt={user.name} />
+            {showProfile && <h4>{user.name}!</h4>}
+            {showProfile && <button onClick={logout}>Log Out</button>}
+          </div>
+        )}
       </section>
       <div className="container">
-        {isLoading ? (
+        {isLoading || authIsLoading ? (
           <div className="loading">Loading...</div>
         ) : (
           <div className="art-grid">
@@ -133,4 +157,19 @@ function App() {
   );
 }
 
-export default App;
+function AuthWrapper() {
+  return (
+    <Auth0Provider
+    domain="tricticle.jp.auth0.com"
+    clientId="OVSSMN7SDqVsUrybTdJkDS04v3A3AlIG"
+    authorizationParams={{
+      redirect_uri: window.location.origin
+    }}
+  >
+    <App />
+  </Auth0Provider>
+  );
+}
+
+export default AuthWrapper;
+
