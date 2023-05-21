@@ -56,7 +56,8 @@ function App() {
   }, [selectedSubreddit, showNsfw, customSubreddit]);
 
   const handleSaveClick = async (imageUrl) => {
-    try {
+    if (isAuthenticated) {
+      try {
       const response = await fetch(imageUrl);
       const blob = await response.blob();
 
@@ -71,11 +72,19 @@ function App() {
       console.error("Error occurred while downloading the image:", error);
       window.open(imageUrl);
     }
-  };
+  } else {
+    loginWithRedirect();
+  }
+};
 
-  const handleToggle = () => {
+const handleToggle = () => {
+  if (isAuthenticated) {
     setShowNsfw(!showNsfw);
-  };
+  } else {
+    loginWithRedirect();
+  }
+};
+
 
   const handleSelectChange = (event) => {
     const value = event.target.value;
@@ -142,7 +151,9 @@ function App() {
               checked={showNsfw}
               onChange={handleToggle}
             />
-            <label htmlFor="nsfwToggle">Show NSFW Content</label>
+  <label htmlFor="nsfwToggle">
+    {isAuthenticated ? "Show NSFW Content" : "Log in to see NSFW Content"}
+  </label>
           </div>
         </form>
       </div>
