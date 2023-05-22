@@ -131,38 +131,36 @@ body::-webkit-scrollbar {
 .art-grid {
   display: grid;
   width: 100%;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   grid-gap: 20px;
   justify-items: center;
   padding: 5px;
 }
 
-.art {
-  position: relative;
+.art{
+  display: flex;
   width: 100%;
-  height: 0;
-  padding-bottom: 100%;
-  overflow: hidden;
   border-radius: 7px;
-  box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  align-items: flex-end;
+  justify-content: flex-end;
+  height: fit-content;
 }
 
 .art img {
-  position: absolute;
-  top: 0;
-  left: 0;
+  display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
   object-fit: cover;
   border-radius: 7px;
-  transition: var(--tran);
-  filter: blur(30px);
-  transition: filter 0.3s ease;
 }
-
 
 .art img:not([src=""]) {
   filter: none;
+}
+.art img:not([src=""]) button{
+  display: none;
 }
 
 .art img:hover {
@@ -174,8 +172,7 @@ body::-webkit-scrollbar {
 
 .art button {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
+  margin: 14px;
   padding: 8px 12px;
   background-color: #00000000;
   border: none;
@@ -184,8 +181,8 @@ body::-webkit-scrollbar {
   backdrop-filter: blur(70px);
   color: #ffffff;
   font-size: 12px;
-  box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.1);
 }
+
 
 form {
   display: flex;
