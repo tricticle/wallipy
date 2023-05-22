@@ -170,6 +170,8 @@ body::-webkit-scrollbar {
 }
 
 .art button {
+  transition: var(--tran);
+  display: none;
   position: absolute;
   margin: 14px;
   padding: 8px 12px;
@@ -180,8 +182,14 @@ body::-webkit-scrollbar {
   backdrop-filter: blur(70px);
   color: #ffffff;
   font-size: 12px;
+  box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.1);
+  transition: var(--tran);
 }
 
+.art:hover button{
+  transition: var(--tran);
+  display: block;
+}
 
 form {
   display: flex;
