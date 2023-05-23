@@ -22,6 +22,7 @@ function App() {
     "wallpaper",
     "amoledbackgrounds",
     "midjourneyfantasy",
+    "StableDiffusion",
     "patchuu",
     "imaginarysliceoflife",
     "animeart",
