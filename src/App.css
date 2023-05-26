@@ -160,7 +160,6 @@ body::-webkit-scrollbar {
 
 .art{
   display: flex;
-  min-height: 300px;
   width: 100%;
   border-radius: 7px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
