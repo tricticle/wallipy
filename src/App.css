@@ -161,16 +161,18 @@ body::-webkit-scrollbar {
 .art{
   display: flex;
   width: 100%;
+  max-height: fit-content;
+  min-height: 200px;
   border-radius: 7px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   align-items: flex-end;
   justify-content: flex-end;
-  height: fit-content;
 }
 
 .art img {
   display: block;
+  transition: var(--tran);
   width: 100%;
   height: auto;
   object-fit: cover;
