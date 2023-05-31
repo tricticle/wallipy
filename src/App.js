@@ -20,9 +20,9 @@ function App() {
   } = useAuth0();
 
   const subredditCategories = {
-    anime: ["animeart", "animewallpaper", "awwnime"],
-    fantasy: ["midjourneyfantasy", "StableDiffusion", "fantasymoe"],
-    nature: ["wallpaper", "amoledbackgrounds", "moescape"],
+    anime: ["patchuu", "officialsenpaiheat", "animeart", "animewallpaper", "awwnime", "moescape", "fantasymoe", "animelandscapes", "neonmoe"],
+    AIengines: ["midjourneyfantasy", "StableDiffusion", "animewallpaperai", "aiart"],
+    Wallpaper: ["wallpaper", "amoledbackgrounds", "minimalwallpaper"],
     custom: []
   };
 
