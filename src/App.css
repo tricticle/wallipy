@@ -69,6 +69,34 @@
   --tran: all 0.5s ease;
 }
 
+.categories {
+  display: flex;
+  justify-content: center;
+  margin: 10px;
+}
+
+.categories button {
+  border: none;
+  background: none;
+  font-size: 16px;
+  margin-right: 10px;
+  padding: 5px 10px;
+  cursor: pointer;
+  color: #333;
+}
+
+.categories button.active {
+  color: #fff;
+  background-color: #333;
+  border-radius: 5px;
+}
+
+.categories input[type="text"] {
+  width: 200px;
+  padding: 5px;
+  margin-top: 10px;
+}
+
 body {
   font-family: 'Unica One', cursive;
   scroll-behavior: smooth;
@@ -238,26 +266,6 @@ form {
   transition: var(--tran);
 }
 
-select {
-  font-size: 15px;
-  padding: 3px;
-  border: 1px solid #ffffff;
-  border-radius: 5px;
-  outline: transparent;
-  text-align: center;
-  animation: color 30s infinite;
-  box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px,
-    rgba(17, 17, 26, 0.1) 0px 16px 48px;
-}
-
-option {
-  transition: var(--tran);
-  box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.1);
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(300px);
-  border: 1px solid #ffffff;
-  outline-color: transparent;
-}
 
 input[type="text"] {
   padding: 5px;
@@ -281,6 +289,7 @@ input[type="button"] {
 }
 
 .toggle {
+  margin-bottom: 10px;
   font-size: 15px;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
   display: flex;

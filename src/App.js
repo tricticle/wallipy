@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
@@ -5,7 +6,7 @@ import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
 function App() {
   const [imageUrls, setImageUrls] = useState([]);
   const [showNsfw, setShowNsfw] = useState(false);
-  const [selectedSubreddit, setSelectedSubreddit] = useState("wallpaper");
+  const [selectedCategory, setSelectedCategory] = useState("anime");
   const [customSubreddit, setCustomSubreddit] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showProfile, setShowProfile] = useState(false);
@@ -18,35 +19,38 @@ function App() {
     user
   } = useAuth0();
 
-  const subreddits = [
-    "wallpaper",
-    "amoledbackgrounds",
-    "midjourneyfantasy",
-    "StableDiffusion",
-    "patchuu",
-    "imaginarysliceoflife",
-    "animeart",
-    "moescape",
-    "fantasymoe",
-    "animewallpaper",
-    "awwnime",
-  ];
+  const subredditCategories = {
+    anime: ["animeart", "animewallpaper", "awwnime"],
+    fantasy: ["midjourneyfantasy", "StableDiffusion", "fantasymoe"],
+    nature: ["wallpaper", "amoledbackgrounds", "moescape"],
+    custom: []
+  };
 
   useEffect(() => {
-    const subreddit = selectedSubreddit === "custom" ? customSubreddit : selectedSubreddit;
-    const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
+    let subredditsToFetch = [];
+
+    if (selectedCategory === "custom" && customSubreddit.trim() !== "") {
+      subredditsToFetch.push(customSubreddit);
+    } else {
+      subredditsToFetch = subredditCategories[selectedCategory];
+    }
 
     setIsLoading(true);
 
-    fetch(apiUrl)
-      .then((response) => response.json())
-      .then((data) => {
-        const posts = data.data.children.filter(
-          (post) =>
-            post.data.post_hint === "image" && (showNsfw || !post.data.over_18)
+    Promise.all(
+      subredditsToFetch.map((subreddit) => {
+        const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
+        return fetch(apiUrl).then((response) => response.json());
+      })
+    )
+      .then((results) => {
+        const posts = results.flatMap((result) =>
+          result.data.children.filter(
+            (post) => post.data.post_hint === "image" && (showNsfw || !post.data.over_18)
+          )
         );
-        const urls = posts.map((post) => post.data.url);
 
+        const urls = posts.map((post) => post.data.url);
         setImageUrls(urls);
         setIsLoading(false);
       })
@@ -54,42 +58,36 @@ function App() {
         console.error("Error occurred while fetching images:", error);
         setIsLoading(false);
       });
-  }, [selectedSubreddit, showNsfw, customSubreddit]);
+  }, [selectedCategory, showNsfw, customSubreddit]);
 
   const handleSaveClick = async (imageUrl) => {
     if (isAuthenticated) {
       try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
 
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "art.jpg";
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "art.jpg";
 
-      link.click();
+        link.click();
 
-      URL.revokeObjectURL(link.href);
-    } catch (error) {
-      console.error("Error occurred while downloading the image:", error);
-      window.open(imageUrl);
+        URL.revokeObjectURL(link.href);
+      } catch (error) {
+        console.error("Error occurred while downloading the image:", error);
+        window.open(imageUrl);
+      }
+    } else {
+      loginWithRedirect();
     }
-  } else {
-    loginWithRedirect();
-  }
-};
+  };
 
-const handleToggle = () => {
-  if (isAuthenticated) {
-    setShowNsfw(!showNsfw);
-  } else {
-    loginWithRedirect();
-  }
-};
-
-
-  const handleSelectChange = (event) => {
-    const value = event.target.value;
-    setSelectedSubreddit(value);
+  const handleToggle = () => {
+    if (isAuthenticated) {
+      setShowNsfw(!showNsfw);
+    } else {
+      loginWithRedirect();
+    }
   };
 
   const handleCustomSubredditChange = (event) => {
@@ -128,35 +126,36 @@ const handleToggle = () => {
             ))}
           </div>
         )}
-        <form id="subredditForm">
-          <select value={selectedSubreddit} onChange={handleSelectChange}>
-            {subreddits.map((subreddit) => (
-              <option key={subreddit} value={subreddit}>
-                {subreddit}
-              </option>
-            ))}
-            <option value="custom">Custom Subreddit</option>
-          </select>
-          {selectedSubreddit === "custom" && (
-            <input
-              type="text"
-              value={customSubreddit}
-              onChange={handleCustomSubredditChange}
-              placeholder="Enter subreddit name"
-            />
-          )}
-          <div className="toggle">
-            <input
-              type="checkbox"
-              id="nsfwToggle"
-              checked={showNsfw}
-              onChange={handleToggle}
-            />
-  <label htmlFor="nsfwToggle">
-    {isAuthenticated ? "Show NSFW Content" : "Log in to see NSFW Content"}
-  </label>
-          </div>
-        </form>
+        <div className="categories">
+          {Object.keys(subredditCategories).map((category) => (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={selectedCategory === category ? "active" : ""}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+        {selectedCategory === "custom" && (
+          <input
+            type="text"
+            value={customSubreddit}
+            onChange={handleCustomSubredditChange}
+            placeholder="Enter subreddit name"
+          />
+        )}
+        <div className="toggle">
+          <input
+            type="checkbox"
+            id="nsfwToggle"
+            checked={showNsfw}
+            onChange={handleToggle}
+          />
+          <label htmlFor="nsfwToggle">
+            {isAuthenticated ? "Show NSFW Content" : "Log in to see NSFW Content"}
+          </label>
+        </div>
       </div>
       <footer className="about-page">
         <h6>2023 copyright to tricticle</h6>
@@ -172,16 +171,15 @@ const handleToggle = () => {
 function AuthWrapper() {
   return (
     <Auth0Provider
-    domain="tricticle.jp.auth0.com"
-    clientId="OVSSMN7SDqVsUrybTdJkDS04v3A3AlIG"
-    authorizationParams={{
-      redirect_uri: window.location.origin
-    }}
-  >
-    <App />
-  </Auth0Provider>
+      domain="tricticle.jp.auth0.com"
+      clientId="OVSSMN7SDqVsUrybTdJkDS04v3A3AlIG"
+      authorizationParams={{
+        redirect_uri: window.location.origin
+      }}
+    >
+      <App />
+    </Auth0Provider>
   );
 }
 
 export default AuthWrapper;
-
