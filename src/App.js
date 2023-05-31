@@ -28,15 +28,15 @@ function App() {
 
   useEffect(() => {
     let subredditsToFetch = [];
-
+  
     if (selectedCategory === "custom" && customSubreddit.trim() !== "") {
       subredditsToFetch.push(customSubreddit);
     } else {
       subredditsToFetch = subredditCategories[selectedCategory];
     }
-
+  
     setIsLoading(true);
-
+  
     Promise.all(
       subredditsToFetch.map((subreddit) => {
         const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
@@ -44,13 +44,18 @@ function App() {
       })
     )
       .then((results) => {
-        const posts = results.flatMap((result) =>
-          result.data.children.filter(
+        const randomPosts = results.flatMap((result) => {
+          const posts = result.data.children.filter(
             (post) => post.data.post_hint === "image" && (showNsfw || !post.data.over_18)
-          )
-        );
-
-        const urls = posts.map((post) => post.data.url);
+          );
+          if (posts.length > 0) {
+            const randomIndex = Math.floor(Math.random() * posts.length);
+            return posts[randomIndex];
+          }
+          return [];
+        });
+  
+        const urls = randomPosts.map((post) => post.data.url);
         setImageUrls(urls);
         setIsLoading(false);
       })
@@ -59,6 +64,7 @@ function App() {
         setIsLoading(false);
       });
   }, [selectedCategory, showNsfw, customSubreddit]);
+  
 
   const handleSaveClick = async (imageUrl) => {
     if (isAuthenticated) {
