@@ -51,7 +51,11 @@ function App() {
         );
 
         const urls = posts.map((post) => post.data.url);
-        setImageUrls(urls);
+
+        // Randomize the post positions
+        const shuffledUrls = shuffleArray(urls);
+        setImageUrls(shuffledUrls);
+
         setIsLoading(false);
       })
       .catch((error) => {
@@ -59,6 +63,15 @@ function App() {
         setIsLoading(false);
       });
   }, [selectedCategory, showNsfw, customSubreddit]);
+
+  const shuffleArray = (array) => {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+  };
 
   const handleSaveClick = async (imageUrl) => {
     if (isAuthenticated) {
