@@ -40,7 +40,7 @@ function App() {
 
     Promise.all(
       subredditsToFetch.map((subreddit) => {
-        const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=9`;
+        const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
         return fetch(apiUrl).then((response) => response.json());
       })
     )
