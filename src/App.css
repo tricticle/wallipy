@@ -190,13 +190,17 @@ body::-webkit-scrollbar {
 .art {
   display: flex;
   width: 100%;
+  max-height: -moz-fit-content;
   max-height: fit-content;
   min-height: 100px;
   border-radius: 7px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  align-items: flex-end;
+  align-items: center;
   justify-content: flex-end;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-content: center;
 }
 
 
@@ -221,10 +225,12 @@ body::-webkit-scrollbar {
   filter: blur(5px);
 }
 
+.button-group{
+  position: absolute;
+}
+
 .art button {
   transition: var(--tran);
-  display: none;
-  position: absolute;
   margin: 14px;
   padding: 8px 12px;
   background-color: #00000000;
@@ -238,10 +244,6 @@ body::-webkit-scrollbar {
   transition: var(--tran);
 }
 
-.art:hover button {
-  transition: var(--tran);
-  display: block;
-}
 
 form {
   display: flex;

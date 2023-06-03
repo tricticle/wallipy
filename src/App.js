@@ -10,6 +10,7 @@ function App() {
   const [customSubreddit, setCustomSubreddit] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showProfile, setShowProfile] = useState(false);
+  const [likedImages, setLikedImages] = useState([]);
 
   const {
     isLoading: authIsLoading,
@@ -39,7 +40,7 @@ function App() {
 
     Promise.all(
       subredditsToFetch.map((subreddit) => {
-        const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
+        const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=9`;
         return fetch(apiUrl).then((response) => response.json());
       })
     )
@@ -63,6 +64,23 @@ function App() {
         setIsLoading(false);
       });
   }, [selectedCategory, showNsfw, customSubreddit]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      // Retrieve liked images from localStorage
+      const storedLikedImages = localStorage.getItem("likedImages");
+      if (storedLikedImages) {
+        setLikedImages(JSON.parse(storedLikedImages));
+      }
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      // Store liked images in localStorage
+      localStorage.setItem("likedImages", JSON.stringify(likedImages));
+    }
+  }, [likedImages, isAuthenticated]);
 
   const shuffleArray = (array) => {
     const newArray = [...array];
@@ -92,6 +110,14 @@ function App() {
       }
     } else {
       loginWithRedirect();
+    }
+  };
+
+  const handleLikeClick = (imageUrl) => {
+    if (likedImages.includes(imageUrl)) {
+      setLikedImages(likedImages.filter((url) => url !== imageUrl));
+    } else {
+      setLikedImages([...likedImages, imageUrl]);
     }
   };
 
@@ -130,45 +156,91 @@ function App() {
         {isLoading || authIsLoading ? (
           <div className="loading">Loading...</div>
         ) : (
-          <div className="art-grid">
-            {imageUrls.map((imageUrl, index) => (
-              <div className="art" key={index}>
-                <img src={imageUrl} alt="Artwork" loading="lazy" />
-                <button onClick={() => handleSaveClick(imageUrl)}>Save</button>
-              </div>
-            ))}
+          <>
+            <div className="art-grid">
+              {imageUrls.map((imageUrl, index) => (
+                <div className="art" key={index}>
+                  <img src={imageUrl} alt="Artwork" loading="lazy" />
+                  <div className="button-group">
+                    <button
+                      onClick={() => handleSaveClick(imageUrl)}
+                      className={likedImages.includes(imageUrl) ? "liked" : ""}
+                    >
+                      Save
+                    </button>
+                    {isAuthenticated && (
+                      <button
+                        onClick={() => handleLikeClick(imageUrl)}
+                        className={likedImages.includes(imageUrl) ? "liked" : ""}
+                      >
+                        Like
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="categories">
+              {Object.keys(subredditCategories).map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={selectedCategory === category ? "active" : ""}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+            {selectedCategory === "custom" && (
+              <input
+                type="text"
+                value={customSubreddit}
+                onChange={handleCustomSubredditChange}
+                placeholder="Enter subreddit name"
+              />
+            )}
+            <div className="toggle">
+              <input
+                type="checkbox"
+                id="nsfwToggle"
+                checked={showNsfw}
+                onChange={handleToggle}
+              />
+              <label htmlFor="nsfwToggle">
+                {isAuthenticated
+                  ? "Show NSFW Content"
+                  : "Log in to see NSFW Content"}
+              </label>
+            </div>
+          </>
+        )}
+        {isAuthenticated && (
+          <div className="liked-section">
+            <h2>Liked Posts</h2>
+            {likedImages.length === 0 && <p>No liked posts yet.</p>}
+            <div className="art-grid">
+              {likedImages.map((imageUrl, index) => (
+                <div className="art" key={index}>
+                  <img src={imageUrl} alt="Artwork" loading="lazy" />
+                  <div className="button-group">
+                    <button
+                      onClick={() => handleSaveClick(imageUrl)}
+                      className="liked"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={() => handleLikeClick(imageUrl)}
+                      className="liked"
+                    >
+                      Unlike
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
-        <div className="categories">
-          {Object.keys(subredditCategories).map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={selectedCategory === category ? "active" : ""}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-        {selectedCategory === "custom" && (
-          <input
-            type="text"
-            value={customSubreddit}
-            onChange={handleCustomSubredditChange}
-            placeholder="Enter subreddit name"
-          />
-        )}
-        <div className="toggle">
-          <input
-            type="checkbox"
-            id="nsfwToggle"
-            checked={showNsfw}
-            onChange={handleToggle}
-          />
-          <label htmlFor="nsfwToggle">
-            {isAuthenticated ? "Show NSFW Content" : "Log in to see NSFW Content"}
-          </label>
-        </div>
       </div>
       <footer className="about-page">
         <h6>2023 copyright to tricticle</h6>
