@@ -228,6 +228,12 @@ body::-webkit-scrollbar {
 .button-group{
   position: absolute;
 }
+
+.button-group button.liked {
+  transition: var(--tran);
+  background-color: #f44336;
+}
+
 .liked-section{
  text-align: center;
  margin: 3px;

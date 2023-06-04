@@ -40,7 +40,7 @@ function App() {
 
     Promise.all(
       subredditsToFetch.map((subreddit) => {
-        const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
+        const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=9`;
         return fetch(apiUrl).then((response) => response.json());
       })
     )
@@ -173,7 +173,7 @@ function App() {
                         onClick={() => handleLikeClick(imageUrl)}
                         className={likedImages.includes(imageUrl) ? "liked" : ""}
                       >
-                        Like
+                        {likedImages.includes(imageUrl) ? "Liked" : "Like"}
                       </button>
                     )}
                   </div>
