@@ -228,6 +228,10 @@ body::-webkit-scrollbar {
 .button-group{
   position: absolute;
 }
+.liked-section{
+ text-align: center;
+ margin: 3px;
+}
 
 .art button {
   transition: var(--tran);
@@ -237,13 +241,17 @@ body::-webkit-scrollbar {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  backdrop-filter: blur(70px);
+  backdrop-filter: blur(30px);
   color: #ffffff;
   font-size: 12px;
   box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.1);
-  transition: var(--tran);
+  opacity: 0%;
 }
 
+.art:hover button {
+  transition: var(--tran);
+  opacity: 100;
+}
 
 form {
   display: flex;
