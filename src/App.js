@@ -4,7 +4,7 @@ import "./App.css";
 import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
 
 function App() {
-  const [imageUrls, setImageUrls] = useState([]);
+  const [imageData, setImageData] = useState([]);
   const [showNsfw, setShowNsfw] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("anime");
   const [customSubreddit, setCustomSubreddit] = useState("");
@@ -21,7 +21,7 @@ function App() {
   } = useAuth0();
 
   const subredditCategories = {
-    anime: ["patchuu", "officialsenpaiheat", "animeart", "animewallpaper", "awwnime", "moescape", "fantasymoe", "animelandscapes", "neonmoe"],
+    anime: ["patchuu", "officialsenpaiheat", "animewallpaper", "awwnime", "moescape", "fantasymoe", "animelandscapes", "neonmoe"],
     AIengines: ["midjourneyfantasy", "StableDiffusion", "animewallpaperai", "aiart"],
     Wallpaper: ["wallpaper", "amoledbackgrounds", "minimalwallpaper"],
     custom: []
@@ -40,7 +40,7 @@ function App() {
 
     Promise.all(
       subredditsToFetch.map((subreddit) => {
-        const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
+        const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=1`;
         return fetch(apiUrl).then((response) => response.json());
       })
     )
@@ -51,11 +51,16 @@ function App() {
           )
         );
 
-        const urls = posts.map((post) => post.data.url);
+        const data = posts.map((post) => ({
+          imageUrl: post.data.url,
+          title: post.data.title,
+          creatorName: post.data.author,
+          profilePicture: `https://www.reddit.com/user/${post.data.author}/avatar`,
+        }));
 
         // Randomize the post positions
-        const shuffledUrls = shuffleArray(urls);
-        setImageUrls(shuffledUrls);
+        const shuffledData = shuffleArray(data);
+        setImageData(shuffledData);
 
         setIsLoading(false);
       })
@@ -158,24 +163,31 @@ function App() {
         ) : (
           <>
             <div className="art-grid">
-              {imageUrls.map((imageUrl, index) => (
+              {imageData.map((data, index) => (
                 <div className="art" key={index}>
-                  <img src={imageUrl} alt="Artwork" loading="lazy" />
+                  <img src={data.imageUrl} alt="Artwork" loading="lazy" />
                   <div className="button-group">
                     <button
-                      onClick={() => handleSaveClick(imageUrl)}
-                      className={likedImages.includes(imageUrl) ? "liked" : ""}
+                      onClick={() => handleSaveClick(data.imageUrl)}
+                      className={likedImages.includes(data.imageUrl) ? "liked" : ""}
                     >
                       Save
                     </button>
                     {isAuthenticated && (
                       <button
-                        onClick={() => handleLikeClick(imageUrl)}
-                        className={likedImages.includes(imageUrl) ? "liked" : ""}
+                        onClick={() => handleLikeClick(data.imageUrl)}
+                        className={likedImages.includes(data.imageUrl) ? "liked" : ""}
                       >
-                        {likedImages.includes(imageUrl) ? "Liked" : "Like"}
+                        {likedImages.includes(data.imageUrl) ? "Liked" : "Like"}
                       </button>
                     )}
+                  </div>
+                  <div className="art-details">
+                    <p>{data.title}</p>
+                    <div className="creator-info">
+                      <img src={data.profilePicture} alt={data.creatorName} />
+                      <span>{data.creatorName}</span>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -200,55 +212,18 @@ function App() {
               />
             )}
             <div className="toggle">
-              <input
-                type="checkbox"
-                id="nsfwToggle"
-                checked={showNsfw}
-                onChange={handleToggle}
-              />
-              <label htmlFor="nsfwToggle">
-                {isAuthenticated
-                  ? "Show NSFW Content"
-                  : "Log in to see NSFW Content"}
+              <label>
+                <input
+                  type="checkbox"
+                  checked={showNsfw}
+                  onChange={handleToggle}
+                />
+                Show NSFW
               </label>
             </div>
           </>
         )}
-        {isAuthenticated && (
-          <div className="liked-section">
-            <h2>Liked Posts</h2>
-            {likedImages.length === 0 && <p>No liked posts yet.</p>}
-            <div className="art-grid">
-              {likedImages.map((imageUrl, index) => (
-                <div className="art" key={index}>
-                  <img src={imageUrl} alt="Artwork" loading="lazy" />
-                  <div className="button-group">
-                    <button
-                      onClick={() => handleSaveClick(imageUrl)}
-                      className="liked"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={() => handleLikeClick(imageUrl)}
-                      className="liked"
-                    >
-                      Unlike
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
-      <footer className="about-page">
-        <h6>2023 copyright to tricticle</h6>
-        <p>
-          All generated images (arts) credits go to{" "}
-          <a href="https://www.reddit.com/">creators</a>
-        </p>
-      </footer>
     </>
   );
 }
