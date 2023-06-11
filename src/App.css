@@ -231,14 +231,8 @@ body::-webkit-scrollbar {
   justify-content: space-between;
   align-items: center;
   padding: 7px;
-  opacity: 0;
-  transition: var(--tran);
   max-height: fit-content;
   max-width: fit-content;
-}
-
-.art:hover .button-group {
-  opacity: 1;
 }
 
 .art-details {
@@ -268,7 +262,6 @@ body::-webkit-scrollbar {
 }
 
 .art button {
-  transition: var(--tran);
   margin: 14px;
   padding: 8px 12px;
   background-color: #000000;
@@ -278,12 +271,6 @@ body::-webkit-scrollbar {
   backdrop-filter: blur(30px);
   color: #ffffff;
   font-size: 12px;
-  opacity: 0%;
-}
-
-.art:hover button {
-  transition: var(--tran);
-  opacity: 100;
 }
 
 form {
