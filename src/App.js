@@ -21,7 +21,7 @@ function App() {
   } = useAuth0();
 
   const subredditCategories = {
-    anime: ["patchuu", "officialsenpaiheat", "animewallpaper", "awwnime", "moescape", "fantasymoe", "animelandscapes", "neonmoe"],
+    anime: ["officialsenpaiheat", "animewallpaper", "awwnime", "moescape", "fantasymoe", "animelandscapes", "neonmoe"],
     AIengines: ["midjourneyfantasy", "StableDiffusion", "animewallpaperai", "aiart"],
     Wallpaper: ["wallpaper", "amoledbackgrounds", "minimalwallpaper"],
     custom: []
