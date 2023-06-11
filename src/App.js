@@ -21,7 +21,7 @@ function App() {
   } = useAuth0();
 
   const subredditCategories = {
-    anime: ["patchuu", "officialsenpaiheat", "animeart", "animewallpaper", "awwnime", "moescape", "fantasymoe", "animelandscapes", "neonmoe"],
+    anime: ["patchuu", "officialsenpaiheat", "animewallpaper", "awwnime", "moescape", "fantasymoe", "animelandscapes", "neonmoe"],
     AIengines: ["midjourneyfantasy", "StableDiffusion", "animewallpaperai", "aiart"],
     Wallpaper: ["wallpaper", "amoledbackgrounds", "minimalwallpaper"],
     custom: []
@@ -51,7 +51,11 @@ function App() {
           )
         );
 
-        const urls = posts.map((post) => post.data.url);
+        const urls = posts.map((post) => ({
+          url: post.data.url,
+          title: post.data.title,
+          author: post.data.author,
+        }));
 
         // Randomize the post positions
         const shuffledUrls = shuffleArray(urls);
@@ -158,22 +162,26 @@ function App() {
         ) : (
           <>
             <div className="art-grid">
-              {imageUrls.map((imageUrl, index) => (
+              {imageUrls.map((imageData, index) => (
                 <div className="art" key={index}>
-                  <img src={imageUrl} alt="Artwork" loading="lazy" />
+                  <img src={imageData.url} alt="Artwork" loading="lazy" />
                   <div className="button-group">
+                    <div className="art-details">
+                    <h3>{imageData.title}</h3>
+                    <p>By {imageData.author}</p>
+                  </div>
                     <button
-                      onClick={() => handleSaveClick(imageUrl)}
-                      className={likedImages.includes(imageUrl) ? "liked" : ""}
+                      onClick={() => handleSaveClick(imageData.url)}
+                      className={likedImages.includes(imageData.url) ? "liked" : ""}
                     >
                       Save
                     </button>
                     {isAuthenticated && (
                       <button
-                        onClick={() => handleLikeClick(imageUrl)}
-                        className={likedImages.includes(imageUrl) ? "liked" : ""}
+                        onClick={() => handleLikeClick(imageData.url)}
+                        className={likedImages.includes(imageData.url) ? "liked" : ""}
                       >
-                        {likedImages.includes(imageUrl) ? "Liked" : "Like"}
+                        {likedImages.includes(imageData.url) ? "Liked" : "Like"}
                       </button>
                     )}
                   </div>
@@ -206,49 +214,11 @@ function App() {
                 checked={showNsfw}
                 onChange={handleToggle}
               />
-              <label htmlFor="nsfwToggle">
-                {isAuthenticated
-                  ? "Show NSFW Content"
-                  : "Log in to see NSFW Content"}
-              </label>
+              <label htmlFor="nsfwToggle">Show NSFW</label>
             </div>
           </>
         )}
-        {isAuthenticated && (
-          <div className="liked-section">
-            <h2>Liked Posts</h2>
-            {likedImages.length === 0 && <p>No liked posts yet.</p>}
-            <div className="art-grid">
-              {likedImages.map((imageUrl, index) => (
-                <div className="art" key={index}>
-                  <img src={imageUrl} alt="Artwork" loading="lazy" />
-                  <div className="button-group">
-                    <button
-                      onClick={() => handleSaveClick(imageUrl)}
-                      className="liked"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={() => handleLikeClick(imageUrl)}
-                      className="liked"
-                    >
-                      Unlike
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
-      <footer className="about-page">
-        <h6>2023 copyright to tricticle</h6>
-        <p>
-          All generated images (arts) credits go to{" "}
-          <a href="https://www.reddit.com/">creators</a>
-        </p>
-      </footer>
     </>
   );
 }

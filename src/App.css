@@ -225,8 +225,36 @@ body::-webkit-scrollbar {
   filter: blur(5px);
 }
 
-.button-group{
-  position: absolute;
+.button-group {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px;
+  opacity: 0;
+  transition: var(--tran);
+  max-height: fit-content;
+  max-width: fit-content;
+}
+
+.art:hover .button-group {
+  opacity: 1;
+}
+
+.art-details {
+  flex-grow: 1;
+  color: #000000;
+}
+
+.art-details h3 {
+  font-size: 14px;
+  margin: 0;
+}
+
+.art-details p {
+  font-size: 12px;
+  margin: 0;
+  opacity: 0.8;
 }
 
 .button-group button.liked {
@@ -243,14 +271,13 @@ body::-webkit-scrollbar {
   transition: var(--tran);
   margin: 14px;
   padding: 8px 12px;
-  background-color: #00000000;
+  background-color: #000000;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   backdrop-filter: blur(30px);
   color: #ffffff;
   font-size: 12px;
-  box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.1);
   opacity: 0%;
 }
 
