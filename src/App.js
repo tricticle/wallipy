@@ -167,9 +167,9 @@ function App() {
                   <img src={imageData.url} alt="Artwork" loading="lazy" />
                   <div className="button-group">
                     <div className="art-details">
-                    <h3>{imageData.title}</h3>
-                    <p>By {imageData.author}</p>
-                  </div>
+                      <h3>{imageData.title}</h3>
+                      <p>By {imageData.author}</p>
+                    </div>
                     <button
                       onClick={() => handleSaveClick(imageData.url)}
                       className={likedImages.includes(imageData.url) ? "liked" : ""}
@@ -216,6 +216,33 @@ function App() {
               />
               <label htmlFor="nsfwToggle">Show NSFW</label>
             </div>
+            {isAuthenticated && (
+              <div className="liked-section">
+                <h2>Liked Posts</h2>
+                {likedImages.length > 0 ? (
+                  <div className="art-grid">
+                    {likedImages.map((imageUrl, index) => (
+                      <div className="art" key={index}>
+                        <img src={imageUrl} alt="Liked Artwork" loading="lazy" />
+                        <div className="button-group">
+                          <button onClick={() => handleSaveClick(imageUrl)}>
+                            Save
+                          </button>
+                          <button
+                            onClick={() => handleLikeClick(imageUrl)}
+                            className="liked"
+                          >
+                            unlike
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p>No liked posts yet.</p>
+                )}
+              </div>
+            )}
           </>
         )}
       </div>
