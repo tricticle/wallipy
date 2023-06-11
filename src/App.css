@@ -211,10 +211,11 @@ body::-webkit-scrollbar {
   height: auto;
   object-fit: cover;
   border-radius: 7px;
+  padding: 5px;
 }
 
 .art img:hover {
-  padding: 5px;
+  padding: 7px;
   transition: var(--tran);
   border-radius: 10px;
   box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.1);
