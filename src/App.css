@@ -243,6 +243,13 @@ body::-webkit-scrollbar {
 .art-details {
   flex-grow: 1;
   color: var(--text-color);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-content: center;
+  align-items: center;
 }
 
 .art-details h3 {

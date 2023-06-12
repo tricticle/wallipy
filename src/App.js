@@ -22,7 +22,7 @@ function App() {
   } = useAuth0();
 
   const subredditCategories = {
-    anime: ["officialsenpaiheat", "awwnime", "moescape", "fantasymoe", "animelandscapes", "neonmoe", "joshi_kosei", "winterwaifus"],
+    anime: ["patchuu", "animeart", "officialsenpaiheat", "awwnime", "moescape", "fantasymoe", "animelandscapes", "neonmoe", "joshi_kosei", "winterwaifus", "awenime", "pixivision", "streetmoe"],
     AIengines: ["midjourneyfantasy", "StableDiffusion", "animewallpaperai", "aiart"],
     Wallpaper: ["wallpaper", "amoledbackgrounds", "minimalwallpaper"],
     custom: []
@@ -30,45 +30,57 @@ function App() {
 
   useEffect(() => {
     let subredditsToFetch = [];
-
+  
     if (selectedCategory === "custom" && customSubreddit.trim() !== "") {
       subredditsToFetch.push(customSubreddit);
     } else {
       subredditsToFetch = subredditCategories[selectedCategory];
     }
-
+  
     setIsLoading(true);
-
-    Promise.all(
-      subredditsToFetch.map((subreddit) => {
-        const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
-        return fetch(apiUrl).then((response) => response.json());
-      })
-    )
+  
+    const fetchSubreddits = subredditsToFetch.map((subreddit) => {
+      const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
+      return fetch(apiUrl)
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            console.error(`Error occurred while fetching subreddit "${subreddit}": ${response.status} ${response.statusText}`);
+            return { data: { children: [] } }; // Return empty data in case of error
+          }
+        })
+        .catch((error) => {
+          console.error(`Error occurred while fetching subreddit "${subreddit}":`, error);
+          return { data: { children: [] } }; // Return empty data in case of error
+        });
+    });
+  
+    Promise.all(fetchSubreddits)
       .then((results) => {
         const posts = results.flatMap((result) =>
           result.data.children.filter(
             (post) => post.data.post_hint === "image" && (showNsfw || !post.data.over_18)
           )
         );
-
+  
         const urls = posts.map((post) => ({
           url: post.data.url,
           title: post.data.title,
           author: post.data.author,
         }));
-
+  
         // Randomize the post positions
         const shuffledUrls = shuffleArray(urls);
         setImageUrls(shuffledUrls);
-
+  
         setIsLoading(false);
       })
       .catch((error) => {
         console.error("Error occurred while fetching images:", error);
         setIsLoading(false);
       });
-  }, [selectedCategory, showNsfw, customSubreddit]);
+  }, [selectedCategory, showNsfw, customSubreddit]);  
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -274,6 +286,13 @@ function App() {
           </>
         )}
       </div>
+            <footer className="about-page">
+        <h6>2023 copyright to tricticle</h6>
+        <p>
+          All generated images (arts) credits go to{" "}
+          <a href="https://www.reddit.com/">creators</a>
+        </p>
+      </footer>
     </>
   );
 }
