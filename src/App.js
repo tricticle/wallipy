@@ -11,6 +11,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [showProfile, setShowProfile] = useState(false);
   const [likedImages, setLikedImages] = useState([]);
+  const [showLikedPosts, setShowLikedPosts] = useState(false);
 
   const {
     isLoading: authIsLoading,
@@ -21,7 +22,7 @@ function App() {
   } = useAuth0();
 
   const subredditCategories = {
-    anime: ["officialsenpaiheat", "animewallpaper", "awwnime", "moescape", "fantasymoe", "animelandscapes", "neonmoe"],
+    anime: ["officialsenpaiheat", "awwnime", "moescape", "fantasymoe", "animelandscapes", "neonmoe"],
     AIengines: ["midjourneyfantasy", "StableDiffusion", "animewallpaperai", "aiart"],
     Wallpaper: ["wallpaper", "amoledbackgrounds", "minimalwallpaper"],
     custom: []
@@ -139,6 +140,11 @@ function App() {
 
   const handleProfileClick = () => {
     setShowProfile(!showProfile);
+    setShowLikedPosts(false); // Hide liked posts when profile is clicked
+  };
+
+  const handleLikedPostsClick = () => {
+    setShowLikedPosts(!showLikedPosts);
   };
 
   return (
@@ -218,8 +224,10 @@ function App() {
             </div>
             {isAuthenticated && (
               <div className="liked-section">
-                <h2>Liked Posts</h2>
-                {likedImages.length > 0 ? (
+                <button onClick={handleLikedPostsClick} className="liked-posts-button">
+                  Liked Posts
+                </button>
+                {showLikedPosts && likedImages.length > 0 ? (
                   <div className="art-grid">
                     {likedImages.map((imageUrl, index) => (
                       <div className="art" key={index}>
@@ -232,14 +240,14 @@ function App() {
                             onClick={() => handleLikeClick(imageUrl)}
                             className="liked"
                           >
-                            unlike
+                            Unlike
                           </button>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p>No liked posts yet.</p>
+                  showLikedPosts && <p>No liked posts yet.</p>
                 )}
               </div>
             )}

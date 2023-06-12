@@ -193,7 +193,7 @@ body::-webkit-scrollbar {
   max-height: fit-content;
   min-height: 100px;
   border-radius: 7px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.111);
   overflow: hidden;
   align-items: center;
   justify-content: flex-end;
@@ -206,7 +206,7 @@ body::-webkit-scrollbar {
 .art:hover{
   transition: var(--tran);
   padding: 3px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 10px hsla(0, 0%, 0%, 0.499);
 }
 
 
@@ -216,13 +216,13 @@ body::-webkit-scrollbar {
   width: 100%;
   height: auto;
   object-fit: cover;
-  border-radius: 7px;
+  border-radius: 11px;
   padding: 5px;
 }
 
 .art img:hover {
   transition: var(--tran);
-  border-radius: 10px;
+  border-radius: 17px;
 }
 
 .art img:active {
@@ -259,6 +259,16 @@ body::-webkit-scrollbar {
 .button-group button.liked {
   transition: var(--tran);
   background-color: #f44336;
+}
+
+.liked-posts-button{
+  border-radius: 3px;
+  border: 1px solid;
+  background: none;
+  font-size: 11px;
+  padding: 3px 7px;
+  cursor: pointer;
+  color: #000000;
 }
 
 .liked-section{
