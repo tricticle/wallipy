@@ -22,7 +22,7 @@ function App() {
   } = useAuth0();
 
   const subredditCategories = {
-    anime: ["officialsenpaiheat", "awwnime", "moescape", "fantasymoe", "animelandscapes", "neonmoe"],
+    anime: ["officialsenpaiheat", "awwnime", "moescape", "fantasymoe", "animelandscapes", "neonmoe", "joshi_kosei", "winterwaifus"],
     AIengines: ["midjourneyfantasy", "StableDiffusion", "animewallpaperai", "aiart"],
     Wallpaper: ["wallpaper", "amoledbackgrounds", "minimalwallpaper"],
     custom: []
@@ -135,8 +135,19 @@ function App() {
   };
 
   const handleCustomSubredditChange = (event) => {
-    setCustomSubreddit(event.target.value);
+    setCustomSubreddit(event.target.value.trim());
   };
+  
+  useEffect(() => {
+    const isValidSubreddit = customSubreddit && customSubreddit.length > 69;
+  
+    if (isValidSubreddit) {
+      setIsLoading(true);
+    } else {
+      setIsLoading(false);
+    }
+  }, [customSubreddit]);
+  
 
   const handleProfileClick = () => {
     setShowProfile(!showProfile);
@@ -228,27 +239,36 @@ function App() {
                   Liked Posts
                 </button>
                 {showLikedPosts && likedImages.length > 0 ? (
-                  <div className="art-grid">
-                    {likedImages.map((imageUrl, index) => (
-                      <div className="art" key={index}>
-                        <img src={imageUrl} alt="Liked Artwork" loading="lazy" />
-                        <div className="button-group">
-                          <button onClick={() => handleSaveClick(imageUrl)}>
-                            Save
-                          </button>
-                          <button
-                            onClick={() => handleLikeClick(imageUrl)}
-                            className="liked"
-                          >
-                            Unlike
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  showLikedPosts && <p>No liked posts yet.</p>
-                )}
+  <div className="art-grid">
+    {likedImages.map((imageUrl, index) => {
+      const imageData = imageUrls.find((data) => data.url === imageUrl);
+      if (!imageData) {
+        return null; // Skip if the imageData is not found
+      }
+
+      return (
+        <div className="art" key={index}>
+          <img src={imageUrl} alt="Liked Artwork" loading="lazy" />
+          <div className="button-group">
+            <div className="art-details">
+              <h3>{imageData.title}</h3>
+              <p>By {imageData.author}</p>
+            </div>
+            <button onClick={() => handleSaveClick(imageUrl)}>Save</button>
+            <button
+              onClick={() => handleLikeClick(imageUrl)}
+              className="liked"
+            >
+              Unlike
+            </button>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+) : (
+  showLikedPosts && <p>No liked posts yet.</p>
+)}
               </div>
             )}
           </>

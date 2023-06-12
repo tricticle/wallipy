@@ -3,7 +3,7 @@
 :root {
   --tran: 0.7s ease;
   --primary-color: #ffbdbd;
-  --secondary-color: #b882ff;
+  --secondary-color: #b882ffe7;
   --background-color: #f1f1f1;
   --text-color: #000000;
 }
@@ -81,12 +81,12 @@
   font-size: 16px;
   padding: 5px 10px;
   cursor: pointer;
-  color: #333;
+  color: var(--text-color);
 }
 
 .categories button.active {
-  color: #fff;
-  background-color: #333;
+  color: var(--background-color);
+  background-color: var(--secondary-color);
   border-radius: 5px;
 }
 
@@ -112,7 +112,7 @@ body::-webkit-scrollbar {
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  margin: 7px;
+  margin: 5px;
   border-radius: 5px;
   transition: var(--tran);
   box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.1);
@@ -126,9 +126,9 @@ body::-webkit-scrollbar {
   padding: 3px;
   outline: transparent;
   border: none;
-  background-color: #000000;
+  background-color: var(--text-color);
   border-radius: 2px;
-  color: #ffffff;
+  color: var(--background-color);
 }
 
 .profile {
@@ -222,7 +222,7 @@ body::-webkit-scrollbar {
 
 .art img:hover {
   transition: var(--tran);
-  border-radius: 17px;
+  border-radius: 14px;
 }
 
 .art img:active {
@@ -242,7 +242,7 @@ body::-webkit-scrollbar {
 
 .art-details {
   flex-grow: 1;
-  color: #000000;
+  color: var(--text-color);
 }
 
 .art-details h3 {
@@ -258,7 +258,8 @@ body::-webkit-scrollbar {
 
 .button-group button.liked {
   transition: var(--tran);
-  background-color: #f44336;
+  background-color: var(--primary-color);
+  color: var(--text-color);
 }
 
 .liked-posts-button{
@@ -268,7 +269,8 @@ body::-webkit-scrollbar {
   font-size: 11px;
   padding: 3px 7px;
   cursor: pointer;
-  color: #000000;
+  color: var(--secondary-color);
+  margin-bottom: 5px;
 }
 
 .liked-section{
@@ -279,12 +281,12 @@ body::-webkit-scrollbar {
 .art button {
   margin: 14px;
   padding: 5px 11px;
-  background-color: #000000;
+  background-color: var(--text-color);
   border: none;
   border-radius: 3px;
   cursor: pointer;
   backdrop-filter: blur(30px);
-  color: #ffffff;
+  color: var(--background-color);
   font-size: 12px;
 }
 
@@ -326,7 +328,7 @@ input[type="text"] {
 
 input[type="button"] {
   animation: bgcolor 10s infinite;
-  color: rgb(0, 0, 0);
+  color: var(--text-color);
   border: none;
   border-radius: 50px;
   cursor: pointer;
