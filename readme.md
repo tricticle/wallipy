@@ -14,19 +14,19 @@ Wallipy is a React application that fetches and displays images from various sub
 - Downloads images upon user request.
 
 ## Installation
-
+```
 1. Clone the repository:
 
-[git clone https://github.com/tricticle/wallipy]
+git clone https://github.com/tricticle/wallipy
 
 2. Navigate to the project directory:
 
-[cd wallipy]
+cd wallipy
 
 3. Install the dependencies:
 
-[npm install]
-
+npm install
+```
 ## Usage
 
 1. Start the development server:
