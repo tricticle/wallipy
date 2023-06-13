@@ -17,25 +17,6 @@ Wallipy is a React application that fetches and displays images from various sub
 
 1. Clone the repository:
 
-# Wallipy
-
-Wallipy is a React application that fetches and displays images from various subreddits. Users can save and like images, search a custom subreddit, and manage their liked posts. Authenticated users can also toggle the display of NSFW content.
-
-## Features
-
-- Fetches and displays images from different subreddits.
-- Supports different categories of subreddits, including anime, AI engines, and wallpapers.
-- Allows searching for a custom subreddit.
-- Displays images randomly and filters NSFW content based on user preferences.
-- Allows users to log in and log out using Auth0 authentication.
-- Allows authenticated users to save and like images.
-- Provides a Liked Posts section for authenticated users to manage their liked posts.
-- Downloads images upon user request.
-
-## Installation
-
-1. Clone the repository:
-
 [git clone https://github.com/tricticle/wallipy]
 
 2. Navigate to the project directory:
