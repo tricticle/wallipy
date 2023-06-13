@@ -201,7 +201,7 @@ function App() {
                     </div>
                     <button
                       onClick={() => handleSaveClick(imageData.url)}
-                      className={likedImages.includes(imageData.url) ? "liked" : ""}
+                      className={likedImages.includes(imageData.url) ? "save" : ""}
                     >
                       Save
                     </button>
@@ -287,9 +287,10 @@ function App() {
         )}
       </div>
             <footer className="about-page">
-        <h6>2023 copyright to tricticle</h6>
+        <h5>Wallipy v1.0</h5>
+        <h6>This website is a React application that fetches and displays images from different subreddits. Users can save and like images, and search a custom subreddit. Authenticated users can manage their liked posts, save artworks and toggle nsfw content.</h6>
         <p>
-          All generated images (arts) credits go to{" "}
+          All arts credits go to
           <a href="https://www.reddit.com/">creators</a>
         </p>
       </footer>

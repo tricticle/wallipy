@@ -2,7 +2,7 @@
 
 :root {
   --tran: 0.7s ease;
-  --primary-color: #ffbdbd;
+  --primary-color: #ff7b7b;
   --secondary-color: #b882ffe7;
   --background-color: #f1f1f1;
   --text-color: #000000;
@@ -67,6 +67,7 @@
   font-family: 'Unica One', cursive;
   text-transform: capitalize;
   --tran: all 0.5s ease;
+  color: dark light;
 }
 
 .categories {
@@ -107,7 +108,7 @@ body::-webkit-scrollbar {
 }
 
 .header {
-  color: rgb(0, 0, 0);
+  color: var(--text-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -164,7 +165,7 @@ body::-webkit-scrollbar {
 
 .header:hover {
   background-color: var(--primary-color);
-  color: #ffffff;
+  color: var(--background-color);
   transition: var(--tran);
 }
 
@@ -370,6 +371,10 @@ input[type="button"] {
   width: 100%;
   color: var(--text-color);
   padding: 1px;
+}
+
+.about-page h6{
+  font-size: 9px;
 }
 
 .about-page p {
