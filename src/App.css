@@ -68,6 +68,7 @@
   text-transform: capitalize;
   --tran: all 0.5s ease;
   color: dark light;
+  text-wrap: balance;
 }
 
 .categories {
@@ -232,13 +233,12 @@ body::-webkit-scrollbar {
 }
 
 .button-group {
-  position: relative;
+  background-color: var(--secondary-color);
+  margin-bottom: 5px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: 7px;
-  max-height: fit-content;
-  max-width: fit-content;
+  width: 97%;
+  border-radius: 5px;
 }
 
 .art-details {
