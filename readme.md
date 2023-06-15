@@ -2,10 +2,7 @@
 
 Wallipy is a React application that fetches and displays images from various subreddits. Users can save and like images, search a custom subreddit, and manage their liked posts. Authenticated users can also toggle the display of NSFW content.
 
-![anime](https://github.com/tricticle/wallipy/src/Screenshot_2023-06-14-01-15-25-30_40deb401b9ffe8e1df2f1cc5ba480b12.jpg)
-![aiengine](https://github.com/tricticle/wallipy/src/Screenshot_2023-06-14-01-16-58-65_40deb401b9ffe8e1df2f1cc5ba480b12.jpg)
-![wallpaper](https://github.com/tricticle/wallipy/src/Screenshot_2023-06-14-01-18-30-14_40deb401b9ffe8e1df2f1cc5ba480b12.jpg)
-![custom](https://github.com/tricticle/wallipy/src/Screenshot_2023-06-14-01-21-32-25_40deb401b9ffe8e1df2f1cc5ba480b12.jpg)
+![anime](https://github.com/tricticle/wallipy/blob/main/src/Screenshot_2023-06-14-01-15-25-30_40deb401b9ffe8e1df2f1cc5ba480b12.jpg)![aiengine](https://github.com/tricticle/wallipy/blob/main/src/Screenshot_2023-06-14-01-16-58-65_40deb401b9ffe8e1df2f1cc5ba480b12.jpg)![wallpaper](https://github.com/tricticle/wallipy/blob/main/src/Screenshot_2023-06-14-01-18-30-14_40deb401b9ffe8e1df2f1cc5ba480b12.jpg)![custom](https://github.com/tricticle/wallipy/blob/main/src/Screenshot_2023-06-14-01-21-32-25_40deb401b9ffe8e1df2f1cc5ba480b12.jpg)
 
 ## Features
 
