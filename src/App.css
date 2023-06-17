@@ -2,9 +2,9 @@
 
 :root {
   --tran: 0.7s ease;
-  --primary-color: #ff7b7b;
+  --primary-color: #ff7070;
   --secondary-color: #b882ffe7;
-  --background-color: #f1f1f1;
+  --background-color: #ffffff;
   --text-color: #000000;
 }
 
@@ -213,7 +213,7 @@ body::-webkit-scrollbar {
 
 
 .art img {
-  display: block;
+  display: flex;
   transition: var(--tran);
   width: 100%;
   height: auto;
@@ -233,17 +233,23 @@ body::-webkit-scrollbar {
 }
 
 .button-group {
-  background-color: var(--secondary-color);
+  display: none;
+  animation: bgcolor 300s infinite;
   margin-bottom: 5px;
-  display: flex;
   padding: 7px;
   width: 97%;
   border-radius: 5px;
+  transition: var(--tran);
+  box-shadow: 0px 4px 10px hsla(0, 0%, 0%, 0.3);
+}
+.art:hover .button-group{
+  transition: var(--tran);
+  display: flex;
 }
 
 .art-details {
   flex-grow: 1;
-  color: var(--text-color);
+  color: var(--background-color);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -289,13 +295,14 @@ body::-webkit-scrollbar {
 .art button {
   margin: 14px;
   padding: 5px 11px;
-  background-color: var(--text-color);
+  background-color: var(--background-color);
   border: none;
   border-radius: 3px;
   cursor: pointer;
   backdrop-filter: blur(30px);
-  color: var(--background-color);
+  color: var(--text-color);
   font-size: 12px;
+  box-shadow: 0px 4px 10px hsla(0, 0%, 0%, 0.3);
 }
 
 form {
