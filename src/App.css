@@ -72,8 +72,15 @@
 }
 
 .categories {
+  background-color: hsla(0, 0%, 0%, 0.10);
+  backdrop-filter: blur(17px);
+  padding: 15px;
+  border-radius: 7px;
+  position: fixed;
+  bottom: 0;
   display: flex;
   justify-content: center;
+  align-items: center;
   margin: 10px;
 }
 
@@ -83,7 +90,7 @@
   font-size: 16px;
   padding: 5px 10px;
   cursor: pointer;
-  color: var(--text-color);
+  color: var(--background-color);
 }
 
 .categories button.active {
@@ -233,7 +240,7 @@ body::-webkit-scrollbar {
 }
 
 .button-group {
-  display: none;
+  display: flex;
   animation: bgcolor 300s infinite;
   margin-bottom: 5px;
   padding: 7px;
@@ -241,10 +248,6 @@ body::-webkit-scrollbar {
   border-radius: 5px;
   transition: var(--tran);
   box-shadow: 0px 4px 10px hsla(0, 0%, 0%, 0.3);
-}
-.art:hover .button-group{
-  transition: var(--tran);
-  display: flex;
 }
 
 .art-details {
@@ -268,6 +271,11 @@ body::-webkit-scrollbar {
   font-size: 12px;
   margin: 0;
   opacity: 0.8;
+}
+
+.art:hover .art-details{
+  color: var(--text-color);
+  transition: var(--tran);
 }
 
 .button-group button.liked {
@@ -378,6 +386,7 @@ input[type="button"] {
   width: 100%;
   color: var(--text-color);
   padding: 1px;
+  margin-bottom: 70px;
 }
 
 .about-page h6{
