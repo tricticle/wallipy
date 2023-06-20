@@ -81,13 +81,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 30px;
+  margin: 10px;
 }
 
 .categories button {
   border: none;
   background: none;
-  font-size: 16px;
+  font-size: 11px;
   padding: 5px 10px;
   cursor: pointer;
   color: var(--background-color);
