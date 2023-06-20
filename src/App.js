@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
+import AdsComponent from './AdsComponent';
 
 function App() {
   const [imageUrls, setImageUrls] = useState([]);
@@ -40,7 +41,7 @@ function App() {
     setIsLoading(true);
   
     const fetchSubreddits = subredditsToFetch.map((subreddit) => {
-      const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
+      const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=1`;
       return fetch(apiUrl)
         .then((response) => {
           if (response.ok) {
@@ -217,6 +218,7 @@ function App() {
                 </div>
               ))}
             </div>
+            <AdsComponent dataAdSlot='8236159578' />
             <div className="categories">
               {Object.keys(subredditCategories).map((category) => (
                 <button
@@ -285,6 +287,7 @@ function App() {
             )}
           </>
         )}
+        <AdsComponent dataAdSlot='8236159578' />
       </div>
             <footer className="about-page">
         <h5>Wallipy v1.0</h5>
