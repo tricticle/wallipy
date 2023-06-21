@@ -27,7 +27,12 @@ cd wallipy
 ```
 3. Install the dependencies:
 ```
-npm install
+npm i
+```
+4. create .env file and add your auth0 credentails
+```
+REACT_APP_AUTH0_DOMAIN=your_auth0_domain
+REACT_APP_AUTH0_CLIENT_ID=your_auth0_client_id
 ```
 ## Usage
 
