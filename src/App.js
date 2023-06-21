@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
-import AdsComponent from './AdsComponent';
 import { inject } from '@vercel/analytics';
 
 function App() {
@@ -42,7 +41,7 @@ function App() {
     setIsLoading(true);
   
     const fetchSubreddits = subredditsToFetch.map((subreddit) => {
-      const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
+      const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=2`;
       return fetch(apiUrl)
         .then((response) => {
           if (response.ok) {
@@ -221,7 +220,6 @@ function App() {
                 </div>
               ))}
             </div>
-            <AdsComponent dataAdSlot='8236159578' />
             <div className="categories">
               {Object.keys(subredditCategories).map((category) => (
                 <button
@@ -290,7 +288,6 @@ function App() {
             )}
           </>
         )}
-        <AdsComponent dataAdSlot='8236159578' />
       </div>
             <footer className="about-page">
         <h5>Wallipy v1.0</h5>
@@ -307,8 +304,8 @@ function App() {
 function AuthWrapper() {
   return (
     <Auth0Provider
-      domain="tricticle.jp.auth0.com"
-      clientId="OVSSMN7SDqVsUrybTdJkDS04v3A3AlIG"
+      domain={process.env.REACT_APP_AUTH0_DOMAIN}
+      clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
       authorizationParams={{
         redirect_uri: window.location.origin
       }}
