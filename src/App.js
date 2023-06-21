@@ -41,7 +41,7 @@ function App() {
     setIsLoading(true);
   
     const fetchSubreddits = subredditsToFetch.map((subreddit) => {
-      const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=2`;
+      const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
       return fetch(apiUrl)
         .then((response) => {
           if (response.ok) {
