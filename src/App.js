@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
 import AdsComponent from './AdsComponent';
+import { inject } from '@vercel/analytics';
 
 function App() {
   const [imageUrls, setImageUrls] = useState([]);
@@ -170,6 +171,8 @@ function App() {
   const handleLikedPostsClick = () => {
     setShowLikedPosts(!showLikedPosts);
   };
+
+  inject();
 
   return (
     <>
