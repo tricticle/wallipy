@@ -40,7 +40,7 @@ function App() {
 
   const fetchSubreddits = subredditsToFetch.map((subreddit) => {
     // Fetch images for each subreddit
-    const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=1`;
+    const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
     return fetch(apiUrl)
       .then((response) => {
         if (response.ok) {
