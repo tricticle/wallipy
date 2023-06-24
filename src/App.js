@@ -30,55 +30,58 @@ function App() {
   };
 
   useEffect(() => {
-  let subredditsToFetch = [];
-  if (selectedCategory === "custom" && customSubreddit.trim() !== "") {
-    subredditsToFetch.push(customSubreddit);
-  } else {
-    subredditsToFetch = subredditCategories[selectedCategory];
-  }
-  setIsLoading(true); // Set isLoading to true before fetching new images
-
-  const fetchSubreddits = subredditsToFetch.map((subreddit) => {
-    // Fetch images for each subreddit
-    const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
-    return fetch(apiUrl)
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          console.error(`Error occurred while fetching subreddit "${subreddit}": ${response.status} ${response.statusText}`);
+    let subredditsToFetch = [];
+  
+    if (selectedCategory === "custom" && customSubreddit.trim() !== "") {
+      subredditsToFetch.push(customSubreddit);
+    } else {
+      subredditsToFetch = subredditCategories[selectedCategory];
+    }
+  
+    setIsLoading(true);
+  
+    const fetchSubreddits = subredditsToFetch.map((subreddit) => {
+      const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
+      return fetch(apiUrl)
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            console.error(`Error occurred while fetching subreddit "${subreddit}": ${response.status} ${response.statusText}`);
+            return { data: { children: [] } }; // Return empty data in case of error
+          }
+        })
+        .catch((error) => {
+          console.error(`Error occurred while fetching subreddit "${subreddit}":`, error);
           return { data: { children: [] } }; // Return empty data in case of error
-        }
+        });
+    });
+  
+    Promise.all(fetchSubreddits)
+      .then((results) => {
+        const posts = results.flatMap((result) =>
+          result.data.children.filter(
+            (post) => post.data.post_hint === "image" && (showNsfw || !post.data.over_18)
+          )
+        );
+  
+        const urls = posts.map((post) => ({
+          url: post.data.url,
+          title: post.data.title,
+          author: post.data.author,
+        }));
+  
+        // Randomize the post positions
+        const shuffledUrls = shuffleArray(urls);
+        setImageUrls(shuffledUrls);
+  
+        setIsLoading(false);
       })
       .catch((error) => {
-        console.error(`Error occurred while fetching subreddit "${subreddit}":`, error);
-        return { data: { children: [] } }; // Return empty data in case of error
+        console.error("Error occurred while fetching images:", error);
+        setIsLoading(false);
       });
-  });
-
-  Promise.all(fetchSubreddits)
-    .then((results) => {
-      // Process the fetched images
-      const posts = results.flatMap((result) =>
-        result.data.children.filter(
-          (post) => post.data.post_hint === "image" && (showNsfw || !post.data.over_18)
-        )
-      );
-      const urls = posts.map((post) => ({
-        url: post.data.url,
-        title: post.data.title,
-        author: post.data.author,
-      }));
-      const shuffledUrls = shuffleArray(urls); // Randomize the post positions
-      setImageUrls(shuffledUrls);
-      setIsLoading(false); // Set isLoading to false after images are loaded
-    })
-    .catch((error) => {
-      console.error("Error occurred while fetching images:", error);
-      setIsLoading(false); // Set isLoading to false in case of error
-    });
-}, [selectedCategory, showNsfw, customSubreddit]);
-  
+  }, [selectedCategory, showNsfw, customSubreddit]);  
 
   useEffect(() => {
     if (isAuthenticated) {
