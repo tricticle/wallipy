@@ -75,7 +75,7 @@ function ProfileDropdown({ user, onLogout }) {
 function App() {
   const [imageUrls, setImageUrls] = useState([]);
   const [showNsfw, setShowNsfw] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("Wallpaper");
+  const [selectedCategory, setSelectedCategory] = useState("Anime");
   const [customSubreddit, setCustomSubreddit] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showProfile, setShowProfile] = useState(false);
@@ -91,7 +91,7 @@ function App() {
   } = useAuth0();
 
   const subredditCategories = {
-    anime: [
+    Anime: [
       "patchuu",
       "animeart",
       "officialsenpaiheat",
@@ -112,6 +112,9 @@ function App() {
   };
 
   useEffect(() => {
+    // Retrieve the limit value from the environment variable
+    const limit = process.env.REACT_APP_API_LIMIT;
+
     let subredditsToFetch = [];
 
     if (selectedCategory === "custom" && customSubreddit.trim() !== "") {
@@ -123,7 +126,7 @@ function App() {
     setIsLoading(true);
 
     const fetchSubreddits = subredditsToFetch.map((subreddit) => {
-      const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=1`;
+      const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=${limit}`;
       return fetch(apiUrl)
         .then((response) => {
           if (response.ok) {
