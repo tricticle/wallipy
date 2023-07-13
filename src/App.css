@@ -158,6 +158,45 @@ body::-webkit-scrollbar {
   align-content: center;
 }
 
+.dropdown {
+  display: flex;
+  position: absolute;
+  top: 69px;
+  right: 7px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  z-index: 1;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+
+}
+
+.dropdown:before {
+  content: "";
+  position: absolute;
+  top: -11px;
+  right: 20px;
+  border-style: solid;
+  border-width: 6px 6px 0 6px;
+  border-color: #fff transparent transparent transparent;
+}
+
+.dropdown:after {
+  content: "";
+  position: absolute;
+  top: -11px;
+  right: 20px;
+  border-style: solid;
+  border-width: 7px 7px 0 7px;
+  border-color: #f9f9f9 transparent transparent transparent;
+}
+
 .profile img {
   padding: 3px;
   width: 40px;
@@ -202,7 +241,7 @@ body::-webkit-scrollbar {
   justify-items: center;
   padding: 5px;
   align-content: center;
-  align-items: end;
+  align-items: start;
 }
 
 .art {
@@ -287,9 +326,10 @@ body::-webkit-scrollbar {
 }
 
 .button-group button.liked {
+  border-radius: 200%;
   transition: var(--tran);
-  background-color: var(--primary-color);
-  color: var(--text-color);
+  background-color: var(--background-color);
+  color: var(--primary-color);
 }
 
 .fa-right-to-bracket{
@@ -324,16 +364,14 @@ i{
 }
 
 .art button {
+  transition: var(--tran);
   display: flex;
-  margin: 14px;
-  max-height:25px;
-  padding: 5px 11px;
+  margin: 10px;
+  padding: 5px;
   background-color: var(--background-color);
   border: none;
   border-radius: 3px;
   cursor: pointer;
-  color: var(--text-color);
-  font-size: 12px;
   box-shadow: 0px 4px 10px hsla(0, 0%, 0%, 0.3);
   align-items: center;
   justify-content: center;

@@ -2,7 +2,75 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
-import { inject } from '@vercel/analytics';
+import { inject } from "@vercel/analytics";
+
+function Art({ imageData, handleSaveClick, handleLikeClick, likedImages }) {
+  return (
+    <div className="art">
+      <img src={imageData.url} alt="Artwork" loading="lazy" />
+      <ButtonGroup
+        imageData={imageData}
+        handleSaveClick={handleSaveClick}
+        handleLikeClick={handleLikeClick}
+        likedImages={likedImages}
+      />
+    </div>
+  );
+}
+
+function ArtDetails({ title, author }) {
+  return (
+    <div className="art-details">
+      <h3>{title}</h3>
+      <p>By {author}</p>
+    </div>
+  );
+}
+
+function ButtonGroup({ imageData, handleSaveClick, handleLikeClick, likedImages }) {
+  const isLiked = likedImages.includes(imageData.url);
+
+  return (
+    <div className="button-group">
+      <ArtDetails title={imageData.title} author={imageData.author} />
+      <button onClick={() => handleSaveClick(imageData.url)} className={isLiked ? "save" : ""}>
+        <i className="fa-solid fa-link"></i>
+      </button>
+      <button onClick={() => handleLikeClick(imageData.url)} className={isLiked ? "liked" : ""}>
+        {isLiked ? <i className="fas fa-heart"></i> : <i className="far fa-heart"></i>}
+      </button>
+    </div>
+  );
+}
+
+function ProfileDropdown({ user, onLogout }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleToggle = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleLogout = () => {
+    setIsOpen(false);
+    onLogout();
+  };
+
+  return (
+    <div className="profile">
+      <div className="profile-menu" onClick={handleToggle}>
+        <img src={user.picture} alt={user.name} />
+      </div>
+      {isOpen && (
+        <div className="dropdown">
+          <h4>{user.name}!</h4>
+          <button onClick={handleLogout}>
+            <i className="fa-solid fa-right-to-bracket"></i> Logout
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function App() {
   const [imageUrls, setImageUrls] = useState([]);
@@ -19,35 +87,51 @@ function App() {
     isAuthenticated,
     loginWithRedirect,
     logout,
-    user
+    user,
   } = useAuth0();
 
   const subredditCategories = {
-    anime: ["patchuu", "animeart", "officialsenpaiheat", "awwnime", "moescape", "fantasymoe", "animelandscapes", "neonmoe", "joshi_kosei", "winterwaifus", "awenime", "pixivision", "streetmoe"],
+    anime: [
+      "patchuu",
+      "animeart",
+      "officialsenpaiheat",
+      "awwnime",
+      "moescape",
+      "fantasymoe",
+      "animelandscapes",
+      "neonmoe",
+      "joshi_kosei",
+      "winterwaifus",
+      "awenime",
+      "pixivision",
+      "streetmoe",
+    ],
     AIengines: ["midjourneyfantasy", "StableDiffusion", "animewallpaperai", "aiart"],
     Wallpaper: ["wallpaper", "amoledbackgrounds", "minimalwallpaper"],
-    custom: []
+    custom: [],
   };
 
   useEffect(() => {
     let subredditsToFetch = [];
-  
+
     if (selectedCategory === "custom" && customSubreddit.trim() !== "") {
       subredditsToFetch.push(customSubreddit);
     } else {
       subredditsToFetch = subredditCategories[selectedCategory];
     }
-  
+
     setIsLoading(true);
-  
+
     const fetchSubreddits = subredditsToFetch.map((subreddit) => {
-      const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
+      const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=1`;
       return fetch(apiUrl)
         .then((response) => {
           if (response.ok) {
             return response.json();
           } else {
-            console.error(`Error occurred while fetching subreddit "${subreddit}": ${response.status} ${response.statusText}`);
+            console.error(
+              `Error occurred while fetching subreddit "${subreddit}": ${response.status} ${response.statusText}`
+            );
             return { data: { children: [] } }; // Return empty data in case of error
           }
         })
@@ -56,32 +140,30 @@ function App() {
           return { data: { children: [] } }; // Return empty data in case of error
         });
     });
-  
+
     Promise.all(fetchSubreddits)
       .then((results) => {
         const posts = results.flatMap((result) =>
-          result.data.children.filter(
-            (post) => post.data.post_hint === "image" && (showNsfw || !post.data.over_18)
-          )
+          result.data.children.filter((post) => post.data.post_hint === "image" && (showNsfw || !post.data.over_18))
         );
-  
+
         const urls = posts.map((post) => ({
           url: post.data.url,
           title: post.data.title,
           author: post.data.author,
         }));
-  
+
         // Randomize the post positions
         const shuffledUrls = shuffleArray(urls);
         setImageUrls(shuffledUrls);
-  
+
         setIsLoading(false);
       })
       .catch((error) => {
         console.error("Error occurred while fetching images:", error);
         setIsLoading(false);
       });
-  }, [selectedCategory, showNsfw, customSubreddit]);  
+  }, [selectedCategory, showNsfw, customSubreddit]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -150,18 +232,18 @@ function App() {
   const handleCustomSubredditChange = (event) => {
     setCustomSubreddit(event.target.value.trim());
   };
-  
+
   useEffect(() => {
     const isValidSubreddit = customSubreddit && customSubreddit.length > 69;
-  
+
     if (isValidSubreddit) {
       setIsLoading(true);
     } else {
       setIsLoading(false);
     }
   }, [customSubreddit]);
-  
 
+// eslint-disable-next-line
   const handleProfileClick = () => {
     setShowProfile(!showProfile);
     setShowLikedPosts(false); // Hide liked posts when profile is clicked
@@ -173,51 +255,35 @@ function App() {
 
   inject();
 
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <>
       <section className="header">
         <h1>wallipy.</h1>
-        {!isAuthenticated && (
-          <button onClick={loginWithRedirect}>Log In</button>
-        )}
+        {!isAuthenticated && <button onClick={loginWithRedirect}>Log In</button>}
         {isAuthenticated && (
-          <div className="profile" onClick={handleProfileClick}>
-            <img src={user.picture} alt={user.name} />
-            {showProfile && <h4>{user.name}!</h4>}
-            {showProfile && <button onClick={logout}><i class="fa-solid fa-right-to-bracket"></i>logout</button>}
-          </div>
+          <ProfileDropdown user={user} onLogout={handleLogout} />
         )}
       </section>
       <div className="container">
         {isLoading || authIsLoading ? (
-          <div className="loading"><i class="fa-solid fa-spinner"></i></div>
+          <div className="loading">
+            <i className="fa-solid fa-spinner"></i>
+          </div>
         ) : (
           <>
             <div className="art-grid">
               {imageUrls.map((imageData, index) => (
-                <div className="art" key={index}>
-                  <img src={imageData.url} alt="Artwork" loading="lazy" />
-                  <div className="button-group">
-                    <div className="art-details">
-                      <h3>{imageData.title}</h3>
-                      <p>By {imageData.author}</p>
-                    </div>
-                    <button
-                      onClick={() => handleSaveClick(imageData.url)}
-                      className={likedImages.includes(imageData.url) ? "save" : ""}
-                    >
-                      <i class="fa-solid fa-link"></i>
-                    </button>
-                    {isAuthenticated && (
-                      <button
-                        onClick={() => handleLikeClick(imageData.url)}
-                        className={likedImages.includes(imageData.url) ? "liked" : ""}
-                      >
-                        {likedImages.includes(imageData.url) ? "Liked" : "Like"}
-                      </button>
-                    )}
-                  </div>
-                </div>
+                <Art
+                  key={index}
+                  imageData={imageData}
+                  handleSaveClick={handleSaveClick}
+                  handleLikeClick={handleLikeClick}
+                  likedImages={likedImages}
+                />
               ))}
             </div>
             <div className="categories">
@@ -250,48 +316,55 @@ function App() {
             </div>
             {isAuthenticated && (
               <div className="liked-section">
-                <button onClick={handleLikedPostsClick} className="liked-posts-button">
+                <button
+                  onClick={handleLikedPostsClick}
+                  className="liked-posts-button"
+                >
                   <i className="fa-solid fa-heart"></i>Liked Posts
                 </button>
                 {showLikedPosts && likedImages.length > 0 ? (
-  <div className="art-grid">
-    {likedImages.map((imageUrl, index) => {
-      const imageData = imageUrls.find((data) => data.url === imageUrl);
-      if (!imageData) {
-        return null; // Skip if the imageData is not found
-      }
+                  <div className="art-grid">
+                    {likedImages.map((imageUrl, index) => {
+                      const imageData = imageUrls.find(
+                        (data) => data.url === imageUrl
+                      );
+                      if (!imageData) {
+                        return null; // Skip if the imageData is not found
+                      }
 
-      return (
-        <div className="art" key={index}>
-          <img src={imageUrl} alt="Liked Artwork" loading="lazy" />
-          <div className="button-group">
-            <div className="art-details">
-              <h3>{imageData.title}</h3>
-              <p>By {imageData.author}</p>
-            </div>
-            <button onClick={() => handleSaveClick(imageUrl)}><i class="fa-solid fa-link"></i></button>
-            <button
-              onClick={() => handleLikeClick(imageUrl)}
-              className="liked"
-            >
-            <i class="fa-solid fa-xmark"></i>remove
-            </button>
-          </div>
-        </div>
-      );
-    })}
-  </div>
-) : (
-  showLikedPosts && <p>No liked posts yet.</p>
-)}
+                      return (
+                        <div className="art" key={index}>
+                          <img
+                            src={imageUrl}
+                            alt="Liked Artwork"
+                            loading="lazy"
+                          />
+                          <ButtonGroup
+                            imageData={imageData}
+                            handleSaveClick={handleSaveClick}
+                            handleLikeClick={handleLikeClick}
+                            likedImages={likedImages}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  showLikedPosts && <p>No liked posts yet.</p>
+                )}
               </div>
             )}
           </>
         )}
       </div>
-            <footer className="about-page">
+      <footer className="about-page">
         <h5>Wallipy v1.0</h5>
-        <h6>This website is a React application that fetches and displays images from different subreddits. Users can save and like images, and search a custom subreddit. Authenticated users can manage their liked posts, save artworks and toggle nsfw content.</h6>
+        <h6>
+          This website is a React application that fetches and displays images
+          from different subreddits. Users can save and like images and search a
+          custom subreddit. Authenticated users can manage their liked posts,
+          save artworks, and toggle NSFW content.
+        </h6>
         <p>
           All arts credits go to &nbsp;
           <a href="https://www.reddit.com/">creators</a>
@@ -307,7 +380,7 @@ function AuthWrapper() {
       domain={process.env.REACT_APP_AUTH0_DOMAIN}
       clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
       authorizationParams={{
-        redirect_uri: window.location.origin
+        redirect_uri: window.location.origin,
       }}
     >
       <App />
