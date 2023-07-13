@@ -131,6 +131,7 @@ body::-webkit-scrollbar {
 }
 
 .header button {
+  display: flex;
   font-family: 'Poppins', sans-serif;
   transition: var(--tran);
   padding: 3px;
@@ -140,6 +141,11 @@ body::-webkit-scrollbar {
   border-radius: 2px;
   color: var(--background-color);
   font-size: 11px;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
 }
 
 .profile {
@@ -223,6 +229,7 @@ body::-webkit-scrollbar {
 .art img {
   display: flex;
   transition: var(--tran);
+  min-height: 100px;
   width: 100%;
   height: auto;
   object-fit: cover;
@@ -233,7 +240,6 @@ body::-webkit-scrollbar {
 .button-group {
   display: flex;
   margin-block: 7px;
-  padding: 3px;
   width: 96%;
   border-radius: 5px;
   transition: var(--tran);
@@ -262,6 +268,19 @@ body::-webkit-scrollbar {
   margin: 0;
 }
 
+@keyframes spin{
+  0%{
+    transform: rotate(0deg);
+  }
+  100%{
+    transform: rotate(300deg);
+  }
+}
+
+.fa-spinner{
+  animation: spin 0.6s infinite;
+}
+
 .art-details p {
   font-family: 'Poppins', sans-serif;
   font-size: 10px;
@@ -271,6 +290,21 @@ body::-webkit-scrollbar {
   transition: var(--tran);
   background-color: var(--primary-color);
   color: var(--text-color);
+}
+
+.fa-right-to-bracket{
+  background-color: var(--background-color);
+  color: var(--secondary-color);
+  border-radius: 2px;
+  padding: 5px;
+  margin: 0px 5px 0px 0px;
+  font-size: 10px;
+}
+
+i{
+  border-radius: 2px;
+  padding: 5px;
+  font-size: 10px;
 }
 
 .liked-posts-button{
@@ -290,6 +324,7 @@ body::-webkit-scrollbar {
 }
 
 .art button {
+  display: flex;
   margin: 14px;
   max-height:25px;
   padding: 5px 11px;
@@ -300,6 +335,9 @@ body::-webkit-scrollbar {
   color: var(--text-color);
   font-size: 12px;
   box-shadow: 0px 4px 10px hsla(0, 0%, 0%, 0.3);
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
 }
 
 form {

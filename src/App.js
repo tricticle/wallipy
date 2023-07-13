@@ -7,7 +7,7 @@ import { inject } from '@vercel/analytics';
 function App() {
   const [imageUrls, setImageUrls] = useState([]);
   const [showNsfw, setShowNsfw] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("anime");
+  const [selectedCategory, setSelectedCategory] = useState("Wallpaper");
   const [customSubreddit, setCustomSubreddit] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showProfile, setShowProfile] = useState(false);
@@ -184,13 +184,13 @@ function App() {
           <div className="profile" onClick={handleProfileClick}>
             <img src={user.picture} alt={user.name} />
             {showProfile && <h4>{user.name}!</h4>}
-            {showProfile && <button onClick={logout}>Log Out</button>}
+            {showProfile && <button onClick={logout}><i class="fa-solid fa-right-to-bracket"></i>logout</button>}
           </div>
         )}
       </section>
       <div className="container">
         {isLoading || authIsLoading ? (
-          <div className="loading">Loading...</div>
+          <div className="loading"><i class="fa-solid fa-spinner"></i></div>
         ) : (
           <>
             <div className="art-grid">
@@ -206,7 +206,7 @@ function App() {
                       onClick={() => handleSaveClick(imageData.url)}
                       className={likedImages.includes(imageData.url) ? "save" : ""}
                     >
-                      Save
+                      <i class="fa-solid fa-link"></i>
                     </button>
                     {isAuthenticated && (
                       <button
@@ -251,7 +251,7 @@ function App() {
             {isAuthenticated && (
               <div className="liked-section">
                 <button onClick={handleLikedPostsClick} className="liked-posts-button">
-                  Liked Posts
+                  <i className="fa-solid fa-heart"></i>Liked Posts
                 </button>
                 {showLikedPosts && likedImages.length > 0 ? (
   <div className="art-grid">
@@ -269,12 +269,12 @@ function App() {
               <h3>{imageData.title}</h3>
               <p>By {imageData.author}</p>
             </div>
-            <button onClick={() => handleSaveClick(imageUrl)}>Save</button>
+            <button onClick={() => handleSaveClick(imageUrl)}><i class="fa-solid fa-link"></i></button>
             <button
               onClick={() => handleLikeClick(imageUrl)}
               className="liked"
             >
-              Unlike
+            <i class="fa-solid fa-xmark"></i>remove
             </button>
           </div>
         </div>
