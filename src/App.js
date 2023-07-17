@@ -13,21 +13,25 @@ function Art({ imageData, handleSaveClick, handleLikeClick, likedImages }) {
   };
 
   return (
-    <div className="art">
-      {!imageLoaded && <div className="art-skeleton"></div>}
-      <img
-        src={imageData.url}
-        alt="Artwork"
-        onLoad={handleImageLoad}
-        style={{ display: imageLoaded ? 'block' : 'none' }}
-      />
-      <ButtonGroup
-        imageData={imageData}
-        handleSaveClick={handleSaveClick}
-        handleLikeClick={handleLikeClick}
-        likedImages={likedImages}
-      />
+<div className="art">
+  {!imageLoaded && (
+    <div className="art-skeleton">
+      <p>Loading...</p>
     </div>
+  )}
+  <img
+    src={imageData.url}
+    alt="Artwork"
+    onLoad={handleImageLoad}
+    style={{ display: imageLoaded ? 'block' : 'none' }}
+  />
+  <ButtonGroup
+    imageData={imageData}
+    handleSaveClick={handleSaveClick}
+    handleLikeClick={handleLikeClick}
+    likedImages={likedImages}
+  />
+</div>
   );
 }
 
