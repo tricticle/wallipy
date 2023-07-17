@@ -18,8 +18,6 @@ function Art({ imageData, handleSaveClick, handleLikeClick, likedImages }) {
       <img
         src={imageData.url}
         alt="Artwork"
-        loading="lazy"
-        decoding="async"
         onLoad={handleImageLoad}
         style={{ display: imageLoaded ? 'block' : 'none' }}
       />
