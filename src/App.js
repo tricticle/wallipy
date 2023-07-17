@@ -233,6 +233,7 @@ const handleLikeClick = (imageUrl) => {
     if (likedImages.includes(imageUrl)) {
       setLikedImages(likedImages.filter((url) => url !== imageUrl));
     } else {
+      loginWithRedirect();
       setLikedImages([...likedImages, imageUrl]);
     }
   }
