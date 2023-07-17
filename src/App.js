@@ -3,17 +3,25 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
 import { inject } from "@vercel/analytics";
-import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
 function Art({ imageData, handleSaveClick, handleLikeClick, likedImages }) {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
+
   return (
     <div className="art">
-      <LazyLoadImage
+      {!imageLoaded && <div className="art-skeleton"></div>}
+      <img
         src={imageData.url}
         alt="Artwork"
-        effect="blur"
-        onClick={() => handleSaveClick(imageData.url)}
+        loading="lazy"
+        decoding="async"
+        onLoad={handleImageLoad}
+        style={{ display: imageLoaded ? 'block' : 'none' }}
       />
       <ButtonGroup
         imageData={imageData}
@@ -25,6 +33,7 @@ function Art({ imageData, handleSaveClick, handleLikeClick, likedImages }) {
   );
 }
 
+
 function ArtDetails({ title, author }) {
   return (
     <div className="art-details">
@@ -34,13 +43,13 @@ function ArtDetails({ title, author }) {
   );
 }
 
-function ButtonGroup({ imageData, handleSaveClick, handleLikeClick, likedImages }) {
+function ButtonGroup({ imageData, handlesourceClick, handleLikeClick, likedImages }) {
   const isLiked = likedImages.includes(imageData.url);
 
   return (
     <div className="button-group">
       <ArtDetails title={imageData.title} author={imageData.author} />
-      <button onClick={() => handleSaveClick(imageData.url)} className={isLiked ? "save" : ""}>
+      <button onClick={() => handlesourceClick(imageData.url)} className={isLiked ? "source" : ""}>
         <i className="fa-solid fa-link"></i>
       </button>
       <button onClick={() => handleLikeClick(imageData.url)} className={isLiked ? "liked" : ""}>
@@ -65,7 +74,8 @@ function ProfileDropdown({ user, onLogout }) {
   return (
     <div className="profile">
       <div className="profile-menu" onClick={handleToggle}>
-        <img src={user.picture} alt={user.name} />
+        <img src={user.picture} alt={user.name} loading="lazy"
+          decoding="async"/>
       </div>
       {isOpen && (
         <div className="dropdown">
@@ -130,7 +140,7 @@ function App() {
     setIsLoading(true);
 
     const fetchSubreddits = subredditsToFetch.map((subreddit) => {
-      const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=1`;
+      const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
       return fetch(apiUrl)
         .then((response) => {
           if (response.ok) {
@@ -198,7 +208,7 @@ function App() {
     return newArray;
   };
 
-  const handleSaveClick = async (imageUrl) => {
+  const handlesourceClick = async (imageUrl) => {
     if (isAuthenticated) {
       try {
         const response = await fetch(imageUrl);
@@ -290,7 +300,7 @@ const handleLikeClick = (imageUrl) => {
                 <Art
                   key={index}
                   imageData={imageData}
-                  handleSaveClick={handleSaveClick}
+                  handlesourceClick={handlesourceClick}
                   handleLikeClick={handleLikeClick}
                   likedImages={likedImages}
                 />
@@ -351,7 +361,7 @@ const handleLikeClick = (imageUrl) => {
                           />
                           <ButtonGroup
                             imageData={imageData}
-                            handleSaveClick={handleSaveClick}
+                            handlesourceClick={handlesourceClick}
                             handleLikeClick={handleLikeClick}
                             likedImages={likedImages}
                           />
@@ -371,9 +381,9 @@ const handleLikeClick = (imageUrl) => {
         <h5>Wallipy v1.0</h5>
         <h6>
           This website is a React application that fetches and displays images
-          from different subreddits. Users can save and like images and search a
+          from different subreddits. Users can  see source and like images and search a
           custom subreddit. Authenticated users can manage their liked posts,
-          save artworks, and toggle NSFW content.
+          find source of artworks, and toggle NSFW content.
         </h6>
         <p>
           All arts credits go to &nbsp;
