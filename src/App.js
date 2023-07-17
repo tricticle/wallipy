@@ -41,13 +41,13 @@ function ArtDetails({ title, author }) {
   );
 }
 
-function ButtonGroup({ imageData, handlesourceClick, handleLikeClick, likedImages }) {
+function ButtonGroup({ imageData, handleSaveClick, handleLikeClick, likedImages }) {
   const isLiked = likedImages.includes(imageData.url);
 
   return (
     <div className="button-group">
       <ArtDetails title={imageData.title} author={imageData.author} />
-      <button onClick={() => handlesourceClick(imageData.url)} className={isLiked ? "source" : ""}>
+      <button onClick={() => handleSaveClick(imageData.url)} className={isLiked ? "save" : ""}>
         <i className="fa-solid fa-link"></i>
       </button>
       <button onClick={() => handleLikeClick(imageData.url)} className={isLiked ? "liked" : ""}>
@@ -206,7 +206,7 @@ function App() {
     return newArray;
   };
 
-  const handlesourceClick = async (imageUrl) => {
+  const handleSaveClick = async (imageUrl) => {
     if (isAuthenticated) {
       try {
         const response = await fetch(imageUrl);
@@ -298,7 +298,7 @@ const handleLikeClick = (imageUrl) => {
                 <Art
                   key={index}
                   imageData={imageData}
-                  handlesourceClick={handlesourceClick}
+                  handleSaveClick={handleSaveClick}
                   handleLikeClick={handleLikeClick}
                   likedImages={likedImages}
                 />
@@ -359,7 +359,7 @@ const handleLikeClick = (imageUrl) => {
                           />
                           <ButtonGroup
                             imageData={imageData}
-                            handlesourceClick={handlesourceClick}
+                            handleSaveClick={handleSaveClick}
                             handleLikeClick={handleLikeClick}
                             likedImages={likedImages}
                           />
