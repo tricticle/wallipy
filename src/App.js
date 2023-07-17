@@ -3,11 +3,18 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
 import { inject } from "@vercel/analytics";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 function Art({ imageData, handleSaveClick, handleLikeClick, likedImages }) {
   return (
     <div className="art">
-      <img src={imageData.url} alt="Artwork" loading="lazy" />
+      <LazyLoadImage
+        src={imageData.url}
+        alt="Artwork"
+        effect="blur"
+        onClick={() => handleSaveClick(imageData.url)}
+      />
       <ButtonGroup
         imageData={imageData}
         handleSaveClick={handleSaveClick}
@@ -123,7 +130,7 @@ function App() {
     setIsLoading(true);
 
     const fetchSubreddits = subredditsToFetch.map((subreddit) => {
-      const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
+      const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=1`;
       return fetch(apiUrl)
         .then((response) => {
           if (response.ok) {
@@ -213,13 +220,16 @@ function App() {
     }
   };
 
-  const handleLikeClick = (imageUrl) => {
+const handleLikeClick = (imageUrl) => {
+  if (isAuthenticated) {
     if (likedImages.includes(imageUrl)) {
       setLikedImages(likedImages.filter((url) => url !== imageUrl));
     } else {
       setLikedImages([...likedImages, imageUrl]);
     }
-  };
+  }
+};
+
 
   const handleToggle = () => {
     if (isAuthenticated) {
@@ -337,7 +347,7 @@ function App() {
                           <img
                             src={imageUrl}
                             alt="Liked Artwork"
-                            loading="lazy"
+                            loading="lazy" decoding="async"
                           />
                           <ButtonGroup
                             imageData={imageData}
