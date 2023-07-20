@@ -12,18 +12,23 @@
   0% {
     color: #ffbdbd;
   }
+
   20% {
     color: #b882ff;
   }
+
   40% {
     color: #ff4f4f;
   }
+
   60% {
     color: #ff4f4f;
   }
+
   80% {
     color: #b882ff;
   }
+
   100% {
     color: #ffbebe;
   }
@@ -33,18 +38,23 @@
   0% {
     background-color: #ffbdbd;
   }
+
   20% {
     background-color: #b882ff;
   }
+
   40% {
     background-color: #50b9ff;
   }
+
   60% {
     background-color: #50b9ff;
   }
+
   80% {
     background-color: #d08dff;
   }
+
   100% {
     background-color: #ffbebe;
   }
@@ -164,6 +174,7 @@ body::-webkit-scrollbar {
   align-items: center;
   justify-content: center;
   align-content: center;
+
 }
 
 .dropdown:before {
@@ -249,7 +260,7 @@ body::-webkit-scrollbar {
   transition: var(--tran);
 }
 
-.art:hover {
+.art:hover{
   transition: var(--tran);
   box-shadow: 0px 4px 10px hsla(0, 0%, 0%, 0.499);
 }
@@ -263,65 +274,6 @@ body::-webkit-scrollbar {
   object-fit: cover;
   border-radius: 11px;
   padding: 5px;
-}
-
-.art-skeleton {
-  display: flex;
-  align-items: center;
-  background: linear-gradient(90deg, var(--secondary-color) 0%, var(--primary-color) 50%, var(--secondary-color) 100%);
-  background-size: 200% auto;
-  animation: gradient-pulse 10s infinite;
-  width: 100%;
-  height: 200px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.art-skeleton p {
-  font-size: 20px;
-  font-weight: bold;
-  animation: text-pulse 7s infinite;
-}
-
-@keyframes text-pulse {
-  0% {
-color: var(--background-color);
-font-size: 11px;
-  }
-  50% {
-color: var(--background-color);
-font-size: 17px;
-font-weight: 900;
-letter-spacing: 3px;
-  }
-  100% {
-    color: var(--background-color);
-    font-size: 11px;
-  }
-}
-
-@keyframes gradient-pulse {
-  0% {
-    background-position: 0% center;
-  }
-  10%{
-    background-position: 40% center;
-  }
-  30%{
-    background-position: 80% center;
-  }
-  50%{
-    background-position: 100% center;
-  }
-  70%{
-    background-position: 80% center;
-  }
-  90%{
-    background-position: 40% center;
-  }
-  100% {
-    background-position: 0% center;
-  }
 }
 
 .button-group {
@@ -355,16 +307,16 @@ letter-spacing: 3px;
   margin: 0;
 }
 
-@keyframes spin {
-  0% {
+@keyframes spin{
+  0%{
     transform: rotate(0deg);
   }
-  100% {
+  100%{
     transform: rotate(300deg);
   }
 }
 
-.fa-spinner {
+.fa-spinner{
   animation: spin 0.6s infinite;
 }
 
@@ -380,7 +332,7 @@ letter-spacing: 3px;
   color: var(--primary-color);
 }
 
-.fa-right-to-bracket {
+.fa-right-to-bracket{
   background-color: var(--background-color);
   color: var(--secondary-color);
   border-radius: 2px;
@@ -389,13 +341,13 @@ letter-spacing: 3px;
   font-size: 10px;
 }
 
-i {
+i{
   border-radius: 2px;
   padding: 5px;
   font-size: 10px;
 }
 
-.liked-posts-button {
+.liked-posts-button{
   border-radius: 3px;
   border: 1px solid;
   background: none;
@@ -406,9 +358,9 @@ i {
   margin-bottom: 5px;
 }
 
-.liked-section {
-  text-align: center;
-  margin: 3px;
+.liked-section{
+ text-align: center;
+ margin: 3px;
 }
 
 .art button {
@@ -501,7 +453,7 @@ input[type="checkbox"]:checked {
   margin-bottom: 70px;
 }
 
-.about-page h6 {
+.about-page h6{
   font-size: 9px;
   font-family: 'Poppins', sans-serif;
 }
