@@ -276,31 +276,6 @@ body::-webkit-scrollbar {
   padding: 5px;
 }
 
-<<<<<<< HEAD
-=======
-.art-skeleton {
-  background-color: var(--secondary-color);
-  border-radius: 4px;
-  padding: 5px;
-  width: 98%;
-  height: 200px;
-  animation: pulse 1.5s infinite ease-in-out;
-}
-
-@keyframes pulse {
-  0% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 0.3;
-  }
-  100% {
-    opacity: 0.6;
-  }
-}
-
-
->>>>>>> parent of c6941c2 (added new UI)
 .button-group {
   display: flex;
   margin-block: 7px;

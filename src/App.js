@@ -7,17 +7,7 @@ import { inject } from "@vercel/analytics";
 function Art({ imageData, handleSaveClick, handleLikeClick, likedImages }) {
   return (
     <div className="art">
-<<<<<<< HEAD
       <img src={imageData.url} alt="Artwork" loading="lazy" />
-=======
-      {!imageLoaded && <div className="art-skeleton"></div>}
-      <img
-        src={imageData.url}
-        alt="Artwork"
-        onLoad={handleImageLoad}
-        style={{ display: imageLoaded ? 'block' : 'none' }}
-      />
->>>>>>> parent of c6941c2 (added new UI)
       <ButtonGroup
         imageData={imageData}
         handleSaveClick={handleSaveClick}
@@ -224,11 +214,15 @@ function App() {
   };
 
   const handleLikeClick = (imageUrl) => {
+    if (isAuthenticated) {
     if (likedImages.includes(imageUrl)) {
       setLikedImages(likedImages.filter((url) => url !== imageUrl));
     } else {
       setLikedImages([...likedImages, imageUrl]);
     }
+  } else {
+    loginWithRedirect();
+  }
   };
 
   const handleToggle = () => {
