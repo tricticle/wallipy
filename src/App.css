@@ -199,6 +199,7 @@ body::-webkit-scrollbar {
 
 .profile img {
   padding: 3px;
+  aspect-ratio: 1/1;
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -271,7 +272,7 @@ body::-webkit-scrollbar {
   min-height: 100px;
   width: 100%;
   height: auto;
-  object-fit: cover;
+  object-fit:cover;
   border-radius: 11px;
   padding: 5px;
 }

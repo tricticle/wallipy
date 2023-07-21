@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
 import { inject } from "@vercel/analytics";
@@ -75,12 +75,17 @@ function ProfileDropdown({ user, onLogout }) {
 function App() {
   const [imageUrls, setImageUrls] = useState([]);
   const [showNsfw, setShowNsfw] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("Wallpaper");
+  const [selectedCategory, setSelectedCategory] = useState(() => {
+    // Retrieve the selected category from localStorage, or use a default value ("anime" in this case)
+    return localStorage.getItem("selectedCategory") || "anime";
+  });
   const [customSubreddit, setCustomSubreddit] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showProfile, setShowProfile] = useState(false);
   const [likedImages, setLikedImages] = useState([]);
   const [showLikedPosts, setShowLikedPosts] = useState(false);
+
+  const isRefreshed = useRef(false);
 
   const {
     isLoading: authIsLoading,
@@ -110,8 +115,16 @@ function App() {
     Wallpaper: ["wallpaper", "amoledbackgrounds", "minimalwallpaper"],
     custom: [],
   };
-
   useEffect(() => {
+    localStorage.setItem("selectedCategory", selectedCategory);
+
+    // Perform a page refresh only one time when the category changes
+    if (!isRefreshed.current) {
+      isRefreshed.current = true;
+    }
+  }, [selectedCategory]);
+
+   useEffect(() => {
     let subredditsToFetch = [];
 
     if (selectedCategory === "custom" && customSubreddit.trim() !== "") {
@@ -153,9 +166,7 @@ function App() {
           author: post.data.author,
         }));
 
-        // Randomize the post positions
-        const shuffledUrls = shuffleArray(urls);
-        setImageUrls(shuffledUrls);
+        setImageUrls(urls);
 
         setIsLoading(false);
       })
@@ -181,15 +192,6 @@ function App() {
       localStorage.setItem("likedImages", JSON.stringify(likedImages));
     }
   }, [likedImages, isAuthenticated]);
-
-  const shuffleArray = (array) => {
-    const newArray = [...array];
-    for (let i = newArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    }
-    return newArray;
-  };
 
   const handleSaveClick = async (imageUrl) => {
     if (isAuthenticated) {
