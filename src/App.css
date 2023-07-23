@@ -291,6 +291,8 @@ body::-webkit-scrollbar {
 
 .art-details {
   margin-left:10px ;
+  text-overflow:inherit;
+  text-shadow: 0px 1px 5px var(--text-color);
   background-color: hsla(0, 0%, 0%, 0);
   backdrop-filter: blur(5px);
   flex-grow: 1;
@@ -371,6 +373,7 @@ i{
 
 .art button {
   transition: var(--tran);
+  text-shadow: 0px 1px  5px var(--text-color);
   display: flex;
   margin: 10px;
   padding: 5px;
