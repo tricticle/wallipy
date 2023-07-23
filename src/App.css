@@ -73,6 +73,7 @@
 
 .categories {
   background-color: hsl(0, 0%, 100%);
+  z-index: 999;
   padding: 15px;
   border-radius: 7px;
   position: fixed;
@@ -221,7 +222,7 @@ body::-webkit-scrollbar {
 }
 
 .header:hover {
-  background-color: var(--primary-color);
+  animation: color 10s infinite;
   color: var(--background-color);
   transition: var(--tran);
 }
@@ -286,7 +287,6 @@ body::-webkit-scrollbar {
   margin-block: 7px;
   transition: var(--tran);
   width: 100%; /* Set the width to 100% to make it take the full width of .art */
-  height: 50px; 
 }
 
 .art-details {
@@ -379,7 +379,7 @@ i{
   margin: 10px;
   padding: 5px;
   background-color: hsla(0, 0%, 0%, 0);
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(17px);
   color: var(--background-color);
   border: none;
   border-radius: 3px;
