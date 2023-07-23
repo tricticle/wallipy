@@ -334,6 +334,7 @@ body::-webkit-scrollbar {
 }
 
 .button-group button.liked {
+  text-shadow: none;
   border-radius: 200%;
   transition: var(--tran);
   background-color: var(--background-color);
