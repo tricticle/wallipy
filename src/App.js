@@ -77,7 +77,7 @@ function App() {
   const [showNsfw, setShowNsfw] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(() => {
     // Retrieve the selected category from localStorage, or use a default value ("anime" in this case)
-    return localStorage.getItem("selectedCategory") || "wallpaper";
+    return localStorage.getItem("selectedCategory") || "Wallpaper";
   });
   const [customSubreddit, setCustomSubreddit] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -137,7 +137,7 @@ function App() {
     setIsLoading(true);
 
     const fetchSubreddits = subredditsToFetch.map((subreddit) => {
-      const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=`;
+      const apiUrl = `https://www.reddit.com/r/${subreddit}.json?sort=hot&limit=99`;
       return fetch(apiUrl)
         .then((response) => {
           if (response.ok) {
