@@ -77,7 +77,7 @@ function App() {
   const [showNsfw, setShowNsfw] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(() => {
     // Retrieve the selected category from localStorage, or use a default value ("anime" in this case)
-    return localStorage.getItem("selectedCategory") || "anime";
+    return localStorage.getItem("selectedCategory") || "wallpaper";
   });
   const [customSubreddit, setCustomSubreddit] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -86,6 +86,7 @@ function App() {
   const [showLikedPosts, setShowLikedPosts] = useState(false);
 
   const isRefreshed = useRef(false);
+   const loadingRef = useRef();
 
   const {
     isLoading: authIsLoading,
@@ -175,6 +176,34 @@ function App() {
         setIsLoading(false);
       });
   }, [selectedCategory, showNsfw, customSubreddit]);
+
+   useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        if (target.isIntersecting) {
+          // Load more artwork here (e.g., fetch additional images)
+          console.log("Load more artwork!");
+        }
+      },
+      {
+        root: null,
+        rootMargin: "0px",
+        threshold: 1.0,
+      }
+    );
+
+    if (loadingRef.current) {
+      observer.observe(loadingRef.current);
+    }
+
+    return () => {
+      if (loadingRef.current) {
+        observer.unobserve(loadingRef.current);
+      }
+    };
+  }, [isLoading]);
+
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -274,7 +303,7 @@ function App() {
           <ProfileDropdown user={user} onLogout={handleLogout} />
         )}
       </section>
-      <div className="container">
+ <div className="container">
         {isLoading || authIsLoading ? (
           <div className="loading">
             <i className="fa-solid fa-spinner"></i>
@@ -291,6 +320,7 @@ function App() {
                   likedImages={likedImages}
                 />
               ))}
+              <div ref={loadingRef} />
             </div>
             <div className="categories">
               {Object.keys(subredditCategories).map((category) => (
