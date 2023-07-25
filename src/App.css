@@ -286,7 +286,6 @@ body::-webkit-scrollbar {
   margin-block: 7px;
   transition: var(--tran);
   width: 100%; /* Set the width to 100% to make it take the full width of .art */
-  height: 50px; 
 }
 
 .art-details {
