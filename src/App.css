@@ -235,17 +235,30 @@ body::-webkit-scrollbar {
 }
 
 .art-grid {
-  display: grid;
-  width: 99%;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  grid-gap: 20px;
-  justify-items: center;
-  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   align-content: center;
-  align-items: start;
+  flex-wrap: wrap;
+  gap: 17px;
+  max-width: 70vh;
+}
+
+@media only screen and (max-width: 600px) {
+  .art-grid {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    flex-wrap: wrap;
+    gap: 17px;
+  }
 }
 
 .art {
+  background-color: var(--background-color);
   position: relative; 
   display: flex;
   width: 100%;
@@ -462,6 +475,12 @@ input[type="checkbox"]:checked {
   color: var(--text-color);
   padding: 1px;
   margin-bottom: 70px;
+}
+
+.about-page h5{
+  padding: 14px;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
 }
 
 .about-page h6{
