@@ -235,30 +235,17 @@ body::-webkit-scrollbar {
 }
 
 .art-grid {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  width: 99%;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-gap: 20px;
+  justify-items: center;
+  padding: 5px;
   align-content: center;
-  flex-wrap: wrap;
-  gap: 17px;
-  max-width: 70vh;
-}
-
-@media only screen and (max-width: 600px) {
-  .art-grid {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-    flex-wrap: wrap;
-    gap: 17px;
-  }
+  align-items: start;
 }
 
 .art {
-  background-color: var(--background-color);
   position: relative; 
   display: flex;
   width: 100%;
