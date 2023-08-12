@@ -63,8 +63,8 @@ function ProfileDropdown({ user, onLogout }) {
       {isOpen && (
         <div className="dropdown">
           <h4>{user.name}!</h4>
-          <button onClick={handleLogout}>
-            <i className="fa-solid fa-right-to-bracket"></i> Logout
+          <h4 className="link"><a href="https://zaap.bio/tricticle">about us</a></h4>
+          <button onClick={handleLogout}> Logout
           </button>
         </div>
       )}
