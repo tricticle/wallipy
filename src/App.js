@@ -47,11 +47,30 @@ function ProfileDropdown({ user, onLogout }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleToggle = () => {
-    setIsOpen(!isOpen);
+    if (isOpen) {
+      setIsOpen(false);
+    } else {
+      setIsOpen(true);
+  
+      const handleDocumentClick = (event) => {
+        if (!event.target.closest('.profile')) {
+          setIsOpen(false);
+          document.removeEventListener('click', handleDocumentClick);
+        }
+      };
+  
+      const handleScroll = () => {
+        setIsOpen(false);
+        document.removeEventListener('scroll', handleScroll);
+      };
+  
+      document.addEventListener('click', handleDocumentClick);
+      window.addEventListener('scroll', handleScroll);
+    }
   };
-
+  
   const handleLogout = () => {
-    setIsOpen(false);
+    setIsOpen(true);
     onLogout();
   };
 
@@ -124,6 +143,7 @@ function App() {
       isRefreshed.current = true;
     }
   }, [selectedCategory]);
+  
 
    useEffect(() => {
     let subredditsToFetch = [];
@@ -137,7 +157,7 @@ function App() {
     setIsLoading(true);
 
     const fetchSubreddits = subredditsToFetch.map((subreddit) => {
-      const apiUrl = `https://www.reddit.com/r/${subreddit}/.json?sort=hot&limit=99`;
+      const apiUrl = `https://www.reddit.com/r/${subreddit}/.json?sort=new&limit=99`;
       return fetch(apiUrl)
         .then((response) => {
           if (response.ok) {
@@ -176,33 +196,6 @@ function App() {
         setIsLoading(false);
       });
   }, [selectedCategory, showNsfw, customSubreddit]);
-
-   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const target = entries[0];
-        if (target.isIntersecting) {
-          // Load more artwork here (e.g., fetch additional images)
-          console.log("Load more artwork!");
-        }
-      },
-      {
-        root: null,
-        rootMargin: "0px",
-        threshold: 1.0,
-      }
-    );
-
-    if (loadingRef.current) {
-      observer.observe(loadingRef.current);
-    }
-
-    return () => {
-      if (loadingRef.current) {
-        observer.unobserve(loadingRef.current);
-      }
-    };
-  }, [isLoading]);
 
 
   useEffect(() => {
