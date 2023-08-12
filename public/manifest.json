@@ -36,6 +36,7 @@
     "photo",
     "arts"
   ],
+"permissions": ["webNavigation"],
   "description": "Discover ARTs using Reddit API",
   "lang": "en"
 }
