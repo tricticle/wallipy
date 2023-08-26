@@ -28,8 +28,7 @@
   ],
   "dir": "auto",
   "display_override": [
-    "window-controls-overlay",
-    "fullscreen"
+    "window-controls-overlay"
   ],
   "categories": [
     "photo",
