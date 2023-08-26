@@ -18,7 +18,7 @@
   "theme_color": "#e0fffa",
   "background_color": "#FFFFFF",
   "display": "fullscreen",
-  "orientation": "portrait",
+  "orientation": "portrait-primary",
   "cache": [
     "/",
     "index.html",
@@ -36,7 +36,6 @@
     "photo",
     "arts"
   ],
-"permissions": ["storage"],
   "description": "Discover ARTs using Reddit API",
   "lang": "en"
 }
