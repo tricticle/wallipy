@@ -32,7 +32,8 @@
   ],
   "categories": [
     "photo",
-    "arts"
+    "arts",
+    "aiart"
   ],
   "description": "Discover ARTs using Reddit API",
   "lang": "en"

@@ -63,9 +63,6 @@ The application relies on the following dependencies:
 - react-hooks/exhaustive-deps: A React lint rule plugin to ensure exhaustive dependencies for `useEffect` hooks.
 - @auth0/auth0-react: An SDK for integrating Auth0 authentication into React applications.
 
-## License
-
-This project is licensed under the [MIT License](LICENSE).
 
 ## Acknowledgments
 
