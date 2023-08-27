@@ -45,6 +45,7 @@ function ButtonGroup({ imageData, handleSaveClick, handleLikeClick, likedImages 
 
 function ProfileDropdown({ user, onLogout }) {
   const [isOpen, setIsOpen] = useState(false);
+  const { isAuthenticated, loginWithRedirect } = useAuth0(); // Add this line
 
   const handleToggle = () => {
     if (isOpen) {
@@ -68,23 +69,34 @@ function ProfileDropdown({ user, onLogout }) {
       window.addEventListener('scroll', handleScroll);
     }
   };
-  
-  const handleLogout = () => {
-    setIsOpen(true);
-    onLogout();
+    const handleLogin = () => {
+    setIsOpen(false); // Close the dropdown after clicking Login
+    loginWithRedirect();
   };
 
   return (
-    <div className="profile">
+<div className="profile">
       <div className="profile-menu" onClick={handleToggle}>
-        <img src={user.picture} alt={user.name} />
+        <i className="fas fa-bars"></i>
       </div>
       {isOpen && (
         <div className="dropdown">
+          <img src={user.picture} alt={user.name} />
           <h4>{user.name}!</h4>
-          <h4 className="link"><a href="https://zaap.bio/tricticle">about us</a></h4>
-          <button onClick={handleLogout}> Logout
-          </button>
+          <h4 className="link">
+            <a href="https://zaap.bio/tricticle">about us</a>
+          </h4>
+          {isAuthenticated ? (
+            <>
+              <button onClick={onLogout}>Logout</button>
+              {/* Displayed when authenticated */}
+            </>
+          ) : (
+            <>
+              <button onClick={handleLogin}>Login</button>
+              {/* Displayed when not authenticated */}
+            </>
+          )}
         </div>
       )}
     </div>
@@ -157,7 +169,7 @@ function App() {
     setIsLoading(true);
 
     const fetchSubreddits = subredditsToFetch.map((subreddit) => {
-      const apiUrl = `https://www.reddit.com/r/${subreddit}/.json?sort=new&limit=99`;
+      const apiUrl = `https://www.reddit.com/r/${subreddit}/.json?sort=new&limit=1`;
       return fetch(apiUrl)
         .then((response) => {
           if (response.ok) {
