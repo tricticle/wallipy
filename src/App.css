@@ -115,19 +115,32 @@ body::-webkit-scrollbar {
   color: transparent;
 }
 
+.wrapper{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: rgba(255, 255, 255, 0);
+  backdrop-filter: blur(70px);
+  border-radius:7px;
+}
+
 .header {
+  background-color: var(--background-color);
   color: var(--text-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  margin: 5px;
-  border-radius: 5px;
+  border-radius: 7px;
   transition: var(--tran);
   box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.1);
   background-repeat: none;
   object-fit: cover;
   flex-direction: row;
+  margin: 10px;
+  z-index: 99;
 }
 
 .header button {
@@ -212,7 +225,7 @@ body::-webkit-scrollbar {
 
 .container {
   padding: 7px;
-  margin: 5px;
+  margin-top: 60px;
   display: flex;
   flex-direction: column-reverse;
   align-items: center;

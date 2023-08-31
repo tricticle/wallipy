@@ -301,12 +301,14 @@ function App() {
 
   return (
     <>
+      <section class="wrapper">
       <section className="header">
         <h1>wallipy.</h1>
         {!isAuthenticated && <button onClick={loginWithRedirect}>Log In</button>}
         {isAuthenticated && (
           <ProfileDropdown user={user} onLogout={handleLogout} />
         )}
+      </section>
       </section>
  <div className="container">
         {isLoading || authIsLoading ? (
