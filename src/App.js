@@ -6,13 +6,15 @@ import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
 function App() {
   const [images, setImages] = useState([]);
   const [addedData, setAddedData] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('anime');
+  const [selectedCategory, setSelectedCategory] = useState('Wallpaper');
   const [customSearchQuery, setCustomSearchQuery] = useState('');
   const [customSearchResults, setCustomSearchResults] = useState([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showNSFW, setShowNSFW] = useState(false);
-  const [showLikedSection, setShowLikedSection] = useState(false);
+  const [showLikedSection, setShowLikedSection] = useState(false); // State to control liked section visibility
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+  const serverUrl = process.env.REACT_APP_SERVER_URL;
+
 
   useEffect(() => {
     const fetchRedditImages = async () => {
@@ -65,7 +67,7 @@ function App() {
 
   const fetchAddedDataFromMongoDB = async () => {
     try {
-      const response = await axios.get('/addedData');
+      const response = await axios.get(`${serverUrl}/addedData`);
       setAddedData(response.data);
     } catch (error) {
       console.error('Error fetching added data:', error);
@@ -74,11 +76,11 @@ function App() {
 
   useEffect(() => {
     fetchAddedDataFromMongoDB();
-  }, []);
+  }, [serverUrl]);
 
   const addDataToMongoDB = async (image) => {
     try {
-      await axios.post('/addData', image);
+      await axios.post(`${serverUrl}/addData`, image);
       fetchAddedDataFromMongoDB();
     } catch (error) {
       console.error('Error adding data:', error);
@@ -87,7 +89,7 @@ function App() {
 
   const removeDataFromMongoDB = async (imageUrl) => {
     try {
-      await axios.delete('/removeData', { data: { imageUrl } });
+      await axios.delete(`${serverUrl}/removeData`, { data: { imageUrl } });
       fetchAddedDataFromMongoDB();
     } catch (error) {
       console.error('Error removing data:', error);
@@ -175,7 +177,11 @@ function App() {
     };
   }, [isMenuOpen]);
 
-  // Menu toggle cover
+  // Menu toggle over
+
+  const isImageLiked = (imageUrl) => {
+    return addedData.some((item) => item.imageUrl === imageUrl);
+  };
 
   return (
     <>
@@ -190,7 +196,7 @@ function App() {
               <div className={`dropdown ${isMenuOpen ? 'open' : ''}`}>
                 {isAuthenticated ? (
                   <>
-                    <img src={user.picture} alt={user.name} />
+                    <img  loading="lazy" src={user.picture} alt={user.name} />
                     <h4>{user.name}!</h4>
                     <h4 className="link">
                       <a href="https://zaap.bio/tricticle">about us</a>
@@ -219,7 +225,7 @@ function App() {
           {customSearchResults.map((result, index) => (
             <div className="art-grid" key={index}>
               <div className="art">
-                <img src={result.imageUrl} alt={result.title} />
+                <img  loading="lazy" src={result.imageUrl} alt={result.title} />
                 <div className="button-group">
                   <div className="art-details">
                     <h3>{result.title}</h3>
@@ -240,7 +246,7 @@ function App() {
             {addedData.map((item, index) => (
               <div className="art-grid" key={index}>
                 <div className="art">
-                  <img src={item.imageUrl} alt={item.title} />
+                  <img  loading="lazy" src={item.imageUrl} alt={item.title} />
                   <div className="button-group">
                     <div className="art-details">
                       <h4>{item.title}</h4>
@@ -262,19 +268,27 @@ function App() {
           <label htmlFor="nsfwToggle">Show NSFW</label>
         </div>
         <div className="art-grid">
-          {images.map((image, index) => (
-            <div key={index} className="art">
-              <img src={image.imageUrl} alt={image.title} />
-              <div className="button-group">
-                <div className="art-details">
-                  <h3>{image.title}</h3>
-                  <p>by {image.description}</p>
-                </div>
-                <button onClick={() => addDataToMongoDB(image)}><i className="fas fa-heart"></i></button>
-              </div>
-            </div>
-          ))}
+  {images.map((image, index) => (
+    <div key={index} className="art">
+      <img  loading="lazy" src={image.imageUrl} alt={image.title} />
+      <div className="button-group">
+        <div className="art-details">
+          <h3>{image.title}</h3>
+          <p>by {image.description}</p>
         </div>
+        {isImageLiked(image.imageUrl) ? (
+          <button className='liked' onClick={() => removeDataFromMongoDB(image.imageUrl)}>
+            <i className="fas fa-heart"></i>
+          </button>
+        ) : (
+          <button onClick={() => addDataToMongoDB(image)}>
+            <i className="fas fa-heart"></i>
+          </button>
+        )}
+      </div>
+    </div>
+  ))}
+</div>
         <div className="categories">
           {Object.keys(subredditCategories)
             .filter((category) => category !== 'custom') // Exclude 'custom' category
