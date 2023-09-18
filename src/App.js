@@ -1,131 +1,98 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, useRef } from "react";
-import "./App.css";
-import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
-import { inject } from "@vercel/analytics";
-
-function Art({ imageData, handleSaveClick, handleLikeClick, likedImages }) {
-  return (
-    <div className="art">
-      <img src={imageData.url} alt="Artwork" loading="lazy" />
-      <ButtonGroup
-        imageData={imageData}
-        handleSaveClick={handleSaveClick}
-        handleLikeClick={handleLikeClick}
-        likedImages={likedImages}
-      />
-    </div>
-  );
-}
-
-function ArtDetails({ title, author }) {
-  return (
-    <div className="art-details">
-      <h3>{title}</h3>
-      <p>By {author}</p>
-    </div>
-  );
-}
-
-function ButtonGroup({ imageData, handleSaveClick, handleLikeClick, likedImages }) {
-  const isLiked = likedImages.includes(imageData.url);
-
-  return (
-    <div className="button-group">
-      <ArtDetails title={imageData.title} author={imageData.author} />
-      <button onClick={() => handleSaveClick(imageData.url)} className={isLiked ? "save" : ""}>
-        <i className="fa-solid fa-link"></i>
-      </button>
-      <button onClick={() => handleLikeClick(imageData.url)} className={isLiked ? "liked" : ""}>
-        {isLiked ? <i className="fas fa-heart"></i> : <i className="far fa-heart"></i>}
-      </button>
-    </div>
-  );
-}
-
-function ProfileDropdown({ user, onLogout }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const { isAuthenticated, loginWithRedirect } = useAuth0(); // Add this line
-
-  const handleToggle = () => {
-    if (isOpen) {
-      setIsOpen(false);
-    } else {
-      setIsOpen(true);
-  
-      const handleDocumentClick = (event) => {
-        if (!event.target.closest('.profile')) {
-          setIsOpen(false);
-          document.removeEventListener('click', handleDocumentClick);
-        }
-      };
-  
-      const handleScroll = () => {
-        setIsOpen(false);
-        document.removeEventListener('scroll', handleScroll);
-      };
-  
-      document.addEventListener('click', handleDocumentClick);
-      window.addEventListener('scroll', handleScroll);
-    }
-  };
-    const handleLogin = () => {
-    setIsOpen(false); // Close the dropdown after clicking Login
-    loginWithRedirect();
-  };
-
-  return (
-<div className="profile">
-      <div className="profile-menu" onClick={handleToggle}>
-        <i className="fas fa-bars"></i>
-      </div>
-      {isOpen && (
-        <div className="dropdown">
-          <img src={user.picture} alt={user.name} />
-          <h4>{user.name}!</h4>
-          <h4 className="link">
-            <a href="https://zaap.bio/tricticle">about us</a>
-          </h4>
-          {isAuthenticated ? (
-            <>
-              <button onClick={onLogout}>Logout</button>
-              {/* Displayed when authenticated */}
-            </>
-          ) : (
-            <>
-              <button onClick={handleLogin}>Login</button>
-              {/* Displayed when not authenticated */}
-            </>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
 
 function App() {
-  const [imageUrls, setImageUrls] = useState([]);
-  const [showNsfw, setShowNsfw] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(() => {
-    // Retrieve the selected category from localStorage, or use a default value ("anime" in this case)
-    return localStorage.getItem("selectedCategory") || "Wallpaper";
-  });
-  const [customSubreddit, setCustomSubreddit] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [showProfile, setShowProfile] = useState(false);
-  const [likedImages, setLikedImages] = useState([]);
-  const [showLikedPosts, setShowLikedPosts] = useState(false);
+  const [images, setImages] = useState([]);
+  const [addedData, setAddedData] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('anime');
+  const [customSearchQuery, setCustomSearchQuery] = useState('');
+  const [customSearchResults, setCustomSearchResults] = useState([]);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showNSFW, setShowNSFW] = useState(false);
+  const [showLikedSection, setShowLikedSection] = useState(false);
+  const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
 
-  const isRefreshed = useRef(false);
-   const loadingRef = useRef();
+  useEffect(() => {
+    const fetchRedditImages = async () => {
+      try {
+        const subredditList = subredditCategories[selectedCategory] || [];
+        if (subredditList.length === 0) {
+          console.warn(`Subreddits not found for category: ${selectedCategory}`);
+          return;
+        }
 
-  const {
-    isLoading: authIsLoading,
-    isAuthenticated,
-    loginWithRedirect,
-    logout,
-    user,
-  } = useAuth0();
+        const promises = subredditList.map(async (subreddit) => {
+          const response = await axios.get(`https://www.reddit.com/r/${subreddit}/top.json?limit=99`);
+          const redditData = response.data.data.children;
+
+          const uniqueUrls = new Set(); // Create a Set to store unique URLs
+
+          const imageList = redditData
+            .filter((post) => post.data.url.endsWith('.jpg') || post.data.url.endsWith('.png') || post.data.url.endsWith('.gif'))
+            .map((post) => ({
+              title: post.data.title,
+              imageUrl: post.data.url,
+              description: post.data.author,
+              isNSFW: post.data.over_18, // Check if the post is NSFW
+            }))
+            .filter((image) => {
+              if (!showNSFW && image.isNSFW) {
+                return false; // Skip NSFW content if it's hidden
+              }
+              if (!uniqueUrls.has(image.imageUrl)) {
+                uniqueUrls.add(image.imageUrl);
+                return true;
+              }
+              return false;
+            });
+
+          return imageList;
+        });
+
+        const results = await Promise.all(promises);
+        const allImages = results.flat(); // Flatten the array of image lists
+
+        setImages(allImages);
+      } catch (error) {
+        console.error('Error fetching Reddit images:', error);
+      }
+    };
+
+    fetchRedditImages();
+  }, [selectedCategory, showNSFW]); // Add showNSFW to the dependency array
+
+  const fetchAddedDataFromMongoDB = async () => {
+    try {
+      const response = await axios.get('/addedData');
+      setAddedData(response.data);
+    } catch (error) {
+      console.error('Error fetching added data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAddedDataFromMongoDB();
+  }, []);
+
+  const addDataToMongoDB = async (image) => {
+    try {
+      await axios.post('/addData', image);
+      fetchAddedDataFromMongoDB();
+    } catch (error) {
+      console.error('Error adding data:', error);
+    }
+  };
+
+  const removeDataFromMongoDB = async (imageUrl) => {
+    try {
+      await axios.delete('/removeData', { data: { imageUrl } });
+      fetchAddedDataFromMongoDB();
+    } catch (error) {
+      console.error('Error removing data:', error);
+    }
+  };
 
   const subredditCategories = {
     anime: [
@@ -145,290 +112,197 @@ function App() {
     ],
     AIengines: ["midjourneyfantasy", "StableDiffusion", "animewallpaperai", "aiart"],
     Wallpaper: ["wallpaper", "amoledbackgrounds", "minimalwallpaper"],
-    custom: [],
   };
-  useEffect(() => {
-    localStorage.setItem("selectedCategory", selectedCategory);
 
-    // Perform a page refresh only one time when the category changes
-    if (!isRefreshed.current) {
-      isRefreshed.current = true;
-    }
-  }, [selectedCategory]);
-  
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+  };
 
-   useEffect(() => {
-    let subredditsToFetch = [];
+  const performCustomSearch = async () => {
+    try {
+      const response = await axios.get(`https://www.reddit.com/search.json?q=${customSearchQuery}&limit=30`);
+      const searchData = response.data.data.children;
 
-    if (selectedCategory === "custom" && customSubreddit.trim() !== "") {
-      subredditsToFetch.push(customSubreddit);
-    } else {
-      subredditsToFetch = subredditCategories[selectedCategory];
-    }
-
-    setIsLoading(true);
-
-    const fetchSubreddits = subredditsToFetch.map((subreddit) => {
-      const apiUrl = `https://www.reddit.com/r/${subreddit}/.json?sort=new&limit=99`;
-      return fetch(apiUrl)
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            console.error(
-              `Error occurred while fetching subreddit "${subreddit}": ${response.status} ${response.statusText}`
-            );
-            return { data: { children: [] } }; // Return empty data in case of error
-          }
-        })
-        .catch((error) => {
-          console.error(`Error occurred while fetching subreddit "${subreddit}":`, error);
-          return { data: { children: [] } }; // Return empty data in case of error
-        });
-    });
-
-    Promise.all(fetchSubreddits)
-      .then((results) => {
-        const posts = results.flatMap((result) =>
-          result.data.children.filter((post) => post.data.post_hint === "image" && (showNsfw || !post.data.over_18))
-        );
-
-        const urls = posts.map((post) => ({
-          url: post.data.url,
+      const searchResults = searchData
+        .filter((post) => post.data.url.endsWith('.jpg') || post.data.url.endsWith('.png'))
+        .map((post) => ({
           title: post.data.title,
-          author: post.data.author,
+          imageUrl: post.data.url,
+          description: post.data.author,
         }));
 
-        setImageUrls(urls);
+      setCustomSearchResults(searchResults);
+    } catch (error) {
+      console.error('Error fetching custom search results:', error);
+    }
+  };
 
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error occurred while fetching images:", error);
-        setIsLoading(false);
-      });
-  }, [selectedCategory, showNsfw, customSubreddit]);
+  // Menu toggle
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      // Retrieve liked images from localStorage
-      const storedLikedImages = localStorage.getItem("likedImages");
-      if (storedLikedImages) {
-        setLikedImages(JSON.parse(storedLikedImages));
+    const handleClickOutside = (event) => {
+      if (isMenuOpen && !event.target.closest('.menu-btn')) {
+        closeMenu();
       }
-    }
-  }, [isAuthenticated]);
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      // Store liked images in localStorage
-      localStorage.setItem("likedImages", JSON.stringify(likedImages));
-    }
-  }, [likedImages, isAuthenticated]);
-
-  const handleSaveClick = async (imageUrl) => {
-    if (isAuthenticated) {
-      try {
-        const response = await fetch(imageUrl);
-        const blob = await response.blob();
-
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "art.jpg";
-
-        link.click();
-
-        URL.revokeObjectURL(link.href);
-      } catch (error) {
-        console.error("Error occurred while downloading the image:", error);
-        window.open(imageUrl);
+    const handleScroll = () => {
+      if (isMenuOpen) {
+        closeMenu();
       }
-    } else {
-      loginWithRedirect();
-    }
-  };
+    };
 
-  const handleLikeClick = (imageUrl) => {
-    if (isAuthenticated) {
-    if (likedImages.includes(imageUrl)) {
-      setLikedImages(likedImages.filter((url) => url !== imageUrl));
-    } else {
-      setLikedImages([...likedImages, imageUrl]);
-    }
-  } else {
-    loginWithRedirect();
-  }
-  };
+    window.addEventListener('scroll', handleScroll);
 
-  const handleToggle = () => {
-    if (isAuthenticated) {
-      setShowNsfw(!showNsfw);
-    } else {
-      loginWithRedirect();
-    }
-  };
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [isMenuOpen]);
 
-  const handleCustomSubredditChange = (event) => {
-    setCustomSubreddit(event.target.value.trim());
-  };
-
-  useEffect(() => {
-    const isValidSubreddit = customSubreddit && customSubreddit.length > 69;
-
-    if (isValidSubreddit) {
-      setIsLoading(true);
-    } else {
-      setIsLoading(false);
-    }
-  }, [customSubreddit]);
-
-// eslint-disable-next-line
-  const handleProfileClick = () => {
-    setShowProfile(!showProfile);
-    setShowLikedPosts(false); // Hide liked posts when profile is clicked
-  };
-
-  const handleLikedPostsClick = () => {
-    setShowLikedPosts(!showLikedPosts);
-  };
-
-  inject();
-
-  const handleLogout = () => {
-    logout();
-  };
+  // Menu toggle cover
 
   return (
     <>
-      <section class="wrapper">
-      <section className="header">
-        <h1>wallipy.</h1>
-        {!isAuthenticated && <button onClick={loginWithRedirect}>Log In</button>}
-        {isAuthenticated && (
-          <ProfileDropdown user={user} onLogout={handleLogout} />
-        )}
-      </section>
-      </section>
- <div className="container">
-        {isLoading || authIsLoading ? (
-          <div className="loading">
-            <i className="fa-solid fa-spinner"></i>
-          </div>
-        ) : (
-          <>
-            <div className="art-grid">
-              {imageUrls.map((imageData, index) => (
-                <Art
-                  key={index}
-                  imageData={imageData}
-                  handleSaveClick={handleSaveClick}
-                  handleLikeClick={handleLikeClick}
-                  likedImages={likedImages}
-                />
-              ))}
-              <div ref={loadingRef} />
-            </div>
-            <div className="categories">
-              {Object.keys(subredditCategories).map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={selectedCategory === category ? "active" : ""}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-            {selectedCategory === "custom" && (
-              <input
-                type="text"
-                value={customSubreddit}
-                onChange={handleCustomSubredditChange}
-                placeholder="Enter subreddit name"
-              />
-            )}
-            <div className="toggle">
-              <input
-                type="checkbox"
-                id="nsfwToggle"
-                checked={showNsfw}
-                onChange={handleToggle}
-              />
-              <label htmlFor="nsfwToggle">Show NSFW</label>
-            </div>
-            {isAuthenticated && (
-              <div className="liked-section">
-                <button
-                  onClick={handleLikedPostsClick}
-                  className="liked-posts-button"
-                >
-                  <i className="fa-solid fa-heart"></i>Liked Posts
-                </button>
-                {showLikedPosts && likedImages.length > 0 ? (
-                  <div className="art-grid">
-                    {likedImages.map((imageUrl, index) => {
-                      const imageData = imageUrls.find(
-                        (data) => data.url === imageUrl
-                      );
-                      if (!imageData) {
-                        return null; // Skip if the imageData is not found
-                      }
-
-                      return (
-                        <div className="art" key={index}>
-                          <img
-                            src={imageUrl}
-                            alt="Liked Artwork"
-                            loading="lazy"
-                          />
-                          <ButtonGroup
-                            imageData={imageData}
-                            handleSaveClick={handleSaveClick}
-                            handleLikeClick={handleLikeClick}
-                            likedImages={likedImages}
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
+      <section className="wrapper">
+        <header className='header'>
+          <h1>wallipy</h1>
+          <div className="menu-btn">
+            <button onClick={toggleMenu}>
+              <i className="fas fa-bars"></i>
+            </button>
+            <div className="profile">
+              <div className={`dropdown ${isMenuOpen ? 'open' : ''}`}>
+                {isAuthenticated ? (
+                  <>
+                    <img src={user.picture} alt={user.name} />
+                    <h4>{user.name}!</h4>
+                    <h4 className="link">
+                      <a href="https://zaap.bio/tricticle">about us</a>
+                    </h4>
+                    <button onClick={() => logout()}>Log Out</button>
+                  </>
                 ) : (
-                  showLikedPosts && <p>No liked posts yet.</p>
+                  <button onClick={() => loginWithRedirect()}>Log In</button>
                 )}
               </div>
-            )}
-          </>
-        )}
+            </div>
+          </div>
+        </header>
+      </section>
+      <div className="sec">
+        <div className="sec-bar">
+          <input
+            type="text"
+            placeholder="search..."
+            value={customSearchQuery}
+            onChange={(e) => setCustomSearchQuery(e.target.value)}
+          />
+          <button onClick={performCustomSearch}><i className="fas fa-magnifying-glass"></i></button>
+        </div>
+        <div className="container">
+          {customSearchResults.map((result, index) => (
+            <div className="art-grid" key={index}>
+              <div className="art">
+                <img src={result.imageUrl} alt={result.title} />
+                <div className="button-group">
+                  <div className="art-details">
+                    <h3>{result.title}</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-      <footer className="about-page">
-        <h5>Wallipy v1.0</h5>
-        <h6>
-          This website is a React application that fetches and displays images
-          from different subreddits. Users can save and like images and search a
-          custom subreddit. Authenticated users can manage their liked posts,
-          save artworks, and toggle NSFW content.
-        </h6>
-        <p>
-          All arts credits go to &nbsp;
-          <a href="https://www.reddit.com/">creators</a>
-        </p>
-      </footer>
+      <div className="container">
+      <button className="liked-posts-button" onClick={() => setShowLikedSection(!showLikedSection)}>
+      <i className="fa-solid fa-heart"></i>Liked Posts
+        </button>
+        {showLikedSection && (
+          <div className="liked-section">
+            <h2>Liked section</h2>
+            {addedData.map((item, index) => (
+              <div className="art-grid" key={index}>
+                <div className="art">
+                  <img src={item.imageUrl} alt={item.title} />
+                  <div className="button-group">
+                    <div className="art-details">
+                      <h4>{item.title}</h4>
+                      <h6>by {item.description}</h6>
+                    </div>
+                    <button onClick={() => removeDataFromMongoDB(item.imageUrl)}><i className="fas fa-times"></i></button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="toggle">
+          <input
+            type="checkbox"
+            checked={showNSFW}
+            onChange={() => setShowNSFW(!showNSFW)}
+          />
+          <label htmlFor="nsfwToggle">Show NSFW</label>
+        </div>
+        <div className="art-grid">
+          {images.map((image, index) => (
+            <div key={index} className="art">
+              <img src={image.imageUrl} alt={image.title} />
+              <div className="button-group">
+                <div className="art-details">
+                  <h3>{image.title}</h3>
+                  <p>by {image.description}</p>
+                </div>
+                <button onClick={() => addDataToMongoDB(image)}><i className="fas fa-heart"></i></button>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="categories">
+          {Object.keys(subredditCategories)
+            .filter((category) => category !== 'custom') // Exclude 'custom' category
+            .map((category) => (
+              <button
+                key={category}
+                onClick={() => handleCategoryChange(category)}
+                className={selectedCategory === category ? 'active' : ''}
+              >
+                {category}
+              </button>
+            ))}
+        </div>
+      </div>
     </>
   );
 }
 
-function AuthWrapper() {
+function AuthenticatedApp() {
   return (
     <Auth0Provider
       domain={process.env.REACT_APP_AUTH0_DOMAIN}
       clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
-      authorizationParams={{
-        redirect_uri: window.location.origin,
-      }}
+      redirectUri={window.location.origin}
     >
       <App />
     </Auth0Provider>
   );
 }
 
-export default AuthWrapper;
+export default AuthenticatedApp;
