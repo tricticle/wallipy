@@ -13,7 +13,6 @@ function App() {
   const [showNSFW, setShowNSFW] = useState(false);
   const [showLikedSection, setShowLikedSection] = useState(false); // State to control liked section visibility
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
-  const serverUrl = process.env.REACT_APP_SERVER_URL;
 
 
   useEffect(() => {
@@ -67,7 +66,7 @@ function App() {
 
   const fetchAddedDataFromMongoDB = async () => {
     try {
-      const response = await axios.get(`${serverUrl}/addedData`);
+      const response = await axios.get(`https://wallipy-server.vercel.app/addedData`);
       setAddedData(response.data);
     } catch (error) {
       console.error('Error fetching added data:', error);
@@ -76,11 +75,11 @@ function App() {
 
   useEffect(() => {
     fetchAddedDataFromMongoDB();
-  }, [serverUrl]);
+  }, []);
 
   const addDataToMongoDB = async (image) => {
     try {
-      await axios.post(`${serverUrl}/addData`, image);
+      await axios.post(`https://wallipy-server.vercel.app/addData`, image);
       fetchAddedDataFromMongoDB();
     } catch (error) {
       console.error('Error adding data:', error);
@@ -89,7 +88,7 @@ function App() {
 
   const removeDataFromMongoDB = async (imageUrl) => {
     try {
-      await axios.delete(`${serverUrl}/removeData`, { data: { imageUrl } });
+      await axios.delete(`https://wallipy-server.vercel.app/removeData`, { data: { imageUrl } });
       fetchAddedDataFromMongoDB();
     } catch (error) {
       console.error('Error removing data:', error);
