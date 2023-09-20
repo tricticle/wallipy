@@ -295,7 +295,7 @@ function App() {
             <i className="fas fa-heart"></i>
           </button>
         ) : (
-          <button onClick={() => addDataToMongoDB(image)}>
+          <button className='liked' onClick={() => addDataToMongoDB(image)}>
             <i className="fas fa-heart"></i>
           </button>
         )}
