@@ -290,15 +290,14 @@ function App() {
           <h3>{image.title}</h3>
           <p>by {image.description}</p>
         </div>
-        {isImageLiked(image.imageUrl) ? (
-          <button onClick={() => removeDataFromMongoDB(image.imageUrl)}>
-            <i className="fas fa-heart"></i>
-          </button>
-        ) : (
-          <button className='liked' onClick={() => addDataToMongoDB(image)}>
-            <i className="fas fa-heart"></i>
-          </button>
-        )}
+        <button className={isImageLiked(image.imageUrl) ? "liked" : ""}
+         onClick={() => {
+          if (isImageLiked(image.imageUrl)) {
+            removeDataFromMongoDB(image.imageUrl);
+          } else {
+            addDataToMongoDB(image);
+          }
+          }}>     <i className="fas fa-heart">    </i></button>
       </div>
     </div>
   ))}
