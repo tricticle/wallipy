@@ -291,7 +291,7 @@ function App() {
           <p>by {image.description}</p>
         </div>
         {isImageLiked(image.imageUrl) ? (
-          <button className='liked' onClick={() => removeDataFromMongoDB(image.imageUrl)}>
+          <button onClick={() => removeDataFromMongoDB(image.imageUrl)}>
             <i className="fas fa-heart"></i>
           </button>
         ) : (
