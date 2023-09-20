@@ -23,43 +23,46 @@ function App() {
           console.warn(`Subreddits not found for category: ${selectedCategory}`);
           return;
         }
-
-        const promises = subredditList.map(async (subreddit) => {
-          const response = await axios.get(`https://www.reddit.com/r/${subreddit}/top.json?limit=99`);
-          const redditData = response.data.data.children;
-
-          const uniqueUrls = new Set(); // Create a Set to store unique URLs
-
-          const imageList = redditData
-            .filter((post) => post.data.url.endsWith('.jpg') || post.data.url.endsWith('.png') || post.data.url.endsWith('.gif'))
-            .map((post) => ({
-              title: post.data.title,
-              imageUrl: post.data.url,
-              description: post.data.author,
-              isNSFW: post.data.over_18, // Check if the post is NSFW
-            }))
-            .filter((image) => {
-              if (!showNSFW && image.isNSFW) {
-                return false; // Skip NSFW content if it's hidden
-              }
-              if (!uniqueUrls.has(image.imageUrl)) {
-                uniqueUrls.add(image.imageUrl);
-                return true;
-              }
-              return false;
-            });
-
-          return imageList;
+    
+        // Create an array of promises to fetch data from multiple subreddits
+        const fetchSubreddits = subredditList.map(async (subreddit) => {
+          const response = await axios.get(`https://www.reddit.com/r/${subreddit}/top.json?limit=1`);
+          return response.data;
         });
-
-        const results = await Promise.all(promises);
-        const allImages = results.flat(); // Flatten the array of image lists
-
-        setImages(allImages);
+    
+        // Fetch data from all subreddits concurrently using Promise.all
+        const results = await Promise.all(fetchSubreddits);
+    
+        // Flatten and filter posts
+        const posts = results.flatMap((result) =>
+          result.data.children.filter(
+            (post) =>
+              post.data.post_hint === 'image' && (showNSFW || !post.data.over_18)
+          )
+        );
+    
+        const uniqueUrls = new Set(); // Create a Set to store unique URLs
+    
+        // Map filtered posts to the desired format
+        const imageList = posts.map((post) => ({
+          title: post.data.title,
+          imageUrl: post.data.url,
+          description: post.data.author,
+          isNSFW: post.data.over_18, // Check if the post is NSFW
+        })).filter((image) => {
+          if (!uniqueUrls.has(image.imageUrl)) {
+            uniqueUrls.add(image.imageUrl);
+            return true;
+          }
+          return false;
+        });
+    
+        setImages(imageList);
       } catch (error) {
         console.error('Error fetching Reddit images:', error);
       }
     };
+    
 
     fetchRedditImages();
   }, [selectedCategory, showNSFW]); // Add showNSFW to the dependency array
@@ -242,9 +245,9 @@ function App() {
         {showLikedSection && (
           <div className="liked-section">
             <h2>Liked section</h2>
+            <div className="art-grid" >
             {addedData.map((item, index) => (
-              <div className="art-grid" key={index}>
-                <div className="art">
+                <div className="art" key={index}>
                   <img  loading="lazy" src={item.imageUrl} alt={item.title} />
                   <div className="button-group">
                     <div className="art-details">
@@ -254,8 +257,8 @@ function App() {
                     <button onClick={() => removeDataFromMongoDB(item.imageUrl)}><i className="fas fa-times"></i></button>
                   </div>
                 </div>
-              </div>
             ))}
+          </div>
           </div>
         )}
         <div className="toggle">
