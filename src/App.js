@@ -1,18 +1,23 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import axios from 'axios';
 import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
 
 function App() {
   const [images, setImages] = useState([]);
   const [addedData, setAddedData] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('Wallpaper');
+  const [selectedCategory, setSelectedCategory] = useState(() => {
+    return localStorage.getItem("selectedCategory") || "Wallpaper";
+  });
   const [customSearchQuery, setCustomSearchQuery] = useState('');
   const [customSearchResults, setCustomSearchResults] = useState([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showNSFW, setShowNSFW] = useState(false);
   const [showLikedSection, setShowLikedSection] = useState(false); // State to control liked section visibility
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+
+  const isRefreshed = useRef(false);
+  
 
 
   useEffect(() => {
@@ -26,7 +31,7 @@ function App() {
     
         // Create an array of promises to fetch data from multiple subreddits
         const fetchSubreddits = subredditList.map(async (subreddit) => {
-          const response = await axios.get(`https://www.reddit.com/r/${subreddit}/top.json?limit=1`);
+          const response = await axios.get(`https://www.reddit.com/r/${subreddit}/top.json?limit=99`);
           return response.data;
         });
     
@@ -118,9 +123,15 @@ function App() {
     Wallpaper: ["wallpaper", "amoledbackgrounds", "minimalwallpaper"],
   };
 
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-  };
+  useEffect(() => {
+    localStorage.setItem("selectedCategory", selectedCategory);
+    if (!isRefreshed.current) {
+      isRefreshed.current = true;
+    } else {
+      // Perform a page refresh when the category changes
+      window.location.reload();
+    }
+  }, [selectedCategory]);
 
   const performCustomSearch = async () => {
     try {
@@ -184,6 +195,7 @@ function App() {
   const isImageLiked = (imageUrl) => {
     return addedData.some((item) => item.imageUrl === imageUrl);
   };
+  
 
   return (
     <>
@@ -292,19 +304,30 @@ function App() {
   ))}
 </div>
         <div className="categories">
-          {Object.keys(subredditCategories)
-            .filter((category) => category !== 'custom') // Exclude 'custom' category
-            .map((category) => (
-              <button
-                key={category}
-                onClick={() => handleCategoryChange(category)}
-                className={selectedCategory === category ? 'active' : ''}
-              >
-                {category}
-              </button>
-            ))}
-        </div>
-      </div>
+              {Object.keys(subredditCategories).map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={selectedCategory === category ? "active" : ""}
+                >
+                  {category}
+                </button>
+              ))}
+              </div>
+          </div>
+      <footer className="about-page">
+        <h5>Wallipy v1.0</h5>
+        <h6>
+          This website is a React application that fetches and displays images
+          from different subreddits. Users can save and like images and search a
+          custom subreddit. Authenticated users can manage their liked posts,
+          save artworks, and toggle NSFW content.
+        </h6>
+        <p>
+          All arts credits go to &nbsp;
+          <a href="https://www.reddit.com/">creators</a>
+        </p>
+      </footer>
     </>
   );
 }
