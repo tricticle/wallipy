@@ -93,6 +93,11 @@
   color: var(--text-color);
 }
 
+.custom{
+  position: fixed;
+  bottom: 99px;
+}
+
 .categories button.active {
   color: var(--background-color);
   background-color: var(--secondary-color);
@@ -456,12 +461,24 @@ form {
   width: 100%;
 }
 
-input[type="text"] {
+.sec-bar input[type="text"] {
   transition: var(--tran);
   padding: 5px;
   outline: transparent;
   border: transparent;
   border-radius: 10px 0% 0% 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  text-align: center;
+  box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.1);
+}
+
+input[type="text"] {
+  transition: var(--tran);
+  padding: 5px;
+  outline: transparent;
+  border: transparent;
+  border-radius: 3px;
   font-family: 'Poppins', sans-serif;
   font-size: 12px;
   text-align: center;

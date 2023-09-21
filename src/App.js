@@ -15,18 +15,18 @@ function App() {
   const [showNSFW, setShowNSFW] = useState(false);
   const [showLikedSection, setShowLikedSection] = useState(false); // State to control liked section visibility
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+  const [customSubreddit, setCustomSubreddit] = useState("");
+
 
   const isRefreshed = useRef(false);
-  
-
 
   useEffect(() => {
     const fetchRedditImages = async () => {
       try {
-        const subredditList = subredditCategories[selectedCategory] || [];
-        if (subredditList.length === 0) {
-          console.warn(`Subreddits not found for category: ${selectedCategory}`);
-          return;
+        let subredditList = subredditCategories[selectedCategory] || [];
+    
+        if (selectedCategory === "custom" && customSubreddit.trim() !== "") {
+          subredditList = [customSubreddit];
         }
     
         // Create an array of promises to fetch data from multiple subreddits
@@ -70,7 +70,7 @@ function App() {
     
 
     fetchRedditImages();
-  }, [selectedCategory, showNSFW]); // Add showNSFW to the dependency array
+  }, [selectedCategory, showNSFW, customSubreddit]); // Add showNSFW to the dependency array
 
   const fetchAddedDataFromMongoDB = async () => {
     try {
@@ -121,6 +121,7 @@ function App() {
     ],
     AIengines: ["midjourneyfantasy", "StableDiffusion", "animewallpaperai", "aiart"],
     Wallpaper: ["wallpaper", "amoledbackgrounds", "minimalwallpaper"],
+    custom: [],
   };
 
   useEffect(() => {
@@ -300,18 +301,29 @@ function App() {
     </div>
   ))}
 </div>
-        <div className="categories">
-              {Object.keys(subredditCategories).map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={selectedCategory === category ? "active" : ""}
-                >
-                  {category}
-                </button>
-              ))}
-              </div>
-          </div>
+<div className="categories">
+  {Object.keys(subredditCategories).map((category) => (
+    <button
+      key={category}
+      onClick={() => setSelectedCategory(category)}
+      className={selectedCategory === category ? "active" : ""}
+    >
+      {category === "custom" ? "Custom" : category}
+    </button>
+  ))}
+</div>
+{selectedCategory === "custom" && (
+    <input className="custom"
+      type="text"
+      placeholder="Enter subreddit name"
+      value={customSubreddit}
+      onChange={(e) => {
+        console.log("customSubreddit value:", e.target.value);
+        setCustomSubreddit(e.target.value);
+      }}
+    />
+)}
+</div>
       <footer className="about-page">
         <h5>Wallipy v1.0</h5>
         <h6>
