@@ -3,7 +3,7 @@
 :root {
   --tran: 0.7s ease;
   --primary-color: #ff7070;
-  --secondary-color: #9b98ffe7;
+  --secondary-color: #b7b5ffe7;
   --background-color: #ffffff;
   --text-color: #000000;
 }
@@ -134,7 +134,7 @@ body::-webkit-scrollbar {
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  border-radius: 7px;
+  border-radius: 5px;
   transition: var(--tran);
   box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.199);
   background-repeat: none;
@@ -169,7 +169,7 @@ body::-webkit-scrollbar {
 
 .dropdown {
   display: flex;
-display: none;
+  display: none;
 }
 
 .dropdown.open {
@@ -221,7 +221,7 @@ display: none;
 }
 
 .header:hover {
-  background-color: var(--primary-color);
+  background-color: var(--secondary-color);
   color: var(--background-color);
   transition: var(--tran);
 }
@@ -347,7 +347,7 @@ display: none;
 .art-details {
   margin-left:10px ;
   text-overflow:inherit;
-  text-shadow: 0px 1px 5px var(--text-color);
+  text-shadow: 0px 0px 7px var(--text-color);
   background-color: hsla(0, 0%, 0%, 0);
   backdrop-filter: blur(5px);
   flex-grow: 1;
@@ -366,7 +366,7 @@ display: none;
 }
 
 .art-details h3 {
-  font-size: 14px;
+  font-size: calc(30% + 9px);
   margin: 0;
 }
 
@@ -429,15 +429,15 @@ i{
 
 .art button {
   transition: var(--tran);
-  text-shadow: 0px 1px  5px var(--text-color);
   display: flex;
+  text-shadow: 0px 0px 7px var(--text-color);
   margin: 10px;
   padding: 5px;
   background-color: hsla(0, 0%, 0%, 0);
   backdrop-filter: blur(5px);
   color: var(--background-color);
   border: none;
-  border-radius: 3px;
+  border-radius: 100%;
   cursor: pointer;
   box-shadow: 0px 4px 10px hsla(0, 0%, 0%, 0.3);
   align-items: center;

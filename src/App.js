@@ -235,7 +235,6 @@ function App() {
           />
           <button onClick={performCustomSearch}><i className="fas fa-magnifying-glass"></i></button>
         </div>
-        <div className="container">
           {customSearchResults.map((result, index) => (
             <div className="art-grid" key={index}>
               <div className="art">
@@ -248,7 +247,6 @@ function App() {
               </div>
             </div>
           ))}
-        </div>
       </div>
       <div className="container">
       <button className="liked-posts-button" onClick={() => setShowLikedSection(!showLikedSection)}>
@@ -263,8 +261,8 @@ function App() {
                   <img  loading="lazy" src={item.imageUrl} alt={item.title} />
                   <div className="button-group">
                     <div className="art-details">
-                      <h4>{item.title}</h4>
-                      <h6>by {item.description}</h6>
+                      <h3>{item.title}</h3>
+                      <p>by {item.description}</p>
                     </div>
                     <button onClick={() => removeDataFromMongoDB(item.imageUrl)}><i className="fas fa-times"></i></button>
                   </div>
@@ -336,7 +334,6 @@ function AuthenticatedApp() {
     <Auth0Provider
       domain={process.env.REACT_APP_AUTH0_DOMAIN}
       clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
-      redirectUri={window.location.origin}
     >
       <App />
     </Auth0Provider>
