@@ -16,7 +16,7 @@ function App() {
   const [showLikedSection, setShowLikedSection] = useState(false); // State to control liked section visibility
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
   const [customSubreddit, setCustomSubreddit] = useState("");
-
+  const serverUrl = process.env.REACT_APP_SERVER_URL;
 
   const isRefreshed = useRef(false);
 
@@ -68,26 +68,46 @@ function App() {
       }
     };
     
-
     fetchRedditImages();
   }, [selectedCategory, showNSFW, customSubreddit]); // Add showNSFW to the dependency array
 
   const fetchAddedDataFromMongoDB = async () => {
     try {
-      const response = await axios.get(`https://wallipy-server.vercel.app/addedData`);
-      setAddedData(response.data);
+      if (isAuthenticated) {
+        const response = await axios.get(`${serverUrl}/addedData?username=${user.name}`);
+        setAddedData(response.data);
+      }
     } catch (error) {
       console.error('Error fetching added data:', error);
     }
   };
 
   useEffect(() => {
-    fetchAddedDataFromMongoDB();
-  }, []);
+    if (isAuthenticated) {
+      fetchAddedDataFromMongoDB();
+    }
+  }, [user, isAuthenticated, serverUrl]); // Fetch data when the user is authenticated or user changes
 
   const addDataToMongoDB = async (image) => {
     try {
-      await axios.post(`https://wallipy-server.vercel.app/addData`, image);
+      if (!isAuthenticated) {
+        loginWithRedirect();
+        return;
+      }
+
+      const { title, imageUrl, description } = image;
+
+      // Include the username from Auth0 user object
+      const username = user.name;
+
+      const dataToAdd = {
+        title,
+        imageUrl,
+        description,
+        username,
+      };
+  
+      await axios.post(`${serverUrl}/addData`, dataToAdd);
       fetchAddedDataFromMongoDB();
     } catch (error) {
       console.error('Error adding data:', error);
@@ -96,7 +116,12 @@ function App() {
 
   const removeDataFromMongoDB = async (imageUrl) => {
     try {
-      await axios.delete(`https://wallipy-server.vercel.app/removeData`, { data: { imageUrl } });
+      if (!isAuthenticated) {
+        loginWithRedirect();
+        return;
+      }
+
+      await axios.delete(`${serverUrl}/removeData`, { data: { imageUrl, username: user.name } });
       fetchAddedDataFromMongoDB();
     } catch (error) {
       console.error('Error removing data:', error);
@@ -196,7 +221,6 @@ function App() {
   const isImageLiked = (imageUrl) => {
     return addedData.some((item) => item.imageUrl === imageUrl);
   };
-  
 
   return (
     <>
@@ -250,26 +274,26 @@ function App() {
           ))}
       </div>
       <div className="container">
-      <button className="liked-posts-button" onClick={() => setShowLikedSection(!showLikedSection)}>
-      <i className="fa-solid fa-heart"></i>Liked Posts
+        <button className="liked-posts-button" onClick={() => setShowLikedSection(!showLikedSection)}>
+          <i className="fa-solid fa-heart"></i>Liked Posts
         </button>
         {showLikedSection && (
           <div className="liked-section">
             <h2>Liked section</h2>
             <div className="art-grid" >
-            {addedData.map((item, index) => (
-                <div className="art" key={index}>
-                  <img  loading="lazy" src={item.imageUrl} alt={item.title} />
-                  <div className="button-group">
-                    <div className="art-details">
-                      <h3>{item.title}</h3>
-                      <p>by {item.description}</p>
+              {addedData.map((item, index) => (
+                  <div className="art" key={index}>
+                    <img  loading="lazy" src={item.imageUrl} alt={item.title} />
+                    <div className="button-group">
+                      <div className="art-details">
+                        <h3>{item.title}</h3>
+                        <p>by {item.description}</p>
+                      </div>
+                      <button onClick={() => removeDataFromMongoDB(item.imageUrl)}><i className="fas fa-times"></i></button>
                     </div>
-                    <button onClick={() => removeDataFromMongoDB(item.imageUrl)}><i className="fas fa-times"></i></button>
                   </div>
-                </div>
-            ))}
-          </div>
+              ))}
+            </div>
           </div>
         )}
         <div className="toggle">
@@ -281,49 +305,51 @@ function App() {
           <label htmlFor="nsfwToggle">Show NSFW</label>
         </div>
         <div className="art-grid">
-  {images.map((image, index) => (
-    <div key={index} className="art">
-      <img  loading="lazy" src={image.imageUrl} alt={image.title} />
-      <div className="button-group">
-        <div className="art-details">
-          <h3>{image.title}</h3>
-          <p>by {image.description}</p>
+          {images.map((image, index) => (
+            <div key={index} className="art">
+              <img  loading="lazy" src={image.imageUrl} alt={image.title} />
+              <div className="button-group">
+                <div className="art-details">
+                  <h3>{image.title}</h3>
+                  <p>by {image.description}</p>
+                </div>
+                <button className={isImageLiked(image.imageUrl) ? "liked" : ""}
+                  onClick={() => {
+                    if (isImageLiked(image.imageUrl)) {
+                      removeDataFromMongoDB(image.imageUrl);
+                    } else {
+                      addDataToMongoDB(image);
+                    }
+                  }}>
+                  <i className="fas fa-heart"></i>
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
-        <button className={isImageLiked(image.imageUrl) ? "liked" : ""}
-         onClick={() => {
-          if (isImageLiked(image.imageUrl)) {
-            removeDataFromMongoDB(image.imageUrl);
-          } else {
-            addDataToMongoDB(image);
-          }
-          }}>     <i className="fas fa-heart">    </i></button>
+        <div className="categories">
+          {Object.keys(subredditCategories).map((category) => (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={selectedCategory === category ? "active" : ""}
+            >
+              {category === "custom" ? "Custom" : category}
+            </button>
+          ))}
+        </div>
+        {selectedCategory === "custom" && (
+            <input className="custom"
+              type="text"
+              placeholder="Enter subreddit name"
+              value={customSubreddit}
+              onChange={(e) => {
+                console.log("customSubreddit value:", e.target.value);
+                setCustomSubreddit(e.target.value);
+              }}
+            />
+        )}
       </div>
-    </div>
-  ))}
-</div>
-<div className="categories">
-  {Object.keys(subredditCategories).map((category) => (
-    <button
-      key={category}
-      onClick={() => setSelectedCategory(category)}
-      className={selectedCategory === category ? "active" : ""}
-    >
-      {category === "custom" ? "Custom" : category}
-    </button>
-  ))}
-</div>
-{selectedCategory === "custom" && (
-    <input className="custom"
-      type="text"
-      placeholder="Enter subreddit name"
-      value={customSubreddit}
-      onChange={(e) => {
-        console.log("customSubreddit value:", e.target.value);
-        setCustomSubreddit(e.target.value);
-      }}
-    />
-)}
-</div>
       <footer className="about-page">
         <h5>Wallipy v1.0</h5>
         <h6>
@@ -346,6 +372,9 @@ function AuthenticatedApp() {
     <Auth0Provider
       domain={process.env.REACT_APP_AUTH0_DOMAIN}
       clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
+      authorizationParams={{
+        redirect_uri: window.location.origin
+      }}
     >
       <App />
     </Auth0Provider>
