@@ -16,6 +16,7 @@ function App() {
   const [showLikedSection, setShowLikedSection] = useState(false); // State to control liked section visibility
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
   const [customSubreddit, setCustomSubreddit] = useState("");
+  const serverUrl = process.env.REACT_APP_SERVER_URL;
 
   const isRefreshed = useRef(false);
 
@@ -73,7 +74,7 @@ function App() {
   const fetchAddedDataFromMongoDB = async () => {
     try {
       if (isAuthenticated) {
-        const response = await axios.get(`https://wallipy-server.vercel.app/addedData?username=${user.name}`);
+        const response = await axios.get(`${serverUrl}/addedData?username=${user.name}`);
         setAddedData(response.data);
       }
     } catch (error) {
@@ -85,7 +86,7 @@ function App() {
     if (isAuthenticated) {
       fetchAddedDataFromMongoDB();
     }
-  }, [user, isAuthenticated]); // Fetch data when the user is authenticated or user changes
+  }, [user, isAuthenticated, serverUrl]); // Fetch data when the user is authenticated or user changes
 
   const addDataToMongoDB = async (image) => {
     try {
@@ -106,7 +107,7 @@ function App() {
         username,
       };
   
-      await axios.post(`https://wallipy-server.vercel.app/addData`, dataToAdd);
+      await axios.post(`${serverUrl}/addData`, dataToAdd);
       fetchAddedDataFromMongoDB();
     } catch (error) {
       console.error('Error adding data:', error);
@@ -120,7 +121,7 @@ function App() {
         return;
       }
 
-      await axios.delete(`https://wallipy-server.vercel.app/removeData`, { data: { imageUrl, username: user.name } });
+      await axios.delete(`${serverUrl}/removeData`, { data: { imageUrl, username: user.name } });
       fetchAddedDataFromMongoDB();
     } catch (error) {
       console.error('Error removing data:', error);
@@ -372,8 +373,8 @@ function AuthenticatedApp() {
       domain={process.env.REACT_APP_AUTH0_DOMAIN}
       clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
       authorizationParams={{
-      redirect_uri: window.location.origin
-    }}
+        redirect_uri: window.location.origin
+      }}
     >
       <App />
     </Auth0Provider>
