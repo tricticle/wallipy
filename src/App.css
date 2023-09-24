@@ -73,6 +73,7 @@
 
 .categories {
   background-color: hsl(0, 0%, 100%);
+  z-index: 30;
   padding: 15px;
   border-radius: 7px;
   position: fixed;
@@ -392,6 +393,108 @@ body::-webkit-scrollbar {
   font-family: 'Poppins', sans-serif;
   font-size: 10px;
 }
+
+/* CSS for the overlay */
+.inset {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10; /* Ensure the modal is on top of everything */
+}
+
+/* CSS for the modal container */
+.edit-modal {
+  display: flex;
+  background-color: #00000018;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(30px);
+  max-width: 80%;
+  width: 400px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  flex-wrap: wrap;
+}
+
+.edit-modal form{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+}
+
+/* CSS for the details section within the modal */
+.details {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-modal h3{
+  color: var(--background-color);
+  font-size: inherit;
+  font-weight: 200px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 100;
+  text-transform: uppercase;
+}
+
+.details label {
+  color: var(--background-color);
+  margin-bottom: 5px;
+}
+
+.details input[type="text"],
+.details textarea {
+  transition: var(--tran);
+  padding: 5px;
+  outline: transparent;
+  border: transparent;
+  border-radius: 3px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  text-align: center;
+  box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+}
+
+/* CSS for the buttons section within the modal */
+.update-buttons {
+  display: flex;
+  transition: var(--tran);
+}
+
+.update-buttons button {
+  margin-left: 10px;
+  padding: 8px 20px;
+  background-color:var(--secondary-color);
+  color: var(--background-color);
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: var(--tran);
+}
+
+.update-buttons button:hover {
+  transition: var(--tran);
+  background-color: var(--text-color);
+}
+
+/* You can adjust the styles to match your design preferences */
+
 
 .button-group button.liked {
   text-shadow: none;

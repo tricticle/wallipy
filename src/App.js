@@ -16,6 +16,10 @@ function App() {
   const [showLikedSection, setShowLikedSection] = useState(false); // State to control liked section visibility
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
   const [customSubreddit, setCustomSubreddit] = useState("");
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [editedTitle, setEditedTitle] = useState("");
+  const [editedDescription, setEditedDescription] = useState("");
   const serverUrl = process.env.REACT_APP_SERVER_URL;
 
   const isRefreshed = useRef(false);
@@ -31,7 +35,7 @@ function App() {
     
         // Create an array of promises to fetch data from multiple subreddits
         const fetchSubreddits = subredditList.map(async (subreddit) => {
-          const response = await axios.get(`https://www.reddit.com/r/${subreddit}/top.json?limit=99`);
+          const response = await axios.get(`https://www.reddit.com/r/${subreddit}/top.json?limit=1`);
           return response.data;
         });
     
@@ -111,6 +115,44 @@ function App() {
       fetchAddedDataFromMongoDB();
     } catch (error) {
       console.error('Error adding data:', error);
+    }
+  };
+
+  const openEditModal = (image) => {
+    setSelectedImage(image);
+    setEditedTitle(image.title);
+    setEditedDescription(image.description);
+    setEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setSelectedImage(null);
+    setEditedTitle("");
+    setEditedDescription("");
+    setEditModalOpen(false);
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (!isAuthenticated) {
+        loginWithRedirect();
+        return;
+      }
+
+      const updatedData = {
+        imageUrl: selectedImage.imageUrl,
+        username: user.name,
+        newTitle: editedTitle,
+        newDescription: editedDescription,
+      };
+
+      await axios.put(`${serverUrl}/updateData`, updatedData);
+      fetchAddedDataFromMongoDB();
+      closeEditModal();
+    } catch (error) {
+      console.error('Error updating data:', error);
     }
   };
 
@@ -277,25 +319,52 @@ function App() {
         <button className="liked-posts-button" onClick={() => setShowLikedSection(!showLikedSection)}>
           <i className="fa-solid fa-heart"></i>Liked Posts
         </button>
-        {showLikedSection && (
-          <div className="liked-section">
-            <h2>Liked section</h2>
-            <div className="art-grid" >
-              {addedData.map((item, index) => (
-                  <div className="art" key={index}>
-                    <img  loading="lazy" src={item.imageUrl} alt={item.title} />
-                    <div className="button-group">
-                      <div className="art-details">
-                        <h3>{item.title}</h3>
-                        <p>by {item.description}</p>
-                      </div>
-                      <button onClick={() => removeDataFromMongoDB(item.imageUrl)}><i className="fas fa-times"></i></button>
-                    </div>
+{showLikedSection && (
+        <div className="liked-section">
+          <h2>Liked section</h2>
+          <div className="art-grid" >
+            {addedData.map((item, index) => (
+              <div className="art" key={index}>
+                <img loading="lazy" src={item.imageUrl} alt={item.title} />
+                <div className="button-group">
+                  <div className="art-details">
+                    <h3>{item.title}</h3>
+                    <p>by {item.description}</p>
                   </div>
-              ))}
-            </div>
+                  <button onClick={() => openEditModal(item)}><i class="fa-solid fa-plus"></i></button>
+                  <button onClick={() => removeDataFromMongoDB(item.imageUrl)}><i class="fa-solid fa-trash"></i></button>
+                </div>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
+      )}
+      {editModalOpen && (
+        <div className="inset">
+          <div className="edit-modal">
+            <h3>Edit Post</h3>
+            <form onSubmit={handleEditSubmit}>
+              <div className="details">
+                <label>Title</label>
+                <input
+                  type="text"
+                  value={editedTitle}
+                  onChange={(e) => setEditedTitle(e.target.value)}
+                />
+                <label>Description</label>
+                <textarea
+                  value={editedDescription}
+                  onChange={(e) => setEditedDescription(e.target.value)}
+                />
+              </div>
+              <div className="update-buttons">
+                <button type="submit">Save</button>
+                <button onClick={closeEditModal}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
         <div className="toggle">
           <input
             type="checkbox"
