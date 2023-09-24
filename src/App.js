@@ -35,7 +35,7 @@ function App() {
     
         // Create an array of promises to fetch data from multiple subreddits
         const fetchSubreddits = subredditList.map(async (subreddit) => {
-          const response = await axios.get(`https://www.reddit.com/r/${subreddit}/top.json?limit=1`);
+          const response = await axios.get(`https://www.reddit.com/r/${subreddit}/top.json?limit=99`);
           return response.data;
         });
     
