@@ -20,6 +20,10 @@ function App() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedDescription, setEditedDescription] = useState("");
+  const [showCustomImageForm, setShowCustomImageForm] = useState(false);
+  const [customImageUrl, setCustomImageUrl] = useState("");
+  const [customImageTitle, setCustomImageTitle] = useState("");
+  const [customImageDescription, setCustomImageDescription] = useState("");
   const serverUrl = process.env.REACT_APP_SERVER_URL;
 
   const isRefreshed = useRef(false);
@@ -220,6 +224,44 @@ function App() {
     }
   };
 
+  
+  const openCustomImageForm = () => {
+    setShowCustomImageForm(true);
+  };
+
+  const closeCustomImageForm = () => {
+    setShowCustomImageForm(false);
+  };
+
+  const handleCustomImageSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (!isAuthenticated) {
+        loginWithRedirect();
+        return;
+      }
+
+      const customImage = {
+        title: customImageTitle,
+        imageUrl: customImageUrl,
+        description: customImageDescription,
+      };
+
+      // Send a POST request to add the custom image and data
+      await addDataToMongoDB(customImage);
+
+      // Clear the form and close it
+      setCustomImageUrl("");
+      setCustomImageTitle("");
+      setCustomImageDescription("");
+      closeCustomImageForm();
+    } catch (error) {
+      console.error('Error adding custom image and data:', error);
+    }
+  };
+
+
   // Menu toggle
 
   const toggleMenu = () => {
@@ -287,6 +329,9 @@ function App() {
                 ) : (
                   <button onClick={() => loginWithRedirect()}>Log In</button>
                 )}
+                {isAuthenticated && user.name === "tricticle" && (
+  <button className="add-custom-image-button" onClick={openCustomImageForm}>Add Arts</button>
+                )}
               </div>
             </div>
           </div>
@@ -315,13 +360,45 @@ function App() {
             </div>
           ))}
       </div>
+      <div className={`inset ${showCustomImageForm ? '' : 'hidden'}`}>
+        {showCustomImageForm && (
+          <div className="edit-modal">
+            <h3>Add Custom Image</h3>
+            <form onSubmit={handleCustomImageSubmit}>
+              <div className="details">
+                <label>Title</label>
+                <input
+                  type="text"
+                  value={customImageTitle}
+                  onChange={(e) => setCustomImageTitle(e.target.value)}
+                />
+                <label>Description</label>
+                <textarea
+                  value={customImageDescription}
+                  onChange={(e) => setCustomImageDescription(e.target.value)}
+                />
+                <label>Image URL</label>
+                <input
+                  type="text"
+                  value={customImageUrl}
+                  onChange={(e) => setCustomImageUrl(e.target.value)}
+                />
+              </div>
+              <div className="update-buttons">
+                <button type="submit">Add</button>
+                <button onClick={closeCustomImageForm}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        )}
+      </div>
       <div className="container">
         <button className="liked-posts-button" onClick={() => setShowLikedSection(!showLikedSection)}>
           <i className="fa-solid fa-heart"></i>Liked Posts
         </button>
-{showLikedSection && (
+      {showLikedSection && (
         <div className="liked-section">
-          <h2>Liked section</h2>
+          <h2>Liked and Save section</h2>
           <div className="art-grid" >
             {addedData.map((item, index) => (
               <div className="art" key={index}>
@@ -331,8 +408,8 @@ function App() {
                     <h3>{item.title}</h3>
                     <p>by {item.description}</p>
                   </div>
-                  <button onClick={() => openEditModal(item)}><i class="fa-solid fa-plus"></i></button>
-                  <button onClick={() => removeDataFromMongoDB(item.imageUrl)}><i class="fa-solid fa-trash"></i></button>
+                  <button onClick={() => openEditModal(item)}><i className="fa-solid fa-plus"></i></button>
+                  <button onClick={() => removeDataFromMongoDB(item.imageUrl)}><i className="fa-solid fa-trash"></i></button>
                 </div>
               </div>
             ))}

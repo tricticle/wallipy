@@ -60,6 +60,26 @@
   }
 }
 
+@keyframes shake {
+  0% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(30deg);
+  }
+  50% {
+    transform: rotate(0deg);
+    transform:scale(70%);
+  }
+  80% {
+    transform: rotate(-30deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+
 * {
   margin: 0;
   padding: 0;
@@ -74,12 +94,11 @@
 .categories {
   background-color: hsl(0, 0%, 100%);
   z-index: 30;
-  padding: 15px;
+  padding: 10px;
   border-radius: 7px;
   position: fixed;
-  bottom: 0;
+  bottom: 10;
   display: flex;
-  margin: 10px;
   flex-direction: row;
   flex-wrap: wrap;
   box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.1);
@@ -96,7 +115,7 @@
 
 .custom{
   position: fixed;
-  bottom: 99px;
+  bottom: 69px;
 }
 
 .categories button.active {
@@ -329,6 +348,12 @@ body::-webkit-scrollbar {
   box-shadow: 0px 4px 10px hsla(0, 0%, 0%, 0.499);
 }
 
+.art:hover img{
+  transition: var(--tran);
+  padding: 7px;
+  border-radius: 17px;
+}
+
 .art img {
   display: flex;
   transition: var(--tran);
@@ -341,7 +366,6 @@ body::-webkit-scrollbar {
 }
 
 .button-group {
-  position: absolute;
   padding: 3px;
   display: flex; /* Use flexbox */
   align-items: center;
@@ -353,11 +377,8 @@ body::-webkit-scrollbar {
 .art-details {
   margin-left:10px ;
   text-overflow:inherit;
-  text-shadow: 0px 0px 7px var(--text-color);
-  background-color: hsla(0, 0%, 0%, 0);
-  backdrop-filter: blur(5px);
   flex-grow: 1;
-  color: var(--background-color);
+  color: var(--text-color);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -368,7 +389,6 @@ body::-webkit-scrollbar {
   padding: 5px;
   border-radius: 7px;
   transition: var(--tran);
-  box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.1);
 }
 
 .art-details h3 {
@@ -407,14 +427,19 @@ body::-webkit-scrollbar {
   z-index: 10; /* Ensure the modal is on top of everything */
 }
 
+.hidden {
+  display: none;
+}
+
+
 /* CSS for the modal container */
 .edit-modal {
   display: flex;
-  background-color: #00000018;
+  background-color: hsla(0, 0%, 0%, 0.03);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(11px);
   padding: 20px;
   border-radius: 5px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(30px);
   max-width: 80%;
   width: 400px;
   flex-direction: column;
@@ -445,6 +470,7 @@ body::-webkit-scrollbar {
 
 .edit-modal h3{
   color: var(--background-color);
+  text-shadow: 0px 0px 7px var(--text-color);
   font-size: inherit;
   font-weight: 200px;
   font-family: 'Poppins', sans-serif;
@@ -454,6 +480,7 @@ body::-webkit-scrollbar {
 
 .details label {
   color: var(--background-color);
+  text-shadow: 0px 0px 7px var(--text-color);
   margin-bottom: 5px;
 }
 
@@ -497,7 +524,6 @@ body::-webkit-scrollbar {
 
 
 .button-group button.liked {
-  text-shadow: none;
   border-radius: 200%;
   transition: var(--tran);
   background-color: var(--background-color);
@@ -519,6 +545,11 @@ i{
   font-size: 10px;
 }
 
+.fa-trash{
+  color: var(--primary-color);
+  animation: shake 0.5s infinite;
+}
+
 .liked-posts-button{
   border-radius: 3px;
   border: 1px solid;
@@ -538,12 +569,11 @@ i{
 .art button {
   transition: var(--tran);
   display: flex;
-  text-shadow: 0px 0px 7px var(--text-color);
   margin: 10px;
   padding: 5px;
   background-color: hsla(0, 0%, 0%, 0);
   backdrop-filter: blur(5px);
-  color: var(--background-color);
+  color: var(--secondary-color);
   border: none;
   border-radius: 100%;
   cursor: pointer;
