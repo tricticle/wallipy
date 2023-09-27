@@ -285,6 +285,10 @@ body::-webkit-scrollbar {
   margin-top: 79px;
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  align-content: center;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .sec-bar{
