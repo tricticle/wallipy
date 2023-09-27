@@ -282,17 +282,18 @@ body::-webkit-scrollbar {
 }
 
 .sec{
+  margin-top: 79px;
   display: flex;
+  justify-content: center;
+}
+
+.sec-bar{
+  display: flex;
+  flex-direction: row;
   flex-wrap: nowrap;
   align-content: center;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-}
-
-.sec-bar{
-  margin-top: 79px;
-  padding: 10px;
 }
 .sec-bar button{
   border: none;
