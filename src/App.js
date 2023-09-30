@@ -24,6 +24,8 @@ function App() {
   const [customImageUrl, setCustomImageUrl] = useState("");
   const [customImageTitle, setCustomImageTitle] = useState("");
   const [customImageDescription, setCustomImageDescription] = useState("");
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
   const serverUrl = process.env.REACT_APP_SERVER_URL;
 
   const isRefreshed = useRef(false);
@@ -77,7 +79,20 @@ function App() {
     };
     
     fetchRedditImages();
-  }, [selectedCategory, showNSFW, customSubreddit]); // Add showNSFW to the dependency array
+  }, [selectedCategory, showNSFW, customSubreddit]);
+
+  const updateImageIndex = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === images.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+  
+  useEffect(() => {
+    const intervalId = setInterval(updateImageIndex, 3000);
+    return () => clearInterval(intervalId);
+  }, []);
+  
+
 
   const fetchAddedDataFromMongoDB = async () => {
     try {
@@ -336,6 +351,24 @@ function App() {
             </div>
           </div>
         </header>
+      </section>
+      <section className="container">
+      <div className="cur-sec">
+  <div className="cur-flex">
+    {images.map((image, index) => (
+      <div
+        className="cur-art"
+        key={index}
+        style={{
+          transform: `translateX(${index - currentImageIndex}00%)`,
+        }}
+      >
+        <img loading="lazy" src={image.imageUrl} alt={image.title} />
+        <h1>{image.title}</h1>
+      </div>
+    ))}
+  </div>
+</div>
       </section>
       <div className="sec">
         <div className="sec-bar">

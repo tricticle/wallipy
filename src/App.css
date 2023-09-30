@@ -282,7 +282,7 @@ body::-webkit-scrollbar {
 }
 
 .sec{
-  margin-top: 79px;
+  margin-top: 9px;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -318,6 +318,49 @@ body::-webkit-scrollbar {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.cur-sec {
+  margin-top: 90px;
+  height: 300px;
+  border-radius: 10px;
+  width: 100%;
+  overflow: hidden; /* Hide overflowing images */
+  position: relative; /* Create a positioning context for the images */
+}
+
+.cur-flex {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  transition: transform 1s ease; /* Smoothly transition image changes */
+}
+
+.cur-art {
+  flex: 0 0 100%; /* Ensure each image takes full width */
+  height: 100%;
+  scroll-snap-align: start;
+}
+
+.cur-art img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+@keyframes slide {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(-200%);
+  }
+  75% {
+    transform: translateX(-300%);
+  }
 }
 
 .art-grid {
