@@ -2,18 +2,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from 'axios';
 import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
+import HeroSection from "./HeroSection";
 
 function App() {
   const [images, setImages] = useState([]);
   const [addedData, setAddedData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(() => {
-    return localStorage.getItem("selectedCategory") || "Wallpaper";
-  });
-  const [customSearchQuery, setCustomSearchQuery] = useState('');
-  const [customSearchResults, setCustomSearchResults] = useState([]);
+    return localStorage.getItem("selectedCategory") || "Wallpaper";});
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showNSFW, setShowNSFW] = useState(false);
-  const [showLikedSection, setShowLikedSection] = useState(false); // State to control liked section visibility
+  const [showLikedSection, setShowLikedSection] = useState(false);
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
   const [customSubreddit, setCustomSubreddit] = useState("");
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -24,7 +22,6 @@ function App() {
   const [customImageUrl, setCustomImageUrl] = useState("");
   const [customImageTitle, setCustomImageTitle] = useState("");
   const [customImageDescription, setCustomImageDescription] = useState("");
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const serverUrl = process.env.REACT_APP_SERVER_URL;
 
@@ -41,20 +38,28 @@ function App() {
     
         // Create an array of promises to fetch data from multiple subreddits
         const fetchSubreddits = subredditList.map(async (subreddit) => {
-          const response = await axios.get(`https://www.reddit.com/r/${subreddit}/top.json?limit=99`);
-          return response.data;
+          try {
+            const response = await axios.get(`https://www.reddit.com/r/${subreddit}/top.json?limit=99`);
+            return response.data;
+          } catch (error) {
+            // Handle the case when the subreddit does not exist or there's an error
+            console.error(`Error fetching subreddit ${subreddit}:`, error);
+            return null; // Return null for the non-existing subreddit
+          }
         });
     
         // Fetch data from all subreddits concurrently using Promise.all
         const results = await Promise.all(fetchSubreddits);
+
+         const validResults = results.filter((result) => result !== null);
     
         // Flatten and filter posts
-        const posts = results.flatMap((result) =>
-          result.data.children.filter(
-            (post) =>
-              post.data.post_hint === 'image' && (showNSFW || !post.data.over_18)
-          )
-        );
+        const posts = validResults.flatMap((result) =>
+        result.data.children.filter(
+          (post) =>
+            post.data.post_hint === 'image' && (showNSFW || !post.data.over_18)
+        )
+      );
     
         const uniqueUrls = new Set(); // Create a Set to store unique URLs
     
@@ -80,17 +85,6 @@ function App() {
     
     fetchRedditImages();
   }, [selectedCategory, showNSFW, customSubreddit]);
-
-  const updateImageIndex = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === images.length - 1 ? 0 : prevIndex + 1
-    );
-  };
-  
-  useEffect(() => {
-    const intervalId = setInterval(updateImageIndex, 3000);
-    return () => clearInterval(intervalId);
-  }, []);
   
 
 
@@ -220,26 +214,6 @@ function App() {
     }
   }, [selectedCategory]);
 
-  const performCustomSearch = async () => {
-    try {
-      const response = await axios.get(`https://www.reddit.com/search.json?q=${customSearchQuery}&limit=30`);
-      const searchData = response.data.data.children;
-
-      const searchResults = searchData
-        .filter((post) => post.data.url.endsWith('.jpg') || post.data.url.endsWith('.png'))
-        .map((post) => ({
-          title: post.data.title,
-          imageUrl: post.data.url,
-          description: post.data.author,
-        }));
-
-      setCustomSearchResults(searchResults);
-    } catch (error) {
-      console.error('Error fetching custom search results:', error);
-    }
-  };
-
-  
   const openCustomImageForm = () => {
     setShowCustomImageForm(true);
   };
@@ -352,47 +326,7 @@ function App() {
           </div>
         </header>
       </section>
-      <section className="container">
-      <div className="cur-sec">
-  <div className="cur-flex">
-    {images.map((image, index) => (
-      <div
-        className="cur-art"
-        key={index}
-        style={{
-          transform: `translateX(${index - currentImageIndex}00%)`,
-        }}
-      >
-        <img loading="lazy" src={image.imageUrl} alt={image.title} />
-        <h1>{image.title}</h1>
-      </div>
-    ))}
-  </div>
-</div>
-      </section>
-      <div className="sec">
-        <div className="sec-bar">
-          <input
-            type="text"
-            placeholder="search..."
-            value={customSearchQuery}
-            onChange={(e) => setCustomSearchQuery(e.target.value)}
-          />
-          <button onClick={performCustomSearch}><i className="fas fa-magnifying-glass"></i></button>
-        </div>
-          {customSearchResults.map((result, index) => (
-            <div className="art-grid" key={index}>
-              <div className="art">
-                <img  loading="lazy" src={result.imageUrl} alt={result.title} />
-                <div className="button-group">
-                  <div className="art-details">
-                    <h3>{result.title}</h3>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-      </div>
+      {addedData.length > 0 && <HeroSection likedImages={addedData} />}
       <div className={`inset ${showCustomImageForm ? '' : 'hidden'}`}>
         {showCustomImageForm && (
           <div className="edit-modal">

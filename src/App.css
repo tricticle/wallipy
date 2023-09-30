@@ -321,12 +321,15 @@ body::-webkit-scrollbar {
 }
 
 .cur-sec {
-  margin-top: 90px;
-  height: 300px;
+  background-color: var(--background-color);
+  padding: 5px;
+  margin-top: 80;
+  height: 30dvh;
   border-radius: 10px;
   width: 100%;
   overflow: hidden; /* Hide overflowing images */
   position: relative; /* Create a positioning context for the images */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.305);
 }
 
 .cur-flex {
@@ -340,27 +343,14 @@ body::-webkit-scrollbar {
   flex: 0 0 100%; /* Ensure each image takes full width */
   height: 100%;
   scroll-snap-align: start;
+  display: flex;
 }
 
 .cur-art img {
+  border-radius: 7px;
   height: 100%;
   width: 100%;
   object-fit: cover;
-}
-
-@keyframes slide {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-100%);
-  }
-  50% {
-    transform: translateX(-200%);
-  }
-  75% {
-    transform: translateX(-300%);
-  }
 }
 
 .art-grid {
