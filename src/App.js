@@ -326,6 +326,7 @@ function App() {
           </div>
         </header>
       </section>
+      <div className="adjust">
       {addedData.length > 0 && <HeroSection likedImages={addedData} />}
       <div className={`inset ${showCustomImageForm ? '' : 'hidden'}`}>
         {showCustomImageForm && (
@@ -476,6 +477,7 @@ function App() {
           <a href="https://www.reddit.com/">creators</a>
         </p>
       </footer>
+      </div>
     </>
   );
 }

@@ -313,6 +313,10 @@ body::-webkit-scrollbar {
   align-items: center;
 }
 
+.adjust{
+  margin-top: 77px;
+}
+
 .container {
   padding: 7px;
   display: flex;
@@ -323,7 +327,6 @@ body::-webkit-scrollbar {
 .cur-sec {
   background-color: var(--background-color);
   padding: 5px;
-  margin-top: 80;
   height: 30dvh;
   border-radius: 10px;
   width: 100%;
