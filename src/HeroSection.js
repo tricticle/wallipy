@@ -23,9 +23,19 @@ function HeroSection({ likedImages }) {
     }
   };
 
-  const handleHeroClick = () => {
-    // When the HeroSection is clicked, go to the next image
-    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % likedImages.length);
+  const handleHeroClick = (e) => {
+    const heroSectionWidth = e.currentTarget.offsetWidth;
+    const clickX = e.clientX - e.currentTarget.getBoundingClientRect().left;
+
+    if (clickX < heroSectionWidth / 2) {
+      // Click on the left side, go to the previous image
+      setCurrentImageIndex((prevIndex) =>
+        prevIndex === 0 ? likedImages.length - 1 : prevIndex - 1
+      );
+    } else {
+      // Click on the right side, go to the next image
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % likedImages.length);
+    }
   };
 
   useEffect(() => {
