@@ -24,9 +24,16 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "npm run server | npm run script",
+    "server": "node server.js",
+    "script": "react-scripts start",
+    "build": "npm run build-server | npm run build-script",
+    "build-server": "node server.js",
+    "build-script": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
