@@ -59,11 +59,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-app.get('/', (req, res) => {
-  res.set('Access-Control-Allow-Origin', '*');
-  res.send('😁    Welcome to wallipyServer    😁');
-});
-
 // Add data to MongoDB
 app.post('/addData', async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*');
