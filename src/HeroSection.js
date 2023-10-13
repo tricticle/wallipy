@@ -46,7 +46,7 @@ function HeroSection({ likedImages }) {
     return () => {
       clearInterval(intervalId); // Clean up the interval when the component unmounts
     };
-  }, [likedImages]);
+  }, [likedImages,currentImageIndex]);
 
   return (
     <section
