@@ -4,7 +4,7 @@ import mongoose from 'mongoose'; // Import Mongoose if not already imported
 require('dotenv').config(); // If not already configured
 
 // Initialize your MongoDB connection here (similar to how it's done in your Express server)
-mongoose.connect(process.env.MONGODB_URI, {
+mongoose.connect(process.env.MONGODB_URI_APP, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
