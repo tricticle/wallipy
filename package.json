@@ -3,10 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "proxy": "https://wallipy-server.vercel.app/",
-  "main": "api/server.js",
-  "engines": {
-    "node": "18.x"
-  },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.1",
     "@testing-library/jest-dom": "^5.16.5",
