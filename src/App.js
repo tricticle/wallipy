@@ -24,6 +24,27 @@ function App() {
   const [likedImages, setLikedImages] = useState([]); // Populate this array with your liked images data
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [touchStartX, setTouchStartX] = useState(null);
+  const [headerStyle, setHeaderStyle] = useState({});
+
+
+  useEffect(() => {
+    if (likedImages.length > 0) {
+      if (currentImageIndex >= 0 && currentImageIndex < likedImages.length) {
+        const currentImage = likedImages[currentImageIndex];
+        if (currentImage && currentImage.imageUrl) {
+          setHeaderStyle({
+            backgroundImage: `url(${currentImage.imageUrl})`,
+          });
+        } else {
+          // Handle the case where the current image or its URL is undefined
+          setHeaderStyle({}); // Set a default style or placeholder image
+        }
+      }
+    } else {
+      // Handle the case where likedImages is empty
+      setHeaderStyle({}); // Set a default style or placeholder image
+    }
+  }, [likedImages, currentImageIndex]);
 
   const serverUrl = process.env.REACT_APP_SERVER_URL;
 
@@ -341,12 +362,6 @@ function App() {
   const isImageLiked = (imageUrl) => {
     return addedData.some((item) => item.imageUrl === imageUrl);
   };
-
-  const headerStyle = likedImages.length > 0
-  ? {
-      backgroundImage: `url(${likedImages[currentImageIndex].imageUrl})`,
-    }
-  : {};
 
   return (
     <>
