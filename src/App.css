@@ -151,6 +151,58 @@ body::-webkit-scrollbar {
   border-radius:7px;
 }
 
+@keyframes move{  
+  0% {
+    background-position: 36% 42%;
+    background-size: 200%;
+  }
+  
+  20% {
+    background-position: 30% 35%;
+    background-size: 300%;
+  }
+  
+  20.0001% { /* -- View 2 -- */
+    background-position: 60% 85%;
+    background-size: 400%;
+  }
+  
+  40% {
+    background-position: 49% 81%;
+    background-size: 350%;
+  }
+  
+  40.0001% { /* -- View 3 -- */
+    background-position: 80% 42%;
+    background-size: 300%;
+  }
+  
+  60% {
+    background-position: 84% 33%;
+    background-size: 250%;
+  }
+  
+  60.0001% { /* -- View 4 -- */
+    background-position: 0% 0%;
+    background-size: 300%;
+  }
+  
+  80% {
+    background-position: 15% 4%;
+    background-size: 350%;
+  }
+  
+  80.0001% { /* -- View 5 -- */
+    background-position: 80% 10%;
+    background-size: 400%;
+  }
+  
+  100% {
+    background-position: 72% 14%;
+    background-size: 300%;
+  }
+}
+
 
 .header {
   background-color: var(--background-color);
@@ -160,17 +212,22 @@ body::-webkit-scrollbar {
   justify-content: space-between;
   padding: 10px;
   border-radius: 5px;
-  transition: var(--tran);
   box-shadow: 0px 7px 20px 5px rgba(0, 0, 0, 0.199);
   background-repeat: none;
   object-fit: cover;
   flex-direction: row;
   margin: 10px;
   z-index: 99;
+  animation: move 69s infinite;
 }
 .header h1{
     font-family: 'Poppins', sans-serif;
     font-size: 20px;
+    text-shadow: 0px 0px 20px var(--background-color);
+}
+
+.header:hover h1{
+  text-shadow: 0px 0px 20px var(--text-color);
 }
 
 .menu-btn button {
@@ -248,7 +305,6 @@ body::-webkit-scrollbar {
 .header:hover {
   background-color: var(--secondary-color);
   color: var(--background-color);
-  transition: var(--tran);
 }
 
 .profile {
@@ -322,38 +378,6 @@ body::-webkit-scrollbar {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.cur-sec {
-  background-color: var(--background-color);
-  padding: 5px;
-  height: 30dvh;
-  border-radius: 10px;
-  width: 100%;
-  overflow: hidden; /* Hide overflowing images */
-  position: relative; /* Create a positioning context for the images */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.305);
-}
-
-.cur-flex {
-  display: flex;
-  height: 100%;
-  width: 100%;
-  transition: transform 1s ease; /* Smoothly transition image changes */
-}
-
-.cur-art {
-  flex: 0 0 100%; /* Ensure each image takes full width */
-  height: 100%;
-  scroll-snap-align: start;
-  display: flex;
-}
-
-.cur-art img {
-  border-radius: 7px;
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
 }
 
 .art-grid {

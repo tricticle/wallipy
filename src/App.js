@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from 'axios';
 import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
-import HeroSection from "./HeroSection";
 
 function App() {
   const [images, setImages] = useState([]);
@@ -22,6 +21,9 @@ function App() {
   const [customImageUrl, setCustomImageUrl] = useState("");
   const [customImageTitle, setCustomImageTitle] = useState("");
   const [customImageDescription, setCustomImageDescription] = useState("");
+  const [likedImages, setLikedImages] = useState([]); // Populate this array with your liked images data
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [touchStartX, setTouchStartX] = useState(null);
 
   const serverUrl = process.env.REACT_APP_SERVER_URL;
 
@@ -93,6 +95,7 @@ function App() {
       if (isAuthenticated) {
         const response = await axios.get(`${serverUrl}/addedData?username=${user.name}`);
         setAddedData(response.data);
+        setLikedImages(response.data);
       }
     } catch (error) {
       console.error('Error fetching added data:', error);
@@ -250,6 +253,50 @@ function App() {
     }
   };
 
+  
+  const handleTouchStart = (e) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e) => {
+    const touchEndX = e.changedTouches[0].clientX;
+    const deltaX = touchEndX - touchStartX;
+
+    if (deltaX > 50) {
+      // Swipe right, go to the previous image
+      setCurrentImageIndex((prevIndex) =>
+        prevIndex === 0 ? likedImages.length - 1 : prevIndex - 1
+      );
+    } else if (deltaX < -50) {
+      // Swipe left, go to the next image
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % likedImages.length);
+    }
+  };
+
+  const handleHeroClick = (e) => {
+    const heroSectionWidth = e.currentTarget.offsetWidth;
+    const clickX = e.clientX - e.currentTarget.getBoundingClientRect().left;
+
+    if (clickX < heroSectionWidth / 2) {
+      // Click on the left side, go to the previous image
+      setCurrentImageIndex((prevIndex) =>
+        prevIndex === 0 ? likedImages.length - 1 : prevIndex - 1
+      );
+    } else {
+      // Click on the right side, go to the next image
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % likedImages.length);
+    }
+  };
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % likedImages.length);
+    }, 7000); // Change image every 7 seconds
+
+    return () => {
+      clearInterval(intervalId); // Clean up the interval when the component unmounts
+    };
+  }, [likedImages,currentImageIndex]);
 
   // Menu toggle
 
@@ -295,10 +342,21 @@ function App() {
     return addedData.some((item) => item.imageUrl === imageUrl);
   };
 
+  const headerStyle = likedImages.length > 0
+  ? {
+      backgroundImage: `url(${likedImages[currentImageIndex].imageUrl})`,
+    }
+  : {};
+
   return (
     <>
       <section className="wrapper">
-        <header className='header'>
+          <header className="header"
+            style={headerStyle}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onClick={handleHeroClick}
+          >
           <h1>wallipy</h1>
           <div className="menu-btn">
             <button onClick={toggleMenu}>
@@ -327,7 +385,6 @@ function App() {
         </header>
       </section>
       <div className="adjust">
-      {addedData.length > 0 && <HeroSection likedImages={addedData} />}
       <div className={`inset ${showCustomImageForm ? '' : 'hidden'}`}>
         {showCustomImageForm && (
           <div className="edit-modal">
