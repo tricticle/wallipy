@@ -26,26 +26,6 @@ function App() {
   const [touchStartX, setTouchStartX] = useState(null);
   const [headerStyle, setHeaderStyle] = useState({});
 
-
-  useEffect(() => {
-    if (likedImages.length > 0) {
-      if (currentImageIndex >= 0 && currentImageIndex < likedImages.length) {
-        const currentImage = likedImages[currentImageIndex];
-        if (currentImage && currentImage.imageUrl) {
-          setHeaderStyle({
-            backgroundImage: `url(${currentImage.imageUrl})`,
-          });
-        } else {
-          // Handle the case where the current image or its URL is undefined
-          setHeaderStyle({}); // Set a default style or placeholder image
-        }
-      }
-    } else {
-      // Handle the case where likedImages is empty
-      setHeaderStyle({}); // Set a default style or placeholder image
-    }
-  }, [likedImages, currentImageIndex]);
-
   const serverUrl = process.env.REACT_APP_SERVER_URL;
 
   const isRefreshed = useRef(false);
@@ -62,7 +42,7 @@ function App() {
         // Create an array of promises to fetch data from multiple subreddits
         const fetchSubreddits = subredditList.map(async (subreddit) => {
           try {
-            const response = await axios.get(`https://www.reddit.com/r/${subreddit}/top.json?limit=99`);
+            const response = await axios.get(`https://www.reddit.com/r/${subreddit}/top.json?limit=1`);
             return response.data;
           } catch (error) {
             // Handle the case when the subreddit does not exist or there's an error
@@ -363,6 +343,25 @@ function App() {
     return addedData.some((item) => item.imageUrl === imageUrl);
   };
 
+  useEffect(() => {
+    if (likedImages.length > 0) {
+      if (currentImageIndex >= 0 && currentImageIndex < likedImages.length) {
+        const currentImage = likedImages[currentImageIndex];
+        if (currentImage && currentImage.imageUrl) {
+          setHeaderStyle({
+            backgroundImage: `url(${currentImage.imageUrl})`,
+          });
+        } else {
+          // Handle the case where the current image or its URL is undefined
+          setHeaderStyle({}); // Set a default style or placeholder image
+        }
+      }
+    } else {
+      // Handle the case where likedImages is empty
+      setHeaderStyle({}); // Set a default style or placeholder image
+    }
+  }, [likedImages, currentImageIndex]);
+
   return (
     <>
       <section className="wrapper">
@@ -372,7 +371,7 @@ function App() {
             onTouchEnd={handleTouchEnd}
             onClick={handleHeroClick}
           >
-          <h1>wallipy</h1>
+          <h1>wallipy.</h1>
           <div className="menu-btn">
             <button onClick={toggleMenu}>
               <i className="fas fa-bars"></i>
@@ -439,7 +438,7 @@ function App() {
       {showLikedSection && (
         <div className="liked-section">
           <h2>Liked and Save section</h2>
-          <div className="art-grid" >
+          <div className="art-grid">
             {addedData.map((item, index) => (
               <div className="art" key={index}>
                 <img loading="lazy" src={item.imageUrl} alt={item.title} />
