@@ -42,7 +42,7 @@ function App() {
         // Create an array of promises to fetch data from multiple subreddits
         const fetchSubreddits = subredditList.map(async (subreddit) => {
           try {
-            const response = await axios.get(`https://www.reddit.com/r/${subreddit}/top.json?limit=99`);
+            const response = await axios.get(`${serverUrl}/reddit?subreddit=${subreddit}`);
             return response.data;
           } catch (error) {
             // Handle the case when the subreddit does not exist or there's an error
