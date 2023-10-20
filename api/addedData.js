@@ -15,7 +15,7 @@ const imageSchema = new mongoose.Schema({
     {
       title: String,
       imageUrl: { type: String, unique: true },
-      description: String
+      creator: String
     }
   ]
 });

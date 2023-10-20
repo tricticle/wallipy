@@ -16,11 +16,11 @@ function App() {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [editedTitle, setEditedTitle] = useState("");
-  const [editedDescription, setEditedDescription] = useState("");
+  const [editedcreator, setEditedcreator] = useState("");
   const [showCustomImageForm, setShowCustomImageForm] = useState(false);
   const [customImageUrl, setCustomImageUrl] = useState("");
   const [customImageTitle, setCustomImageTitle] = useState("");
-  const [customImageDescription, setCustomImageDescription] = useState("");
+  const [customImagecreator, setCustomImagecreator] = useState("");
   const [likedImages, setLikedImages] = useState([]); // Populate this array with your liked images data
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [touchStartX, setTouchStartX] = useState(null);
@@ -42,7 +42,7 @@ function App() {
         // Create an array of promises to fetch data from multiple subreddits
         const fetchSubreddits = subredditList.map(async (subreddit) => {
           try {
-            const response = await axios.get(`https://www.reddit.com/r/${subreddit}/top.json?limit=99`);
+            const response = await axios.get(`https://www.reddit.com/r/${subreddit}/top.json?limit=1`);
             return response.data;
           } catch (error) {
             // Handle the case when the subreddit does not exist or there's an error
@@ -70,7 +70,7 @@ function App() {
         const imageList = posts.map((post) => ({
           title: post.data.title,
           imageUrl: post.data.url,
-          description: post.data.author,
+          creator: post.data.author,
           isNSFW: post.data.over_18, // Check if the post is NSFW
         })).filter((image) => {
           if (!uniqueUrls.has(image.imageUrl)) {
@@ -116,7 +116,7 @@ function App() {
         return;
       }
 
-      const { title, imageUrl, description } = image;
+      const { title, imageUrl, creator } = image;
 
       // Include the username from Auth0 user object
       const username = user.name;
@@ -124,7 +124,7 @@ function App() {
       const dataToAdd = {
         title,
         imageUrl,
-        description,
+        creator,
         username,
       };
   
@@ -138,14 +138,14 @@ function App() {
   const openEditModal = (image) => {
     setSelectedImage(image);
     setEditedTitle(image.title);
-    setEditedDescription(image.description);
+    setEditedcreator(image.creator);
     setEditModalOpen(true);
   };
 
   const closeEditModal = () => {
     setSelectedImage(null);
     setEditedTitle("");
-    setEditedDescription("");
+    setEditedcreator("");
     setEditModalOpen(false);
   };
 
@@ -162,7 +162,7 @@ function App() {
         imageUrl: selectedImage.imageUrl,
         username: user.name,
         newTitle: editedTitle,
-        newDescription: editedDescription,
+        newcreator: editedcreator,
       };
 
       await axios.put(`${serverUrl}/updateData`, updatedData);
@@ -238,7 +238,7 @@ function App() {
       const customImage = {
         title: customImageTitle,
         imageUrl: customImageUrl,
-        description: customImageDescription,
+        creator: customImagecreator,
       };
 
       // Send a POST request to add the custom image and data
@@ -247,7 +247,7 @@ function App() {
       // Clear the form and close it
       setCustomImageUrl("");
       setCustomImageTitle("");
-      setCustomImageDescription("");
+      setCustomImagecreator("");
       closeCustomImageForm();
     } catch (error) {
       console.error('Error adding custom image and data:', error);
@@ -298,6 +298,13 @@ function App() {
       clearInterval(intervalId); // Clean up the interval when the component unmounts
     };
   }, [likedImages,currentImageIndex]);
+
+  const handleDoubleClick = (image) => {
+    if (!isImageLiked(image.imageUrl)) {
+      addDataToMongoDB(image);
+    }
+  };
+  
 
   // Menu toggle
 
@@ -411,10 +418,10 @@ function App() {
                   value={customImageTitle}
                   onChange={(e) => setCustomImageTitle(e.target.value)}
                 />
-                <label>Description</label>
+                <label>creator</label>
                 <textarea
-                  value={customImageDescription}
-                  onChange={(e) => setCustomImageDescription(e.target.value)}
+                  value={customImagecreator}
+                  onChange={(e) => setCustomImagecreator(e.target.value)}
                 />
                 <label>Image URL</label>
                 <input
@@ -445,7 +452,7 @@ function App() {
                 <div className="button-group">
                   <div className="art-details">
                     <h3>{item.title}</h3>
-                    <p>by {item.description}</p>
+                    <p>by {item.creator}</p>
                   </div>
                   <button onClick={() => openEditModal(item)}><i className="fa-solid fa-plus"></i></button>
                   <button onClick={() => removeDataFromMongoDB(item.imageUrl)}><i className="fa-solid fa-trash"></i></button>
@@ -467,10 +474,10 @@ function App() {
                   value={editedTitle}
                   onChange={(e) => setEditedTitle(e.target.value)}
                 />
-                <label>Description</label>
+                <label>creator</label>
                 <textarea
-                  value={editedDescription}
-                  onChange={(e) => setEditedDescription(e.target.value)}
+                  value={editedcreator}
+                  onChange={(e) => setEditedcreator(e.target.value)}
                 />
               </div>
               <div className="update-buttons">
@@ -491,12 +498,12 @@ function App() {
         </div>
         <div className="art-grid">
           {images.map((image, index) => (
-            <div key={index} className="art">
+            <div key={index} className="art" onDoubleClick={() => handleDoubleClick(image)}>
               <img  loading="lazy" src={image.imageUrl} alt={image.title} />
               <div className="button-group">
                 <div className="art-details">
                   <h3>{image.title}</h3>
-                  <p>by {image.description}</p>
+                  <p>by {image.creator}</p>
                 </div>
                 <button className={isImageLiked(image.imageUrl) ? "liked" : ""}
                   onClick={() => {

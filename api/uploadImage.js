@@ -15,7 +15,7 @@ const imageSchema = new mongoose.Schema({
     {
       title: String,
       imageUrl: String,
-      description: String
+      creator: String
     }
   ]
 });
@@ -26,7 +26,7 @@ function getImageCollection(username) {
 
 export default async (req, res) => {
   try {
-    const { username, title, description } = req.body;
+    const { username, title, creator } = req.body;
     const imageUrl = req.file.path; // The path to the uploaded image
 
     // Get or create a collection for the specific username
@@ -48,7 +48,7 @@ export default async (req, res) => {
     }
 
     // Add the new data to the user's data array
-    userImage.data.push({ title, imageUrl, description });
+    userImage.data.push({ title, imageUrl, creator });
 
     // Save the updated user document
     await userImage.save();

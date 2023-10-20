@@ -15,7 +15,7 @@ const imageSchema = new mongoose.Schema({
     {
       title: String,
       imageUrl: String,
-      description: String
+      creator: String
     }
   ]
 });
@@ -26,7 +26,7 @@ function getImageCollection(username) {
 
 export default async (req, res) => {
   try {
-    const { imageUrl, username, newTitle, newDescription } = req.body;
+    const { imageUrl, username, newTitle, newcreator } = req.body;
 
     // Get the specific collection for the username
     const Image = getImageCollection(username);
@@ -45,9 +45,9 @@ export default async (req, res) => {
       return res.status(404).json({ error: 'Image not found' });
     }
 
-    // Update the image's title and description
+    // Update the image's title and creator
     imageToUpdate.title = newTitle;
-    imageToUpdate.description = newDescription;
+    imageToUpdate.creator = newcreator;
 
     // Save the updated user document
     await userImage.save();
