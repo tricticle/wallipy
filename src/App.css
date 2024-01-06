@@ -90,6 +90,10 @@
   color: dark light;
   text-wrap: balance;
 }
+.wrap-ins{
+  display: flex;
+  background-color: #ff4f4f;
+}
 
 .categories {
   background-color: hsl(0, 0%, 100%);
@@ -115,7 +119,7 @@
 
 .custom{
   position: fixed;
-  bottom: 69px;
+  bottom: 96px;
 }
 
 .categories button.active {
@@ -598,7 +602,13 @@ i{
   animation: shake 0.5s infinite;
 }
 
-.liked-posts-button{
+.pos{
+  display: flex;
+  margin: 5px;
+  gap: 10px;
+}
+
+.post-button{
   border-radius: 3px;
   border: 1px solid;
   background: none;
@@ -606,10 +616,20 @@ i{
   padding: 3px 7px;
   cursor: pointer;
   color: var(--secondary-color);
-  margin-bottom: 5px;
+}
+.post-button.active{
+  background-color: black;
+  color: #ffffff;
+  border-radius: 5px;
+}
+.post-button.active .fa-fire-flame-curved{
+  color: rgb(255, 161, 107);
+}
+.post-button.active .fa-heart{
+  color: #ff4f4f;
 }
 
-.liked-section{
+.post-section{
  text-align: center;
  margin: 3px;
 }
@@ -667,8 +687,12 @@ input[type="text"] {
 
 
 .toggle {
-  margin-bottom: 10px;
+  position:fixed;
+  bottom: 60;
+  z-index: 9;
   font-size: 15px;
+  background-color: #ffffff;
+  border-radius: 3px;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
   display: flex;
   flex-direction: row;
@@ -707,7 +731,7 @@ input[type="checkbox"]:checked {
   width: 100%;
   color: var(--text-color);
   padding: 1px;
-  margin-bottom: 70px;
+  margin-bottom: 89px;
 }
 
 .about-page h5{

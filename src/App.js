@@ -25,10 +25,25 @@ function App() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [touchStartX, setTouchStartX] = useState(null);
   const [headerStyle, setHeaderStyle] = useState({});
+  const [popularImages, setPopularImages] = useState([]);
+  const [showPopularSection, setShowPopularSection] = useState(false);
 
   const serverUrl = process.env.REACT_APP_SERVER_URL;
 
   const isRefreshed = useRef(false);
+
+  useEffect(() => {
+    const fetchPopularImages = async () => {
+      try {
+        const response = await axios.get(`${serverUrl}/popularArt`);
+        setPopularImages(response.data);
+      } catch (error) {
+        console.error('Error fetching popular images:', error);
+      }
+    };
+  
+    fetchPopularImages();
+  }, [serverUrl]);
 
   useEffect(() => {
     const fetchRedditImages = async () => {
@@ -439,11 +454,60 @@ function App() {
         )}
       </div>
       <div className="container">
-        <button className="liked-posts-button" onClick={() => setShowLikedSection(!showLikedSection)}>
-          <i className="fa-solid fa-heart"></i>Liked Posts
-        </button>
+      <div className="pos">
+      <button
+              className={`post-button ${showPopularSection ? "active" : ""}`}
+              onClick={() => {
+                setShowLikedSection(false);
+                setShowPopularSection(!showPopularSection);
+              }}
+            >
+              <i className="fa-solid fa-fire-flame-curved"></i>Popular
+            </button>
+            <button
+              className={`post-button ${showLikedSection ? "active" : ""}`}
+              onClick={() => {
+                setShowPopularSection(false);
+                setShowLikedSection(!showLikedSection);
+              }}
+            >
+              <i className="fa-solid fa-heart"></i>Liked Posts
+            </button>
+        </div>
+        {showPopularSection && (
+  <div className="post-section">
+    <h2>Popular Images</h2>
+    <div className="art-grid">
+      {popularImages.map((image, index) => (
+        <div key={index} className="art">
+          <img loading="lazy" src={image.imageUrl} alt={image.title} />
+          <div className="button-group">
+            <div className="art-details">
+              <h3>{image.title}</h3>
+              <p>by {image.creator}</p>
+              <p>likes: {image.repeatCount}</p>
+            </div>
+            <button
+              className={isImageLiked(image.imageUrl) ? "liked" : ""}
+              onClick={() => {
+                if (isImageLiked(image.imageUrl)) {
+                  removeDataFromMongoDB(image.imageUrl);
+                } else {
+                  addDataToMongoDB(image);
+                }
+              }}
+            >
+              <i className="fas fa-heart"></i>
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
       {showLikedSection && (
-        <div className="liked-section">
+        <div className="post-section">
           <h2>Liked and Save section</h2>
           <div className="art-grid">
             {addedData.map((item, index) => (
@@ -488,14 +552,6 @@ function App() {
           </div>
         </div>
       )}
-        <div className="toggle">
-          <input
-            type="checkbox"
-            checked={showNSFW}
-            onChange={() => setShowNSFW(!showNSFW)}
-          />
-          <label htmlFor="nsfwToggle">Show NSFW</label>
-        </div>
         <div className="art-grid">
           {images.map((image, index) => (
             <div key={index} className="art" onDoubleClick={() => handleDoubleClick(image)}>
@@ -518,6 +574,14 @@ function App() {
               </div>
             </div>
           ))}
+        </div>
+        <div className="toggle">
+          <input
+            type="checkbox"
+            checked={showNSFW}
+            onChange={() => setShowNSFW(!showNSFW)}
+          />
+          <label htmlFor="nsfwToggle">Show NSFW</label>
         </div>
         <div className="categories">
           {Object.keys(subredditCategories).map((category) => (
