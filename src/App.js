@@ -479,7 +479,7 @@ function App() {
     <h2>Popular Images</h2>
     <div className="art-grid">
       {popularImages.map((image, index) => (
-        <div key={index} className="art">
+        <div key={index} className="art" onDoubleClick={() => handleDoubleClick(image)}>
           <img loading="lazy" src={image.imageUrl} alt={image.title} />
           <div className="button-group">
             <div className="art-details">
