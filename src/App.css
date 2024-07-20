@@ -761,3 +761,8 @@ input[type="checkbox"]:checked {
   text-decoration: underline;
   transition: var(--tran);
 }
+.ads-center{
+  display: flex;
+  justify-content: center;
+  padding: 2px;
+}
