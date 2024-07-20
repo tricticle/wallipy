@@ -475,10 +475,9 @@ function App() {
             style={{ width: "0px", height: "0px" }}
             data-width="0"
             data-height="0"
-            class="s6ee6c73fc9"
+            class="n2b9835a88a"
             data-domain="//r-q-e.com"
-            data-affquery="/c06f6571ec0b750d3a51/6ee6c73fc9/?placementName=default"
-          >
+            data-affquery="/7366376660e2bee7b56e/2b9835a88a/?placementName=default">
             <script src="//r-q-e.com/js/responsive.js" async></script>
           </ins>
         </div>
@@ -661,10 +660,9 @@ function App() {
             style={{ width: "0px", height: "0px" }}
             data-width="0"
             data-height="0"
-            class="s6ee6c73fc9"
+            class="n2b9835a88a"
             data-domain="//r-q-e.com"
-            data-affquery="/c06f6571ec0b750d3a51/6ee6c73fc9/?placementName=default"
-          >
+            data-affquery="/7366376660e2bee7b56e/2b9835a88a/?placementName=default">
             <script src="//r-q-e.com/js/responsive.js" async></script>
           </ins>
         </div>
