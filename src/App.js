@@ -1,13 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useRef } from "react";
-import axios from 'axios';
-import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
+import axios from "axios";
+import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
 
 function App() {
   const [images, setImages] = useState([]);
   const [addedData, setAddedData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(() => {
-    return localStorage.getItem("selectedCategory") || "Wallpaper";});
+    return localStorage.getItem("selectedCategory") || "Wallpaper";
+  });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showNSFW, setShowNSFW] = useState(false);
   const [showLikedSection, setShowLikedSection] = useState(false);
@@ -38,10 +39,10 @@ function App() {
         const response = await axios.get(`${serverUrl}/popularArt`);
         setPopularImages(response.data);
       } catch (error) {
-        console.error('Error fetching popular images:', error);
+        console.error("Error fetching popular images:", error);
       }
     };
-  
+
     fetchPopularImages();
   }, [serverUrl]);
 
@@ -49,15 +50,17 @@ function App() {
     const fetchRedditImages = async () => {
       try {
         let subredditList = subredditCategories[selectedCategory] || [];
-    
+
         if (selectedCategory === "custom" && customSubreddit.trim() !== "") {
           subredditList = [customSubreddit];
         }
-    
+
         // Create an array of promises to fetch data from multiple subreddits
         const fetchSubreddits = subredditList.map(async (subreddit) => {
           try {
-            const response = await axios.get(`https://www.reddit.com/r/${subreddit}/top.json?limit=99`);
+            const response = await axios.get(
+              `https://www.reddit.com/r/${subreddit}/top.json?limit=99`
+            );
             return response.data;
           } catch (error) {
             // Handle the case when the subreddit does not exist or there's an error
@@ -65,56 +68,59 @@ function App() {
             return null; // Return null for the non-existing subreddit
           }
         });
-    
+
         // Fetch data from all subreddits concurrently using Promise.all
         const results = await Promise.all(fetchSubreddits);
 
-         const validResults = results.filter((result) => result !== null);
-    
+        const validResults = results.filter((result) => result !== null);
+
         // Flatten and filter posts
         const posts = validResults.flatMap((result) =>
-        result.data.children.filter(
-          (post) =>
-            post.data.post_hint === 'image' && (showNSFW || !post.data.over_18)
-        )
-      );
-    
+          result.data.children.filter(
+            (post) =>
+              post.data.post_hint === "image" &&
+              (showNSFW || !post.data.over_18)
+          )
+        );
+
         const uniqueUrls = new Set(); // Create a Set to store unique URLs
-    
+
         // Map filtered posts to the desired format
-        const imageList = posts.map((post) => ({
-          title: post.data.title,
-          imageUrl: post.data.url,
-          creator: post.data.author,
-          isNSFW: post.data.over_18, // Check if the post is NSFW
-        })).filter((image) => {
-          if (!uniqueUrls.has(image.imageUrl)) {
-            uniqueUrls.add(image.imageUrl);
-            return true;
-          }
-          return false;
-        });
-    
+        const imageList = posts
+          .map((post) => ({
+            title: post.data.title,
+            imageUrl: post.data.url,
+            creator: post.data.author,
+            isNSFW: post.data.over_18, // Check if the post is NSFW
+          }))
+          .filter((image) => {
+            if (!uniqueUrls.has(image.imageUrl)) {
+              uniqueUrls.add(image.imageUrl);
+              return true;
+            }
+            return false;
+          });
+
         setImages(imageList);
       } catch (error) {
-        console.error('Error fetching Reddit images:', error);
+        console.error("Error fetching Reddit images:", error);
       }
     };
-    
+
     fetchRedditImages();
   }, [selectedCategory, showNSFW, customSubreddit]);
-  
-
 
   const fetchAddedDataFromMongoDB = async () => {
     try {
       if (isAuthenticated) {
-        const response = await axios.get(`${serverUrl}/addedData?username=${user.name}`);
+        const response = await axios.get(
+          `${serverUrl}/addedData?username=${user.name}`
+        );
         setAddedData(response.data);
         setLikedImages(response.data);
       }
     } catch (error) {
-      console.error('Error fetching added data:', error);
+      console.error("Error fetching added data:", error);
     }
   };
 
@@ -142,11 +148,11 @@ function App() {
         creator,
         username,
       };
-  
+
       await axios.post(`${serverUrl}/addData`, dataToAdd);
       fetchAddedDataFromMongoDB();
     } catch (error) {
-      console.error('Error adding data:', error);
+      console.error("Error adding data:", error);
     }
   };
 
@@ -184,7 +190,7 @@ function App() {
       fetchAddedDataFromMongoDB();
       closeEditModal();
     } catch (error) {
-      console.error('Error updating data:', error);
+      console.error("Error updating data:", error);
     }
   };
 
@@ -195,10 +201,12 @@ function App() {
         return;
       }
 
-      await axios.delete(`${serverUrl}/removeData`, { data: { imageUrl, username: user.name } });
+      await axios.delete(`${serverUrl}/removeData`, {
+        data: { imageUrl, username: user.name },
+      });
       fetchAddedDataFromMongoDB();
     } catch (error) {
-      console.error('Error removing data:', error);
+      console.error("Error removing data:", error);
     }
   };
 
@@ -218,7 +226,12 @@ function App() {
       "pixivision",
       "streetmoe",
     ],
-    AIengines: ["midjourneyfantasy", "StableDiffusion", "animewallpaperai", "aiart"],
+    AIengines: [
+      "midjourneyfantasy",
+      "StableDiffusion",
+      "animewallpaperai",
+      "aiart",
+    ],
     Wallpaper: ["wallpaper", "amoledbackgrounds", "minimalwallpaper"],
     custom: [],
   };
@@ -265,11 +278,10 @@ function App() {
       setCustomImagecreator("");
       closeCustomImageForm();
     } catch (error) {
-      console.error('Error adding custom image and data:', error);
+      console.error("Error adding custom image and data:", error);
     }
   };
 
-  
   const handleTouchStart = (e) => {
     setTouchStartX(e.touches[0].clientX);
   };
@@ -312,14 +324,13 @@ function App() {
     return () => {
       clearInterval(intervalId); // Clean up the interval when the component unmounts
     };
-  }, [likedImages,currentImageIndex]);
+  }, [likedImages, currentImageIndex]);
 
   const handleDoubleClick = (image) => {
     if (!isImageLiked(image.imageUrl)) {
       addDataToMongoDB(image);
     }
   };
-  
 
   // Menu toggle
 
@@ -333,15 +344,15 @@ function App() {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (isMenuOpen && !event.target.closest('.menu-btn')) {
+      if (isMenuOpen && !event.target.closest(".menu-btn")) {
         closeMenu();
       }
     };
 
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
 
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, [isMenuOpen]);
 
@@ -352,10 +363,10 @@ function App() {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [isMenuOpen]);
 
@@ -387,22 +398,23 @@ function App() {
   return (
     <>
       <section className="wrapper">
-          <header className="header"
-            style={headerStyle}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-            onClick={handleHeroClick}
-          >
+        <header
+          className="header"
+          style={headerStyle}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onClick={handleHeroClick}
+        >
           <h1>wallipy.</h1>
           <div className="menu-btn">
             <button onClick={toggleMenu}>
               <i className="fas fa-bars"></i>
             </button>
             <div className="profile">
-              <div className={`dropdown ${isMenuOpen ? 'open' : ''}`}>
+              <div className={`dropdown ${isMenuOpen ? "open" : ""}`}>
                 {isAuthenticated ? (
                   <>
-                    <img  loading="lazy" src={user.picture} alt={user.name} />
+                    <img loading="lazy" src={user.picture} alt={user.name} />
                     <h4>{user.name}!</h4>
                     <h4 className="link">
                       <a href="https://zaap.bio/tricticle">about us</a>
@@ -413,7 +425,12 @@ function App() {
                   <button onClick={() => loginWithRedirect()}>Log In</button>
                 )}
                 {isAuthenticated && user.name === "tricticle" && (
-  <button className="add-custom-image-button" onClick={openCustomImageForm}>Add Arts</button>
+                  <button
+                    className="add-custom-image-button"
+                    onClick={openCustomImageForm}
+                  >
+                    Add Arts
+                  </button>
                 )}
               </div>
             </div>
@@ -421,41 +438,53 @@ function App() {
         </header>
       </section>
       <div className="adjust">
-      <div className={`inset ${showCustomImageForm ? '' : 'hidden'}`}>
-        {showCustomImageForm && (
-          <div className="edit-modal">
-            <h3>Add Custom Image</h3>
-            <form onSubmit={handleCustomImageSubmit}>
-              <div className="details">
-                <label>Title</label>
-                <input
-                  type="text"
-                  value={customImageTitle}
-                  onChange={(e) => setCustomImageTitle(e.target.value)}
-                />
-                <label>creator</label>
-                <textarea
-                  value={customImagecreator}
-                  onChange={(e) => setCustomImagecreator(e.target.value)}
-                />
-                <label>Image URL</label>
-                <input
-                  type="text"
-                  value={customImageUrl}
-                  onChange={(e) => setCustomImageUrl(e.target.value)}
-                />
-              </div>
-              <div className="update-buttons">
-                <button type="submit">Add</button>
-                <button onClick={closeCustomImageForm}>Cancel</button>
-              </div>
-            </form>
-          </div>
-        )}
-      </div>
-      <div className="container">
-      <div className="pos">
-      <button
+        <div className={`inset ${showCustomImageForm ? "" : "hidden"}`}>
+          {showCustomImageForm && (
+            <div className="edit-modal">
+              <h3>Add Custom Image</h3>
+              <form onSubmit={handleCustomImageSubmit}>
+                <div className="details">
+                  <label>Title</label>
+                  <input
+                    type="text"
+                    value={customImageTitle}
+                    onChange={(e) => setCustomImageTitle(e.target.value)}
+                  />
+                  <label>creator</label>
+                  <textarea
+                    value={customImagecreator}
+                    onChange={(e) => setCustomImagecreator(e.target.value)}
+                  />
+                  <label>Image URL</label>
+                  <input
+                    type="text"
+                    value={customImageUrl}
+                    onChange={(e) => setCustomImageUrl(e.target.value)}
+                  />
+                </div>
+                <div className="update-buttons">
+                  <button type="submit">Add</button>
+                  <button onClick={closeCustomImageForm}>Cancel</button>
+                </div>
+              </form>
+            </div>
+          )}
+        </div>
+        <div className="ads-center">
+          <ins
+            style={{ width: "0px", height: "0px" }}
+            data-width="0"
+            data-height="0"
+            class="s6ee6c73fc9"
+            data-domain="//r-q-e.com"
+            data-affquery="/c06f6571ec0b750d3a51/6ee6c73fc9/?placementName=default"
+          >
+            <script src="//r-q-e.com/js/responsive.js" async></script>
+          </ins>
+        </div>
+        <div className="container">
+          <div className="pos">
+            <button
               className={`post-button ${showPopularSection ? "active" : ""}`}
               onClick={() => {
                 setShowLikedSection(false);
@@ -473,129 +502,150 @@ function App() {
             >
               <i className="fa-solid fa-heart"></i>Liked Posts
             </button>
-        </div>
-        {showPopularSection && (
-  <div className="post-section">
-    <h2>Popular Images</h2>
-    <div className="art-grid">
-      {popularImages.map((image, index) => (
-        <div key={index} className="art" onDoubleClick={() => handleDoubleClick(image)}>
-          <img loading="lazy" src={image.imageUrl} alt={image.title} />
-          <div className="button-group">
-            <div className="art-details">
-              <h3>{image.title}</h3>
-              <p>by {image.creator}</p>
-              <p>likes: {image.repeatCount}</p>
-            </div>
-            <button
-              className={isImageLiked(image.imageUrl) ? "liked" : ""}
-              onClick={() => {
-                if (isImageLiked(image.imageUrl)) {
-                  removeDataFromMongoDB(image.imageUrl);
-                } else {
-                  addDataToMongoDB(image);
-                }
-              }}
-            >
-              <i className="fas fa-heart"></i>
-            </button>
           </div>
-        </div>
-      ))}
-    </div>
-  </div>
-)}
+          {showPopularSection && (
+            <div className="post-section">
+              <h2>Popular Images</h2>
+              <div className="art-grid">
+                {popularImages.map((image, index) => (
+                  <div
+                    key={index}
+                    className="art"
+                    onDoubleClick={() => handleDoubleClick(image)}
+                  >
+                    <img
+                      loading="lazy"
+                      src={image.imageUrl}
+                      alt={image.title}
+                    />
+                    <div className="button-group">
+                      <div className="art-details">
+                        <h3>{image.title}</h3>
+                        <p>by {image.creator}</p>
+                        <p>likes: {image.repeatCount}</p>
+                      </div>
+                      <button
+                        className={isImageLiked(image.imageUrl) ? "liked" : ""}
+                        onClick={() => {
+                          if (isImageLiked(image.imageUrl)) {
+                            removeDataFromMongoDB(image.imageUrl);
+                          } else {
+                            addDataToMongoDB(image);
+                          }
+                        }}
+                      >
+                        <i className="fas fa-heart"></i>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
-      {showLikedSection && (
-        <div className="post-section">
-          <h2>Liked and Save section</h2>
+          {showLikedSection && (
+            <div className="post-section">
+              <h2>Liked and Save section</h2>
+              <div className="art-grid">
+                {addedData.map((item, index) => (
+                  <div className="art" key={index}>
+                    <img loading="lazy" src={item.imageUrl} alt={item.title} />
+                    <div className="button-group">
+                      <div className="art-details">
+                        <h3>{item.title}</h3>
+                        <p>by {item.creator}</p>
+                      </div>
+                      <button onClick={() => openEditModal(item)}>
+                        <i className="fa-solid fa-plus"></i>
+                      </button>
+                      <button
+                        onClick={() => removeDataFromMongoDB(item.imageUrl)}
+                      >
+                        <i className="fa-solid fa-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {editModalOpen && (
+            <div className="inset">
+              <div className="edit-modal">
+                <h3>Edit Post</h3>
+                <form onSubmit={handleEditSubmit}>
+                  <div className="details">
+                    <label>Title</label>
+                    <input
+                      type="text"
+                      value={editedTitle}
+                      onChange={(e) => setEditedTitle(e.target.value)}
+                    />
+                    <label>creator</label>
+                    <textarea
+                      value={editedcreator}
+                      onChange={(e) => setEditedcreator(e.target.value)}
+                    />
+                  </div>
+                  <div className="update-buttons">
+                    <button type="submit">Save</button>
+                    <button onClick={closeEditModal}>Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
           <div className="art-grid">
-            {addedData.map((item, index) => (
-              <div className="art" key={index}>
-                <img loading="lazy" src={item.imageUrl} alt={item.title} />
+            {images.map((image, index) => (
+              <div
+                key={index}
+                className="art"
+                onDoubleClick={() => handleDoubleClick(image)}
+              >
+                <img loading="lazy" src={image.imageUrl} alt={image.title} />
                 <div className="button-group">
                   <div className="art-details">
-                    <h3>{item.title}</h3>
-                    <p>by {item.creator}</p>
+                    <h3>{image.title}</h3>
+                    <p>by {image.creator}</p>
                   </div>
-                  <button onClick={() => openEditModal(item)}><i className="fa-solid fa-plus"></i></button>
-                  <button onClick={() => removeDataFromMongoDB(item.imageUrl)}><i className="fa-solid fa-trash"></i></button>
+                  <button
+                    className={isImageLiked(image.imageUrl) ? "liked" : ""}
+                    onClick={() => {
+                      if (isImageLiked(image.imageUrl)) {
+                        removeDataFromMongoDB(image.imageUrl);
+                      } else {
+                        addDataToMongoDB(image);
+                      }
+                    }}
+                  >
+                    <i className="fas fa-heart"></i>
+                  </button>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      )}
-      {editModalOpen && (
-        <div className="inset">
-          <div className="edit-modal">
-            <h3>Edit Post</h3>
-            <form onSubmit={handleEditSubmit}>
-              <div className="details">
-                <label>Title</label>
-                <input
-                  type="text"
-                  value={editedTitle}
-                  onChange={(e) => setEditedTitle(e.target.value)}
-                />
-                <label>creator</label>
-                <textarea
-                  value={editedcreator}
-                  onChange={(e) => setEditedcreator(e.target.value)}
-                />
-              </div>
-              <div className="update-buttons">
-                <button type="submit">Save</button>
-                <button onClick={closeEditModal}>Cancel</button>
-              </div>
-            </form>
+          <div className="toggle">
+            <input
+              type="checkbox"
+              checked={showNSFW}
+              onChange={() => setShowNSFW(!showNSFW)}
+            />
+            <label htmlFor="nsfwToggle">Show NSFW</label>
           </div>
-        </div>
-      )}
-        <div className="art-grid">
-          {images.map((image, index) => (
-            <div key={index} className="art" onDoubleClick={() => handleDoubleClick(image)}>
-              <img  loading="lazy" src={image.imageUrl} alt={image.title} />
-              <div className="button-group">
-                <div className="art-details">
-                  <h3>{image.title}</h3>
-                  <p>by {image.creator}</p>
-                </div>
-                <button className={isImageLiked(image.imageUrl) ? "liked" : ""}
-                  onClick={() => {
-                    if (isImageLiked(image.imageUrl)) {
-                      removeDataFromMongoDB(image.imageUrl);
-                    } else {
-                      addDataToMongoDB(image);
-                    }
-                  }}>
-                  <i className="fas fa-heart"></i>
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="toggle">
-          <input
-            type="checkbox"
-            checked={showNSFW}
-            onChange={() => setShowNSFW(!showNSFW)}
-          />
-          <label htmlFor="nsfwToggle">Show NSFW</label>
-        </div>
-        <div className="categories">
-          {Object.keys(subredditCategories).map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={selectedCategory === category ? "active" : ""}
-            >
-              {category === "custom" ? "Custom" : category}
-            </button>
-          ))}
-        </div>
-        {selectedCategory === "custom" && (
-            <input className="custom"
+          <div className="categories">
+            {Object.keys(subredditCategories).map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={selectedCategory === category ? "active" : ""}
+              >
+                {category === "custom" ? "Custom" : category}
+              </button>
+            ))}
+          </div>
+          {selectedCategory === "custom" && (
+            <input
+              className="custom"
               type="text"
               placeholder="Enter subreddit name"
               value={customSubreddit}
@@ -604,21 +654,33 @@ function App() {
                 setCustomSubreddit(e.target.value);
               }}
             />
-        )}
-      </div>
-      <footer className="about-page">
-        <h5>Wallipy v1.0</h5>
-        <h6>
-          This website is a React application that fetches and displays images
-          from different subreddits. Users can save and like images and search a
-          custom subreddit. Authenticated users can manage their liked posts,
-          save artworks, and toggle NSFW content.
-        </h6>
-        <p>
-          All arts credits go to &nbsp;
-          <a href="https://www.reddit.com/">creators</a>
-        </p>
-      </footer>
+          )}
+        </div>
+        <div className="ads-center">
+          <ins
+            style={{ width: "0px", height: "0px" }}
+            data-width="0"
+            data-height="0"
+            class="s6ee6c73fc9"
+            data-domain="//r-q-e.com"
+            data-affquery="/c06f6571ec0b750d3a51/6ee6c73fc9/?placementName=default"
+          >
+            <script src="//r-q-e.com/js/responsive.js" async></script>
+          </ins>
+        </div>
+        <footer className="about-page">
+          <h5>Wallipy v1.0</h5>
+          <h6>
+            This website is a React application that fetches and displays images
+            from different subreddits. Users can save and like images and search
+            a custom subreddit. Authenticated users can manage their liked
+            posts, save artworks, and toggle NSFW content.
+          </h6>
+          <p>
+            All arts credits go to &nbsp;
+            <a href="https://www.reddit.com/">creators</a>
+          </p>
+        </footer>
       </div>
     </>
   );
@@ -630,7 +692,7 @@ function AuthenticatedApp() {
       domain={process.env.REACT_APP_AUTH0_DOMAIN}
       clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
       authorizationParams={{
-        redirect_uri: window.location.origin
+        redirect_uri: window.location.origin,
       }}
     >
       <App />
