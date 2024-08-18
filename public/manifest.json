@@ -33,6 +33,7 @@
   "categories": [
     "photo",
     "arts",
+    "animeart",
     "aiart"
   ],
   "description": "Discover ARTs using Reddit API",
